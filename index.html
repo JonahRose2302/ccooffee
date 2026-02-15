@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Assistant</title>
+
+    <!-- Material Symbols -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <!-- Fonts: Inter for UI, Playfair Display for "Epic" headings -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Leaflet for Maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <link rel="stylesheet" href="style.css?v=6">
+</head>
+
+<body>
+
+    <!-- Cursor Follower (PC) -->
+    <div id="cursor-follower"></div>
+
+    <!-- Navigation (Top, Fixed, Always Visible) -->
+    <nav id="main-nav" class="glass-nav">
+        <button class="nav-btn" onclick="router.navigate('home')"><span
+                class="material-symbols-rounded">home</span></button>
+        <button class="nav-btn" onclick="router.navigate('brew')"><span
+                class="material-symbols-rounded">coffee_maker</span></button>
+        <button class="nav-btn" onclick="router.navigate('drinks')"><span
+                class="material-symbols-rounded">menu_book</span></button>
+        <button class="nav-btn" onclick="router.navigate('shops')"><span
+                class="material-symbols-rounded">storefront</span></button>
+        <button class="nav-btn" onclick="router.navigate('dialin')"><span
+                class="material-symbols-rounded">tune</span></button>
+    </nav>
+
+    <!-- ROOTS -->
+    <main id="app">
+
+        <!-- HOME PAGE -->
+        <section id="home" class="page active">
+            <!-- Scroll Animation Container -->
+            <div class="v-container">
+                <canvas id="video-canvas"></canvas>
+                <div class="scroll-instruction">
+                    <span class="material-symbols-rounded">keyboard_arrow_down</span>
+                </div>
+            </div>
+
+            <!-- Dashboard / Tile Navigation -->
+            <div class="content-section">
+                <!-- Removed inner glass-panel to allow full bleed gradient blend -->
+                <h1>WELCOME</h1>
+                <p class="subtitle">Your Personal Precision Barista</p>
+
+                <div class="tile-grid">
+                    <div class="tile" onclick="router.navigate('brew')">
+                        <span class="material-symbols-rounded icon">coffee_maker</span>
+                        <h2>Brew Tracker</h2>
+                        <p>Track your shots</p>
+                    </div>
+                    <div class="tile" onclick="router.navigate('drinks')">
+                        <span class="material-symbols-rounded icon">local_cafe</span>
+                        <h2>Recipes</h2>
+                        <p>Manage drinks</p>
+                    </div>
+                    <div class="tile epic-tile" onclick="router.navigate('dialin')">
+                        <span class="material-symbols-rounded icon">tune</span>
+                        <h2>Dial-In</h2>
+                        <p>The Gold Standard</p>
+                    </div>
+                    <div class="tile" onclick="router.navigate('shops')">
+                        <span class="material-symbols-rounded icon">map</span>
+                        <h2>Coffee Shops</h2>
+                        <p>Explore spots</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BREW PAGE -->
+        <section id="brew" class="page">
+            <header class="page-header">
+                <h1>BREWS</h1>
+                <button class="fab" onclick="brewManager.openAddModal()"><span
+                        class="material-symbols-rounded">add</span></button>
+            </header>
+            <div id="brew-list" class="brew-list-container">
+                <!-- Pills will be injected here -->
+            </div>
+        </section>
+
+        <!-- DRINKS PAGE -->
+        <section id="drinks" class="page">
+            <header class="page-header">
+                <h1>RECIPES</h1>
+                <button class="fab" onclick="drinkManager.openAddModal()"><span
+                        class="material-symbols-rounded">add</span></button>
+            </header>
+            <div id="drink-list" class="grid-list-container">
+                <!-- Pills will be injected here -->
+            </div>
+        </section>
+
+        <!-- DIAL-IN PAGE -->
+        <section id="dialin" class="page epic-page">
+            <div class="epic-background"></div>
+            <header class="page-header epic-header">
+                <h1>DIAL-IN INTERPOLATOR</h1>
+            </header>
+
+            <div class="dial-in-container glass-panel-dark">
+                <div class="input-group">
+                    <label>Target Time (s)</label>
+                    <input type="number" id="target-time" placeholder="25" step="1">
+                </div>
+
+                <div class="shot-inputs">
+                    <div class="shot-card">
+                        <h3>Test Shot 1</h3>
+                        <input type="number" id="g1" placeholder="Grind Setting (e.g. 10)" step="0.1">
+                        <input type="number" id="t1" placeholder="Time (s)" step="1">
+                    </div>
+                    <div class="shot-card">
+                        <h3>Test Shot 2</h3>
+                        <input type="number" id="g2" placeholder="Grind Setting (e.g. 12)" step="0.1">
+                        <input type="number" id="t2" placeholder="Time (s)" step="1">
+                    </div>
+                </div>
+
+                <button class="calculate-btn" onclick="dialIn.calculate()">CALCULATE</button>
+
+                <div id="dial-result" class="result-box hidden">
+                    <span class="label">Recommended Grind</span>
+                    <span class="value" id="result-grind">--</span>
+                    <p class="warning-text">Note: Due to non-linear particle distribution, consider adjusting 0.2 - 0.5
+                        steps coarser.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SHOPS PAGE -->
+        <section id="shops" class="page">
+            <header class="page-header">
+                <h1>CCOOFFEE SHOP</h1>
+                <button class="fab" onclick="shopManager.openAddModal()"><span
+                        class="material-symbols-rounded">add</span></button>
+            </header>
+
+            <div class="map-toggle-container">
+                <button id="view-list" class="toggle-btn active" onclick="shopManager.switchView('list')">List</button>
+                <button id="view-map" class="toggle-btn" onclick="shopManager.switchView('map')">Map</button>
+            </div>
+
+            <div id="shop-list" class="shop-list-container">
+                <!-- Shop Pills -->
+            </div>
+            <div id="shop-map-container" class="map-container hidden"></div>
+        </section>
+
+    </main>
+
+    <!-- MODALS -->
+    <!-- Brew Modal -->
+    <div id="brew-modal" class="modal">
+        <div class="modal-content glass-panel">
+            <span class="close" onclick="brewManager.closeModal()">&times;</span>
+            <h2>New Espresso</h2>
+            <form id="brew-form">
+                <input type="text" name="beanName" placeholder="Bean Name" required>
+                <input type="date" name="roastDate" placeholder="Roast Date">
+                <input type="text" name="grinder" placeholder="Grinder">
+                <input type="number" name="grindSize" placeholder="Grind Size" step="0.1">
+                <input type="number" name="rpm" placeholder="RPM" step="10">
+                <input type="number" name="temp" placeholder="Temperature (°C)" step="0.1">
+                <div class="row">
+                    <input type="number" name="doseIn" id="doseIn" placeholder="Dose In (g)" step="0.1" required>
+                    <input type="number" name="ratio" id="ratio" placeholder="Ratio (1:x)" step="0.1" required>
+                </div>
+                <div class="suggestion">Target Yield: <span id="target-yield">--</span> g</div>
+
+                <div class="toggle-group">
+                    <label class="switch">
+                        <input type="checkbox" name="preinfusion" id="preinfusion-check"
+                            onchange="toggleSection('preinfusion-details')">
+                        <span class="slider round"></span>
+                    </label>
+                    <span>Preinfusion?</span>
+                </div>
+                <div id="preinfusion-details" class="details-section hidden">
+                    <input type="number" name="piBar" placeholder="Pressure (Bar)">
+                    <input type="number" name="piWeight" placeholder="Weight (g)">
+                </div>
+
+                <div class="section-label">Peak Extraction</div>
+                <input type="number" name="peakBar" placeholder="Pressure (Bar)">
+                <input type="number" name="peakWeight" placeholder="Weight (g)">
+
+                <div class="toggle-group">
+                    <label class="switch">
+                        <input type="checkbox" name="tapering" id="tapering-check"
+                            onchange="toggleSection('tapering-details')">
+                        <span class="slider round"></span>
+                    </label>
+                    <span>Tapering?</span>
+                </div>
+                <div id="tapering-details" class="details-section hidden">
+                    <input type="number" name="tapBar" placeholder="Pressure (Bar)">
+                    <input type="number" name="tapWeight" placeholder="Weight (g)">
+                </div>
+
+                <div class="file-upload">
+                    <label for="curve-upload" class="upload-btn">
+                        <span class="material-symbols-rounded">upload</span> Extraction Curve (PNG)
+                    </label>
+                    <input type="file" id="curve-upload" accept="image/png">
+                </div>
+
+                <button type="submit" class="save-btn">Save Brew</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Drink Modal -->
+    <div id="drink-modal" class="modal">
+        <div class="modal-content glass-panel">
+            <span class="close" onclick="drinkManager.closeModal()">&times;</span>
+            <h2>New Recipe</h2>
+            <form id="drink-form">
+                <input type="text" name="drinkName" placeholder="Drink Name" required>
+                <textarea name="recipe" placeholder="Recipe Instructions..." rows="5"></textarea>
+                <!-- Image input handled technically differently or simplify for now -->
+                <button type="submit" class="save-btn">Save Recipe</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Shop Modal -->
+    <div id="shop-modal" class="modal">
+        <div class="modal-content glass-panel">
+            <span class="close" onclick="shopManager.closeModal()">&times;</span>
+            <h2>New Spot</h2>
+            <form id="shop-form">
+                <input type="text" name="shopName" placeholder="Shop Name" required>
+                <div class="row">
+                    <input type="text" name="location" id="shop-location" placeholder="City / Search">
+                    <button type="button" class="icon-btn" onclick="shopManager.getCurrentLocation()"><span
+                            class="material-symbols-rounded">my_location</span></button>
+                </div>
+                <textarea name="notes" placeholder="Notes..."></textarea>
+                <div class="rating-input">
+                    <label>Rating (1-5)</label>
+                    <input type="range" name="rating" min="1" max="5" value="5"
+                        oninput="document.getElementById('rating-val').innerText = this.value">
+                    <span id="rating-val">5</span>
+                </div>
+                <button type="submit" class="save-btn">Save Spot</button>
+            </form>
+        </div>
+    </div>
+
+
+    <script src="app.js?v=6"></script>
+</body>
+
+</html>
