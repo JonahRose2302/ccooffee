@@ -196,7 +196,14 @@ const brewManager = {
                 if (window.authManager) window.authManager.grantPoints(5); // +5 Points for Brew
             }
 
-            localStorage.setItem('coffee_brews', JSON.stringify(brewManager.brews));
+            if (window.authManager && window.authManager.currentUser) {
+                // Cloud Save
+                window.authManager.saveBrews(brewManager.brews);
+            } else {
+                // Local Save
+                localStorage.setItem('coffee_brews', JSON.stringify(brewManager.brews));
+            }
+
             brewManager.renderList();
             brewManager.closeModal();
             utils.vibrate([50, 50, 50]);
@@ -252,7 +259,13 @@ const brewManager = {
         e.stopPropagation();
         if (confirm('Delete this brew?')) {
             brewManager.brews = brewManager.brews.filter(b => b.id !== id);
-            localStorage.setItem('coffee_brews', JSON.stringify(brewManager.brews));
+
+            if (window.authManager && window.authManager.currentUser) {
+                window.authManager.saveBrews(brewManager.brews);
+            } else {
+                localStorage.setItem('coffee_brews', JSON.stringify(brewManager.brews));
+            }
+
             brewManager.renderList();
             utils.vibrate(50);
         }
@@ -377,7 +390,11 @@ const drinkManager = {
                 if (window.authManager) window.authManager.grantPoints(10); // +10 Points for Recipe
             }
 
-            localStorage.setItem('coffee_drinks', JSON.stringify(drinkManager.drinks));
+            if (window.authManager && window.authManager.currentUser) {
+                window.authManager.saveDrinks(drinkManager.drinks);
+            } else {
+                localStorage.setItem('coffee_drinks', JSON.stringify(drinkManager.drinks));
+            }
             drinkManager.renderList();
             drinkManager.closeModal();
         });
@@ -406,7 +423,13 @@ const drinkManager = {
         e.stopPropagation();
         if (confirm('Delete recipe?')) {
             drinkManager.drinks = drinkManager.drinks.filter(d => d.id !== id);
-            localStorage.setItem('coffee_drinks', JSON.stringify(drinkManager.drinks));
+
+            if (window.authManager && window.authManager.currentUser) {
+                window.authManager.saveDrinks(drinkManager.drinks);
+            } else {
+                localStorage.setItem('coffee_drinks', JSON.stringify(drinkManager.drinks));
+            }
+
             drinkManager.renderList();
         }
     },
@@ -523,7 +546,11 @@ const shopManager = {
                 if (window.authManager) window.authManager.grantPoints(20); // +20 Points for Shop
             }
 
-            localStorage.setItem('coffee_shops', JSON.stringify(shopManager.shops));
+            if (window.authManager && window.authManager.currentUser) {
+                window.authManager.saveShops(shopManager.shops);
+            } else {
+                localStorage.setItem('coffee_shops', JSON.stringify(shopManager.shops));
+            }
             shopManager.renderList();
             shopManager.renderMarkers();
             shopManager.closeModal();
@@ -563,7 +590,12 @@ const shopManager = {
         e.stopPropagation();
         if (confirm('Delete spot?')) {
             shopManager.shops = shopManager.shops.filter(s => s.id !== id);
-            localStorage.setItem('coffee_shops', JSON.stringify(shopManager.shops));
+
+            if (window.authManager && window.authManager.currentUser) {
+                window.authManager.saveShops(shopManager.shops);
+            } else {
+                localStorage.setItem('coffee_shops', JSON.stringify(shopManager.shops));
+            }
             shopManager.renderList();
             shopManager.renderMarkers();
         }
@@ -705,6 +737,37 @@ function toggleSection(id, show) {
         else el.classList.add('hidden');
     }
 }
+
+// Auth Data Sync Listeners
+window.addEventListener('auth-data-loaded', (e) => {
+    console.log('🔄 Syncing data from cloud...', e.detail);
+    const { brews, drinks, shops } = e.detail;
+
+    // Update Local State but DO NOT overwrite LocalStorage (keep it for guest fallback)
+    if (brews) brewManager.brews = brews;
+    if (drinks) drinkManager.drinks = drinks;
+    if (shops) shopManager.shops = shops;
+
+    // Re-render UI
+    brewManager.renderList();
+    drinkManager.renderList();
+    shopManager.renderList();
+    shopManager.renderMarkers();
+});
+
+window.addEventListener('auth-logout', () => {
+    console.log('🔄 Clearing user data, reverting to guest mode.');
+
+    // Revert to LocalStorage data
+    brewManager.brews = JSON.parse(localStorage.getItem('coffee_brews') || '[]');
+    drinkManager.drinks = JSON.parse(localStorage.getItem('coffee_drinks') || '[]');
+    shopManager.shops = JSON.parse(localStorage.getItem('coffee_shops') || '[]');
+
+    brewManager.renderList();
+    drinkManager.renderList();
+    shopManager.renderList();
+    shopManager.renderMarkers();
+});
 
 window.addEventListener('load', () => {
     // Scroll Animation Init

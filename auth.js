@@ -41,14 +41,30 @@ class AuthManager {
             if (user) {
                 console.log('✅ User logged in:', user.email);
                 await this.loadUserProfile(user.uid);
+
+                // 1. Try to migrate local data if cloud is empty
+                await this.migrateLocalStorageData();
+
+                // 2. Fetch latest data (either existing cloud data or just migrated)
+                const brews = await this.getBrews();
+                const drinks = await this.getDrinks();
+                const shops = await this.getShops();
+
+                // 3. Sync App
+                window.dispatchEvent(new CustomEvent('auth-data-loaded', {
+                    detail: { brews, drinks, shops }
+                }));
+
                 this.updateUI(true);
-                this.migrateLocalStorageData();
                 this.closeAuthModal(); // Auto-close modal on login
             } else {
                 console.log('❌ User logged out');
+
+                // Clear App Data
+                window.dispatchEvent(new CustomEvent('auth-logout'));
+
                 this.updateUI(false);
                 // Auto-open modal if not logged in
-                // Short delay ensures DOM and styles are ready without being noticeable on PC
                 setTimeout(() => {
                     if (!this.currentUser) this.showLoginModal();
                 }, 100);
