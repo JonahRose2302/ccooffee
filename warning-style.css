@@ -19,7 +19,7 @@
 
 /* Specific adjustment for the Home Page warning to pull it up */
 #home .guest-warning {
-    margin-top: -40px;
+    margin-top: 30px;
     margin-bottom: 30px;
 }
 
