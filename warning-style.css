@@ -1,0 +1,52 @@
+/* Guest Warning Box */
+.guest-warning {
+    width: 90%;
+    max-width: 600px;
+    margin: 20px auto;
+    /* Default consistent margin */
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(44, 18, 18, 0.6);
+    /* Reddish tint */
+    border: 1px solid rgba(231, 76, 60, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+/* Specific adjustment for the Home Page warning to pull it up */
+#home .guest-warning {
+    margin-top: -40px;
+    margin-bottom: 30px;
+}
+
+.guest-warning .material-symbols-rounded {
+    color: #e74c3c;
+    font-size: 28px;
+}
+
+.guest-warning p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.guest-warning strong {
+    color: #e74c3c;
+}
+
+@media (max-width: 768px) {
+    .guest-warning {
+        width: 95%;
+        padding: 14px;
+        margin: 15px auto;
+    }
+
+    #home .guest-warning {
+        margin-top: -20px;
+    }
+}

@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="style.css?v=7">
     <link rel="stylesheet" href="ui-fixes.css">
     <link rel="stylesheet" href="mobile-optimizations.css">
+    <link rel="stylesheet" href="warning-style.css">
     <link rel="stylesheet" href="auth-style.css">
 </head>
 
@@ -89,6 +90,13 @@
                 </div>
             </div>
 
+            <!-- Guest Mode Warning -->
+            <div id="guest-warning" class="guest-warning glass-panel hidden">
+                <span class="material-symbols-rounded">info</span>
+                <p><strong>Gast-Modus:</strong> Deine Einträge werden nur temporär auf diesem Gerät gespeichert. Melde
+                    dich an, um sie sicher zu synchronisieren.</p>
+            </div>
+
             <!-- Dashboard / Tile Navigation -->
             <div class="content-section">
                 <!-- Removed inner glass-panel to allow full bleed gradient blend -->
@@ -127,6 +135,12 @@
                 <button class="fab" onclick="brewManager.openAddModal()"><span
                         class="material-symbols-rounded">add</span></button>
             </header>
+
+            <!-- Guest Mode Warning -->
+            <div class="guest-warning glass-panel hidden">
+                <span class="material-symbols-rounded">info</span>
+                <p><strong>Gast-Modus:</strong> Deine Einträge werden nur temporär gespeichert.</p>
+            </div>
             <div id="brew-list" class="brew-list-container">
                 <!-- Pills will be injected here -->
             </div>
@@ -139,6 +153,12 @@
                 <button class="fab" onclick="drinkManager.openAddModal()"><span
                         class="material-symbols-rounded">add</span></button>
             </header>
+
+            <!-- Guest Mode Warning -->
+            <div class="guest-warning glass-panel hidden">
+                <span class="material-symbols-rounded">info</span>
+                <p><strong>Gast-Modus:</strong> Deine Einträge werden nur temporär gespeichert.</p>
+            </div>
             <div id="drink-list" class="grid-list-container">
                 <!-- Pills will be injected here -->
             </div>
@@ -188,6 +208,12 @@
                 <button class="fab" onclick="shopManager.openAddModal()"><span
                         class="material-symbols-rounded">add</span></button>
             </header>
+
+            <!-- Guest Mode Warning -->
+            <div class="guest-warning glass-panel hidden">
+                <span class="material-symbols-rounded">info</span>
+                <p><strong>Gast-Modus:</strong> Deine Einträge werden nur temporär gespeichert.</p>
+            </div>
 
             <div class="map-toggle-container">
                 <button id="view-list" class="toggle-btn active" onclick="shopManager.switchView('list')">List</button>

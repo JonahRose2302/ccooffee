@@ -66,7 +66,10 @@ class AuthManager {
                 this.updateUI(false);
                 // Auto-open modal if not logged in
                 setTimeout(() => {
-                    if (!this.currentUser) this.showLoginModal();
+                    if (!this.currentUser) {
+                        this.showLoginModal();
+                        document.querySelectorAll('.guest-warning').forEach(el => el.classList.remove('hidden'));
+                    }
                 }, 100);
             }
         });
@@ -425,10 +428,16 @@ class AuthManager {
             // Get initials for avatar
             const initials = displayName.substring(0, 2).toUpperCase();
             document.getElementById('user-avatar-text').textContent = initials;
+
+            // Hide ALL guest warnings
+            document.querySelectorAll('.guest-warning').forEach(el => el.classList.add('hidden'));
         } else {
             // Show login button
             userProfile.classList.add('hidden');
             loginBtn.classList.remove('hidden');
+
+            // Show ALL guest warnings
+            document.querySelectorAll('.guest-warning').forEach(el => el.classList.remove('hidden'));
         }
     }
 
@@ -453,9 +462,9 @@ class AuthManager {
 
                 if (!hasData) {
                     // Get data from localStorage
-                    const brews = JSON.parse(localStorage.getItem('brews') || '[]');
-                    const drinks = JSON.parse(localStorage.getItem('drinks') || '[]');
-                    const shops = JSON.parse(localStorage.getItem('shops') || '[]');
+                    const brews = JSON.parse(localStorage.getItem('coffee_brews') || '[]');
+                    const drinks = JSON.parse(localStorage.getItem('coffee_drinks') || '[]');
+                    const shops = JSON.parse(localStorage.getItem('coffee_shops') || '[]');
 
                     if (brews.length > 0 || drinks.length > 0 || shops.length > 0) {
                         // Migrate to Firestore
@@ -466,6 +475,11 @@ class AuthManager {
                             points: 0 // Initialize points
                         });
                         console.log('📦 Migrated localStorage data to Firestore');
+
+                        // Clear Local Data for Strict Separation
+                        localStorage.removeItem('coffee_brews');
+                        localStorage.removeItem('coffee_drinks');
+                        localStorage.removeItem('coffee_shops');
                     }
                 }
             }
