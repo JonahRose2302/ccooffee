@@ -755,7 +755,7 @@ window.addEventListener('load', () => {
     setTimeout(() => {
         animationEngine.enableMagnetic('.tile', 0.3);
         animationEngine.enableMagnetic('.nav-btn', 0.25);
-        animationEngine.enableMagnetic('.glass-nav', 0.15);
+        // Removed glass-nav magnetic effect to prevent shifting
         animationEngine.enableMagnetic('.toggle-btn', 0.2);
         animationEngine.revealElements('.tile', 0.1);
     }, 100);
