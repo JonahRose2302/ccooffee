@@ -13,11 +13,115 @@ const utils = {
     uuid: () => Date.now().toString(36) + Math.random().toString(36).substr(2),
 };
 
+/* === REVOLUTIONARY ANIMATION ENGINE === */
+const animationEngine = {
+    // Magnetic hover effect - elements are attracted to cursor
+    enableMagnetic: (selector, strength = 0.25) => {
+        document.querySelectorAll(selector).forEach(el => {
+            el.addEventListener('mousemove', (e) => {
+                const rect = el.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const deltaX = (e.clientX - centerX) * strength;
+                const deltaY = (e.clientY - centerY) * strength;
+
+                gsap.to(el, {
+                    x: deltaX,
+                    y: deltaY,
+                    duration: 0.3,
+                    ease: "power2.out"
+                });
+            });
+
+            el.addEventListener('mouseleave', () => {
+                gsap.to(el, {
+                    x: 0,
+                    y: 0,
+                    duration: 0.5,
+                    ease: "elastic.out(1, 0.3)"
+                });
+            });
+        });
+    },
+
+    // Staggered reveal for lists/grids
+    revealElements: (selector, delay = 0.08) => {
+        const elements = document.querySelectorAll(selector);
+        gsap.from(elements, {
+            opacity: 0,
+            y: 50,
+            scale: 0.9,
+            stagger: delay,
+            duration: 0.6,
+            ease: "power3.out",
+            clearProps: "all"
+        });
+    },
+
+    // Ripple effect on click
+    createRipple: (element, event) => {
+        const ripple = document.createElement('span');
+        const rect = element.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = event.clientX - rect.left - size / 2;
+        const y = event.clientY - rect.top - size / 2;
+
+        ripple.style.cssText = `
+            position: absolute;
+            width: ${size}px;
+            height: ${size}px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(244,196,48,0.4) 0%, transparent 70%);
+            top: ${y}px;
+            left: ${x}px;
+            pointer-events: none;
+            transform: scale(0);
+        `;
+
+        element.style.position = 'relative';
+        element.style.overflow = 'hidden';
+        element.appendChild(ripple);
+
+        gsap.to(ripple, {
+            scale: 2,
+            opacity: 0,
+            duration: 0.6,
+            ease: "power2.out",
+            onComplete: () => ripple.remove()
+        });
+    },
+
+    // Enhanced page transition
+    transitionPage: () => {
+        const activePage = document.querySelector('.page.active');
+        if (activePage) {
+            gsap.fromTo(activePage,
+                {
+                    opacity: 0,
+                    y: 30,
+                    scale: 0.98
+                },
+                {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    duration: 0.6,
+                    ease: "power3.out",
+                    clearProps: "all"
+                }
+            );
+        }
+    }
+};
+
 /* --- ROUTER --- */
 const router = {
     navigate: (pageId) => {
         document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
+
+        // Trigger page transition animation
+        animationEngine.transitionPage();
 
         // Handle Nav Visibility
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-nav'));
@@ -534,28 +638,47 @@ const shopManager = {
     }
 };
 
-/* --- MOUSE FOLLOWER --- */
+/* === ENHANCED MAGNETIC CURSOR === */
 const cursorFollower = {
     el: document.getElementById('cursor-follower'),
     init: () => {
         if (matchMedia('(hover: hover)').matches) {
             cursorFollower.el.style.display = 'block';
+
+            // Smooth cursor movement
             document.addEventListener('mousemove', (e) => {
                 gsap.to(cursorFollower.el, {
                     x: e.clientX,
                     y: e.clientY,
-                    duration: 0.1,
+                    duration: 0.2,
                     ease: "power2.out"
                 });
             });
-            document.querySelectorAll('a, button, .tile, .brew-header, input, .nav-btn, .action-btn').forEach(el => {
-                el.addEventListener('mouseenter', () => cursorFollower.grow());
-                el.addEventListener('mouseleave', () => cursorFollower.shrink());
+
+            // Click ripple effect
+            document.addEventListener('mousedown', () => {
+                cursorFollower.el.classList.add('clicking');
+                setTimeout(() => cursorFollower.el.classList.remove('clicking'), 600);
+            });
+
+            // Interactive elements: grow cursor
+            document.querySelectorAll('a, button, .tile, .brew-header, input, .nav-btn, .action-btn, .toggle-btn').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursorFollower.el.classList.add('active');
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursorFollower.el.classList.remove('active');
+                });
+
+                // Add ripple on click
+                el.addEventListener('click', (e) => {
+                    if (el.classList.contains('tile') || el.classList.contains('nav-btn') || el.classList.contains('action-btn')) {
+                        animationEngine.createRipple(el, e);
+                    }
+                });
             });
         }
-    },
-    grow: () => gsap.to(cursorFollower.el, { width: 150, height: 150, backgroundColor: 'rgba(255,255,255,0.08)', duration: 0.2 }),
-    shrink: () => gsap.to(cursorFollower.el, { width: 120, height: 120, backgroundColor: 'rgba(255,255,255,0.03)', duration: 0.2 })
+    }
 };
 
 /* --- INIT --- */
@@ -627,4 +750,86 @@ window.addEventListener('load', () => {
     drinkManager.init();
     shopManager.init();
     cursorFollower.init();
+
+    // Enable magnetic effects on tiles and navigation
+    setTimeout(() => {
+        animationEngine.enableMagnetic('.tile', 0.3);
+        animationEngine.enableMagnetic('.nav-btn', 0.25);
+        animationEngine.enableMagnetic('.glass-nav', 0.15);
+        animationEngine.enableMagnetic('.toggle-btn', 0.2);
+        animationEngine.revealElements('.tile', 0.1);
+    }, 100);
+
+    // Interactive Brand Logo
+    const brandLogo = document.querySelector('.brand-logo');
+    if (brandLogo) {
+        // Split text into individual letters for magnetic effect
+        const text = brandLogo.textContent;
+        brandLogo.innerHTML = text.split('').map(char =>
+            `<span style="display:inline-block; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">${char}</span>`
+        ).join('');
+
+        const letters = brandLogo.querySelectorAll('span');
+
+        // Magnetic effect on each letter
+        brandLogo.addEventListener('mousemove', (e) => {
+            const rect = brandLogo.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+
+            letters.forEach((letter, index) => {
+                const letterRect = letter.getBoundingClientRect();
+                const letterX = letterRect.left - rect.left + letterRect.width / 2;
+                const distance = Math.abs(x - letterX);
+                const maxDistance = 100;
+
+                if (distance < maxDistance) {
+                    const force = 1 - (distance / maxDistance);
+                    const moveY = -force * 15;
+                    const scale = 1 + force * 0.3;
+                    letter.style.transform = `translateY(${moveY}px) scale(${scale})`;
+                    letter.style.color = `rgba(244, 196, 48, ${0.8 + force * 0.2})`;
+                } else {
+                    letter.style.transform = 'translateY(0) scale(1)';
+                    letter.style.color = '';
+                }
+            });
+        });
+
+        brandLogo.addEventListener('mouseleave', () => {
+            letters.forEach(letter => {
+                letter.style.transform = 'translateY(0) scale(1)';
+                letter.style.color = '';
+            });
+        });
+
+        // Click explosion effect
+        brandLogo.addEventListener('click', () => {
+            letters.forEach((letter, index) => {
+                const angle = (index / letters.length) * Math.PI * 2;
+                const distance = 80;
+                const x = Math.cos(angle) * distance;
+                const y = Math.sin(angle) * distance;
+
+                gsap.to(letter, {
+                    x: x,
+                    y: y,
+                    rotation: Math.random() * 360,
+                    opacity: 0,
+                    duration: 0.6,
+                    ease: "power2.out",
+                    onComplete: () => {
+                        gsap.to(letter, {
+                            x: 0,
+                            y: 0,
+                            rotation: 0,
+                            opacity: 1,
+                            duration: 0.5,
+                            ease: "elastic.out(1, 0.5)"
+                        });
+                    }
+                });
+            });
+            utils.vibrate([50, 30, 50]);
+        });
+    }
 });

@@ -1,0 +1,193 @@
+/* === COMPREHENSIVE UI FIXES === */
+
+/* 1. Enhanced Save/Submit Buttons */
+button[type="submit"],
+.save-btn {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    border: 2px solid var(--color-gold-medium);
+    color: var(--color-cream);
+    padding: 16px 32px;
+    border-radius: 16px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-overshoot);
+    box-shadow: var(--shadow-md), var(--glow-gold);
+    text-transform: uppercase;
+    will-change: transform;
+}
+
+button[type="submit"]:hover,
+.save-btn:hover {
+    transform: scale(1.05) translateY(-2px);
+    border-color: var(--color-gold-bright);
+    box-shadow: var(--shadow-lg), var(--glow-gold-strong);
+    background: var(--glass-bg-strong);
+}
+
+button[type="submit]:active,
+ .save-btn:active {
+    transform: scale(0.98);
+}
+
+/* 2. Enhanced Toggle Buttons with Active State */
+.toggle-btn {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-cream-dark);
+    padding: 10px 24px;
+    border-radius: 9999px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-weight: 500;
+    transition: all var(--duration-fast) var(--ease-overshoot);
+}
+
+.toggle-btn.active {
+    background: var(--color-gold-medium);
+    color: var(--color-espresso-dark);
+    border-color: var(--color-gold-bright);
+    font-weight: 700;
+    box-shadow: var(--glow-gold);
+    transform: scale(1.05);
+}
+
+.toggle-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--color-cream);
+    transform: scale(1.02);
+}
+
+/* 3. Dial-In Page - Force Monospace for all text */
+#dial-in * {
+    font-family: var(--font-body) !important;
+}
+
+#dial-in h3 {
+    font-family: var(--font-heading) !important;
+}
+
+/* 4. Checkbox Styling with Better Layout */
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--color-gold-medium);
+    margin-right: 8px;
+}
+
+label[for="preinfusion-check"],
+label[for="tapering-check"] {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    color: var(--color-cream);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background var(--duration-fast);
+}
+
+label[for="preinfusion-check"]:hover,
+label[for="tapering-check"]:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* 5. File Upload Button Styling */
+input[type="file"] {
+    display: none;
+}
+
+input[type="file"]+label,
+.file-upload-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 2px solid var(--color-gold-medium);
+    color: var(--color-cream);
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-overshoot);
+    box-shadow: var(--shadow-sm);
+}
+
+input[type="file"]+label:hover,
+.file-upload-label:hover {
+    transform: scale(1.03);
+    border-color: var(--color-gold-bright);
+    box-shadow: var(--shadow-md), var(--glow-gold);
+}
+
+/* 6. Add Tile Buttons with Glass Effect */
+.add-tile,
+.tile.add-btn {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    border: 2px dashed var(--color-gold-medium);
+    opacity: 0.8;
+}
+
+.add-tile:hover,
+.tile.add-btn:hover {
+    opacity: 1;
+    border-style: solid;
+    background: var(--glass-bg-strong);
+}
+
+/* 7. Modal Close Button (X) Enhancement */
+.modal h2+button,
+.close-modal-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: var(--color-cream);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-overshoot);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+}
+
+.modal h2+button:hover,
+.close-modal-btn:hover {
+    transform: scale(1.1) rotate(90deg);
+    border-color: var(--color-gold-medium);
+    background: rgba(255, 50, 50, 0.2);
+    box-shadow: var(--shadow-md);
+}
+
+/* 8. Image Preview in Pills */
+.brew-image-preview {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 16px;
+    margin-top: 12px;
+    border: 2px solid var(--glass-border);
+}
