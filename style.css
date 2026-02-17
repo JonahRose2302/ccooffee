@@ -1493,33 +1493,58 @@ body {
 }
 
 /* MOBILE PERFORMANCE FIXES */
-@media (max-width: 900px) {
+@media (max-width: 768px) {
+
+    /* Center brand logo on mobile */
     .brand-logo {
         position: fixed !important;
         top: 15px !important;
         left: 50% !important;
         right: auto !important;
         transform: translateX(-50%) !important;
-        font-size: 2.2rem !important;
+        font-size: 2.5rem !important;
         z-index: 10000 !important;
-        animation: none !important;
     }
+
+    /* Fix navigation centering */
     .glass-nav {
         top: 70px !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
+        width: auto !important;
+        padding: 10px 24px !important;
     }
-    * {
-        backdrop-filter: blur(6px) !important;
-        -webkit-backdrop-filter: blur(6px) !important;
+
+    /* Slightly reduce blur for better performance */
+    .glass-nav,
+    .modal>div,
+    .brew-pill {
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
     }
+
+    /* Adjust spacing */
     h1 {
         margin-top: 8rem !important;
     }
+
     .page {
         padding-top: 140px !important;
     }
-    #video-canvas {
-        display: none !important;
+}
+
+@media (max-width: 480px) {
+    .brand-logo {
+        font-size: 2rem !important;
+    }
+
+    .glass-nav {
+        padding: 8px 20px !important;
+        gap: 18px !important;
+        justify-content: center !important;
+    }
+
+    .nav-btn {
+        padding: 12px !important;
     }
 }
