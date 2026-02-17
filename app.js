@@ -471,13 +471,7 @@ const shopManager = {
 
     init: () => {
         shopManager.renderList();
-
-        shopManager.map = L.map('shop-map-container').setView([51.1657, 10.4515], 6);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(shopManager.map);
-
-        shopManager.renderMarkers();
+        // Map is initialized lazily when switching to map view
 
         document.getElementById('shop-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -494,7 +488,7 @@ const shopManager = {
             // Check if input looks like "lat,lng" (basic validation)
             const isCoords = /^-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?$/.test(inputLoc);
 
-            if (!isCoords && inputLoc.trim().length > 0) {
+            if (!isCoords && inputLoc.trim() !== '') {
                 try {
                     const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(inputLoc)}`);
                     const data = await response.json();
@@ -546,6 +540,7 @@ const shopManager = {
         const m = document.getElementById('shop-modal');
         m.classList.remove('hidden'); void m.offsetWidth; m.classList.add('visible');
     },
+
     edit: (id, e) => {
         e.stopPropagation();
         const shop = shopManager.shops.find(s => s.id === id);
@@ -562,6 +557,7 @@ const shopManager = {
         const m = document.getElementById('shop-modal');
         m.classList.remove('hidden'); void m.offsetWidth; m.classList.add('visible');
     },
+
     delete: (id, e) => {
         e.stopPropagation();
         if (confirm('Delete spot?')) {
@@ -571,6 +567,7 @@ const shopManager = {
             shopManager.renderMarkers();
         }
     },
+
     closeModal: () => {
         const m = document.getElementById('shop-modal');
         m.classList.remove('visible'); setTimeout(() => m.classList.add('hidden'), 300);
@@ -583,6 +580,16 @@ const shopManager = {
         if (view === 'map') {
             document.getElementById('shop-list').classList.add('hidden');
             document.getElementById('shop-map-container').classList.remove('hidden');
+
+            // Lazy Init Map
+            if (!shopManager.map) {
+                shopManager.map = L.map('shop-map-container').setView([51.1657, 10.4515], 6);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(shopManager.map);
+                shopManager.renderMarkers();
+            }
+
             setTimeout(() => shopManager.map.invalidateSize(), 100);
         } else {
             document.getElementById('shop-list').classList.remove('hidden');
@@ -632,9 +639,11 @@ const shopManager = {
             if (s.location && s.location.includes(',')) {
                 const [lat, lng] = s.location.split(',').map(Number);
                 if (!isNaN(lat) && !isNaN(lng)) {
-                    const m = L.marker([lat, lng]).addTo(shopManager.map)
-                        .bindPopup(s.shopName);
-                    shopManager.markers.push(m);
+                    if (shopManager.map) {
+                        const m = L.marker([lat, lng]).addTo(shopManager.map)
+                            .bindPopup(s.shopName);
+                        shopManager.markers.push(m);
+                    }
                 }
             }
         });

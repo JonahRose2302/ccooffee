@@ -1545,7 +1545,7 @@ body {
     }
 }
 
-/* MOBILE PERFORMANCE FIXES */
+/* MOBILE PERFORMANCE & UI FIXES */
 @media (max-width: 768px) {
 
     /* Remove tap highlight on mobile */
@@ -1554,7 +1554,7 @@ body {
         -webkit-touch-callout: none;
     }
 
-    /* DISABLE ALL ANIMATIONS ON MOBILE */
+    /* DISABLE ALL ANIMATIONS ON MOBILE (Except critical ones) */
     *,
     *::before,
     *::after {
@@ -1575,7 +1575,7 @@ body {
     /* Show content section at top */
     .content-section {
         margin-top: 0 !important;
-        padding-top: 20px !important;
+        padding-top: 80px !important;
     }
 
     /* Make tiles instantly visible */
@@ -1584,7 +1584,7 @@ body {
         transform: none !important;
     }
 
-    /* Center brand logo on mobile */
+    /* Center brand logo on mobile & Add readable background */
     .brand-logo {
         position: fixed !important;
         top: 15px !important;
@@ -1592,34 +1592,63 @@ body {
         right: auto !important;
         transform: translateX(-50%) !important;
         font-size: 2.5rem !important;
-        z-index: 10000 !important;
+        z-index: 10010 !important;
+        /* Highest priority */
+        background: rgba(10, 5, 2, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 5px 20px;
+        border-radius: 999px;
+        border: 1px solid rgba(244, 196, 48, 0.2);
+        width: max-content;
     }
 
     /* Fix navigation centering */
     .glass-nav {
-        top: 70px !important;
+        top: 80px !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
-        width: auto !important;
+        width: 90% !important;
+        max-width: 400px;
         padding: 10px 24px !important;
+        justify-content: space-around;
+        z-index: 9999 !important;
     }
 
-    /* Slightly reduce blur for better performance */
+    /* Reduce blur for performance */
     .glass-nav,
     .modal>div,
     .brew-pill {
-        backdrop-filter: blur(12px) !important;
-        -webkit-backdrop-filter: blur(12px) !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
     }
 
-    /* Headings instantly visible */
+    /* Headings instantly visible & larger */
     h1 {
-        margin-top: 8rem !important;
+        margin-top: 3rem !important;
+        font-size: 3.5rem !important;
+        /* Larger headings */
         opacity: 1 !important;
         transform: none !important;
+        text-align: center;
     }
 
-    /* Remove hover states that cause highlight */
+    /* Fix User Profile Z-Index Breakdown */
+    .user-profile {
+        z-index: 10011 !important;
+        /* Higher than brand logo */
+        top: 15px !important;
+        left: 15px !important;
+    }
+
+    /* Login button position fix */
+    .login-btn {
+        z-index: 10011 !important;
+        top: 15px !important;
+        left: 15px !important;
+    }
+
+    /* Remove hover states */
     .brew-header:hover,
     .action-btn:hover,
     .nav-btn:hover {
@@ -1628,9 +1657,60 @@ body {
 
     /* Adjust spacing */
     .page {
-        padding-top: 140px !important;
+        padding-top: 160px !important;
     }
 }
+
+/* === GLOWING DIAL-IN THEME (MOLTEN GOLD) === */
+#dialin.epic-page {
+    background: radial-gradient(circle at top, #2a1a0a, #000) !important;
+}
+
+#dialin .epic-header h1 {
+    background: linear-gradient(180deg, #fff, #FFD700, #FF4500);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+    filter: drop-shadow(0 0 10px rgba(255, 69, 0, 0.4));
+    font-size: 4rem;
+}
+
+#dialin .glass-panel-dark {
+    background: rgba(30, 20, 10, 0.7);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 40px rgba(255, 140, 0, 0.2), inset 0 0 20px rgba(255, 215, 0, 0.1);
+}
+
+#dialin input {
+    border-color: rgba(255, 140, 0, 0.4);
+    background: rgba(20, 10, 5, 0.6);
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+#dialin input:focus {
+    border-color: #FFD700;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+#dialin .calculate-btn {
+    background: linear-gradient(135deg, #FFD700, #FF8C00);
+    color: #1a0b00;
+    /* Dark text for contrast */
+    font-weight: 800;
+    box-shadow: 0 0 30px rgba(255, 140, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#dialin .calculate-btn:hover {
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.8);
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #ffe033, #ffae00);
+}
+
 
 @media (max-width: 480px) {
     .brand-logo {
