@@ -1523,11 +1523,28 @@ body {
         -webkit-backdrop-filter: blur(12px) !important;
     }
 
-    /* Adjust spacing */
+    /* DISABLE ANIMATIONS ON MOBILE */
     h1 {
         margin-top: 8rem !important;
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
     }
 
+    /* INSTANT PILL TRANSITIONS */
+    .brew-pill {
+        transition: none !important;
+    }
+
+    .brew-pill.expanded {
+        transition: none !important;
+    }
+
+    .brew-details {
+        transition: none !important;
+    }
+
+    /* Adjust spacing */
     .page {
         padding-top: 140px !important;
     }
