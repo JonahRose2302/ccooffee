@@ -148,6 +148,7 @@ const router = {
             window.scrollTo(0, 0);
         }
 
+        updateLoginBtnState();
         utils.vibrate(20);
     }
 };
@@ -845,3 +846,25 @@ window.addEventListener('load', () => {
         });
     }
 });
+// Responsive Login Button
+function updateLoginBtnState() {
+    const loginBtn = document.getElementById('login-btn');
+    if (!loginBtn) return;
+
+    const activePage = document.querySelector('.page.active');
+    const isHome = activePage && activePage.id === 'home';
+    const isAtTop = window.scrollY < 50;
+
+    if (isHome && isAtTop) {
+        loginBtn.classList.remove('minimized');
+    } else {
+        loginBtn.classList.add('minimized');
+    }
+}
+
+window.addEventListener('scroll', () => {
+    requestAnimationFrame(updateLoginBtnState);
+});
+
+// Initial check
+document.addEventListener('DOMContentLoaded', updateLoginBtnState);

@@ -144,8 +144,38 @@
 }
 
 .login-btn .material-symbols-rounded {
-    font-size: 18px;
     color: var(--color-gold-medium);
+}
+
+/* Minimized Login Button (Scroll/Non-Home) */
+.login-btn.minimized {
+    padding: 0;
+    width: 44px;
+    height: 44px;
+    justify-content: center;
+    border-radius: 50%;
+    gap: 0;
+}
+
+.login-btn.minimized::after {
+    content: '';
+    /* Hide text content accessibly if needed, but here we rely on width/overflow */
+    display: none;
+}
+
+.login-btn.minimized span {
+    /* Ensure icon is centered */
+    margin: 0;
+}
+
+/* Hide text node in minimized state */
+.login-btn.minimized {
+    font-size: 0;
+}
+
+.login-btn.minimized .material-symbols-rounded {
+    font-size: 24px;
+    /* Slightly larger icon */
 }
 
 /* Mobile adjustments */
