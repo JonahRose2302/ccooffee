@@ -1378,6 +1378,58 @@ input[type="file"]+*:hover {
     }
 }
 
+/* === GOOGLE AUTH === */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+    color: rgba(244, 196, 48, 0.4);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(244, 196, 48, 0.2);
+}
+
+.auth-divider span {
+    padding: 0 10px;
+}
+
+.google-btn {
+    width: 100%;
+    background: white;
+    color: #444;
+    border: none;
+    border-radius: 16px;
+    padding: 12px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-smooth);
+    margin-bottom: 20px;
+}
+
+.google-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+.google-btn:hover {
+    background: #f1f1f1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
 /* === LOCATION BUTTON === */
 button[onclick*="getLocation"],
 .location-btn {
@@ -1587,5 +1639,236 @@ body {
 
     .nav-btn {
         padding: 12px !important;
+    }
+}
+
+/* === AUTHENTICATION UI === */
+/* Login/Signup Button */
+.login-btn {
+    position: fixed;
+    top: 24px;
+    left: 40px;
+    background: rgba(42, 26, 10, 0.7);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 2px solid rgba(244, 196, 48, 0.3);
+    border-radius: 50px;
+    padding: 12px 24px;
+    color: var(--color-cream);
+    font-family: var(--font-body);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 9997;
+    transition: all var(--duration-normal) var(--ease-overshoot);
+    box-shadow: var(--shadow-md);
+}
+
+.login-btn:hover {
+    background: rgba(42, 26, 10, 0.85);
+    border-color: var(--color-gold-bright);
+    box-shadow: var(--shadow-lg), var(--glow-gold);
+    transform: scale(1.05);
+}
+
+.login-btn span {
+    font-size: 20px;
+}
+
+/* User Profile */
+.user-profile {
+    position: fixed;
+    top: 24px;
+    left: 40px;
+    z-index: 9997;
+}
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-gold-bright), var(--color-gold-medium));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-espresso-dark);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-overshoot);
+    border: 2px solid var(--color-gold-bright);
+    box-shadow: var(--shadow-md), var(--glow-gold);
+}
+
+.user-avatar:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: var(--shadow-lg), var(--glow-gold-strong);
+}
+
+/* Profile Dropdown */
+.profile-dropdown {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    min-width: 250px;
+    background: rgba(42, 26, 10, 0.95);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 2px solid rgba(244, 196, 48, 0.3);
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: var(--shadow-lg), 0 0 30px rgba(244, 196, 48, 0.2);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all var(--duration-fast) var(--ease-overshoot);
+    pointer-events: none;
+}
+
+.profile-dropdown:not(.hidden) {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.profile-info {
+    margin-bottom: 12px;
+}
+
+.profile-name {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--color-gold-bright);
+    margin-bottom: 4px;
+}
+
+.profile-email {
+    font-size: 0.85rem;
+    color: var(--color-cream-dark);
+    opacity: 0.8;
+}
+
+.profile-divider {
+    height: 1px;
+    background: rgba(244, 196, 48, 0.2);
+    margin: 12px 0;
+}
+
+.profile-menu-item {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--color-cream);
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all var(--duration-fast);
+}
+
+.profile-menu-item:hover {
+    background: rgba(244, 196, 48, 0.1);
+    color: var(--color-gold-bright);
+}
+
+.profile-menu-item span {
+    font-size: 20px;
+}
+
+/* Auth Modal Specific Styles */
+#auth-modal .modal-content {
+    max-width: 400px;
+    border-radius: 32px;
+}
+
+#auth-modal h2 {
+    text-align: center;
+    color: var(--color-gold-bright);
+    margin-bottom: 24px;
+}
+
+#auth-modal input {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(244, 196, 48, 0.2);
+    color: var(--color-cream);
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-family: var(--font-body);
+    transition: all var(--duration-fast);
+}
+
+#auth-modal input:focus {
+    outline: none;
+    border-color: var(--color-gold-medium);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 15px rgba(244, 196, 48, 0.2);
+}
+
+.auth-error {
+    color: #ff6b6b;
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+    text-align: center;
+    min-height: 20px;
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 0.9rem;
+    color: var(--color-cream-dark);
+}
+
+.link-btn {
+    background: transparent;
+    border: none;
+    color: var(--color-gold-bright);
+    font-family: var(--font-body);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: 6px;
+    transition: color var(--duration-fast);
+}
+
+.link-btn:hover {
+    color: var(--color-gold-medium);
+}
+
+/* Mobile Responsiveness for Auth UI */
+@media (max-width: 768px) {
+
+    .login-btn,
+    .user-profile {
+        left: 20px;
+        top: 90px;
+    }
+
+    .user-avatar {
+        width: 44px;
+        height: 44px;
+        font-size: 1rem;
+    }
+
+    .profile-dropdown {
+        min-width: 220px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-btn {
+        padding: 10px 18px;
+        font-size: 0.9rem;
+    }
+
+    .login-btn span {
+        font-size: 18px;
     }
 }
