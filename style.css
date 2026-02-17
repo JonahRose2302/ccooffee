@@ -1501,6 +1501,17 @@ body {
         -webkit-touch-callout: none;
     }
 
+    /* HIDE CANVAS ANIMATION ON MOBILE */
+    .v-container {
+        display: none !important;
+    }
+
+    /* Show content section at top */
+    .content-section {
+        margin-top: 0 !important;
+        padding-top: 20px !important;
+    }
+
     /* Center brand logo on mobile */
     .brand-logo {
         position: fixed !important;
