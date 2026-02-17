@@ -1495,6 +1495,12 @@ body {
 /* MOBILE PERFORMANCE FIXES */
 @media (max-width: 768px) {
 
+    /* Remove tap highlight on mobile */
+    * {
+        -webkit-tap-highlight-color: transparent !important;
+        -webkit-touch-callout: none;
+    }
+
     /* Center brand logo on mobile */
     .brand-logo {
         position: fixed !important;
@@ -1542,6 +1548,13 @@ body {
 
     .brew-details {
         transition: none !important;
+    }
+
+    /* Remove hover states that cause highlight */
+    .brew-header:hover,
+    .action-btn:hover,
+    .nav-btn:hover {
+        background: transparent !important;
     }
 
     /* Adjust spacing */
