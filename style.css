@@ -849,6 +849,7 @@ input:focus {
 .epic-header h1 {
     text-align: center;
     background: linear-gradient(45deg, #FFD700, #DAA520);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     padding-bottom: 20px;
@@ -1226,7 +1227,7 @@ input[type="file"]+*:hover {
 
 .modal.visible {
     opacity: 1;
-    pointer-events: all;
+    pointer-events: auto;
 }
 
 .modal>div {
@@ -1561,6 +1562,11 @@ body {
         transition: none !important;
     }
 
+    /* Restore nav transitions for sticky feel */
+    .glass-nav {
+        transition: all var(--duration-normal) var(--ease-butter) !important;
+    }
+
     /* HIDE CANVAS ANIMATION ON MOBILE */
     .v-container {
         display: none !important;
@@ -1682,7 +1688,7 @@ body {
     position: fixed;
     top: 24px;
     left: 40px;
-    z-index: 9997;
+    z-index: 10002;
 }
 
 .user-avatar {
@@ -1749,6 +1755,16 @@ body {
     font-size: 0.85rem;
     color: var(--color-cream-dark);
     opacity: 0.8;
+}
+
+.profile-points {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--color-gold-bright);
+    margin-top: 12px;
+    text-shadow: 0 0 10px rgba(244, 196, 48, 0.4);
+    letter-spacing: 0.5px;
 }
 
 .profile-divider {

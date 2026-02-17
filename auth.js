@@ -30,8 +30,12 @@ class AuthManager {
         } else {
             this.bindEvents();
         }
+    }
 
-        // Listen to auth state changes
+    bindEvents() {
+        console.log('🔗 Binding Auth Events...');
+
+        // Listen to auth state changes (Moved here to ensure DOM is ready)
         onAuthStateChanged(auth, async (user) => {
             this.currentUser = user;
             if (user) {
@@ -39,15 +43,17 @@ class AuthManager {
                 await this.loadUserProfile(user.uid);
                 this.updateUI(true);
                 this.migrateLocalStorageData();
+                this.closeAuthModal(); // Auto-close modal on login
             } else {
                 console.log('❌ User logged out');
                 this.updateUI(false);
+                // Auto-open modal if not logged in
+                // Short delay ensures DOM and styles are ready without being noticeable on PC
+                setTimeout(() => {
+                    if (!this.currentUser) this.showLoginModal();
+                }, 100);
             }
         });
-    }
-
-    bindEvents() {
-        console.log('🔗 Binding Auth Events...');
 
         // Helper to safely add listener
         const addListener = (id, event, handler) => {
@@ -338,9 +344,51 @@ class AuthManager {
                 if (userData.displayName && this.currentUser) {
                     document.getElementById('user-display-name').textContent = userData.displayName;
                 }
+                // Update points
+                const points = userData.points || 0;
+                document.getElementById('user-points').textContent = `ccooffee points: ${points}`;
             }
         } catch (error) {
             console.error('Error loading user profile:', error);
+        }
+    }
+
+    // Grant points to user
+    async grantPoints(amount) {
+        if (!this.currentUser) return;
+        try {
+            const userRef = doc(db, 'users', this.currentUser.uid);
+            // Use Firestore increment for atomic updates
+            // We need to import increment first, but to keep it simple with current imports, 
+            // we will read-modify-write or use simple update if we assume single client.
+            // Better to standard read-write for now to avoid import issues if not available in current block.
+            // Actually, let's just use the current data since we load it.
+
+            // Re-fetch to be safe
+            const userDoc = await getDoc(userRef);
+            let currentPoints = 0;
+            if (userDoc.exists()) {
+                currentPoints = userDoc.data().points || 0;
+            }
+
+            const newPoints = currentPoints + amount;
+            await updateDoc(userRef, { points: newPoints });
+
+            // Update UI
+            document.getElementById('user-points').textContent = `ccooffee points: ${newPoints}`;
+
+            // Visual feedback
+            const pointsEl = document.getElementById('user-points');
+            pointsEl.style.color = 'var(--color-gold-bright)';
+            pointsEl.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                pointsEl.style.color = '';
+                pointsEl.style.transform = '';
+            }, 500);
+
+            console.log(`🌟 Granted ${amount} points. New total: ${newPoints}`);
+        } catch (error) {
+            console.error('Error granting points:', error);
         }
     }
 
@@ -398,7 +446,8 @@ class AuthManager {
                         await updateDoc(userDocRef, {
                             brews,
                             drinks,
-                            shops
+                            shops,
+                            points: 0 // Initialize points
                         });
                         console.log('📦 Migrated localStorage data to Firestore');
                     }

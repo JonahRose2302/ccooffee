@@ -192,6 +192,7 @@ const brewManager = {
                 brew.id = utils.uuid();
                 brew.dateAdded = new Date().toISOString();
                 brewManager.brews.unshift(brew);
+                if (window.authManager) window.authManager.grantPoints(5); // +5 Points for Brew
             }
 
             localStorage.setItem('coffee_brews', JSON.stringify(brewManager.brews));
@@ -372,6 +373,7 @@ const drinkManager = {
             } else {
                 drink.id = utils.uuid();
                 drinkManager.drinks.push(drink);
+                if (window.authManager) window.authManager.grantPoints(10); // +10 Points for Recipe
             }
 
             localStorage.setItem('coffee_drinks', JSON.stringify(drinkManager.drinks));
@@ -523,6 +525,7 @@ const shopManager = {
             } else {
                 shop.id = utils.uuid();
                 shopManager.shops.push(shop);
+                if (window.authManager) window.authManager.grantPoints(20); // +20 Points for Shop
             }
 
             localStorage.setItem('coffee_shops', JSON.stringify(shopManager.shops));
