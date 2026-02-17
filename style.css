@@ -1495,32 +1495,71 @@ body {
 /* MOBILE PERFORMANCE FIXES */
 @media (max-width: 768px) {
 
+    /* GPU Acceleration for smooth scrolling */
+    * {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        will-change: auto;
+    }
+
     /* Center brand logo on mobile */
     .brand-logo {
         position: fixed !important;
         top: 15px !important;
         left: 50% !important;
         right: auto !important;
-        transform: translateX(-50%) !important;
+        transform: translateX(-50%) translateZ(0) !important;
         font-size: 2.5rem !important;
         z-index: 10000 !important;
+        /* Disable all animations on mobile */
+        animation: none !important;
+        transition: none !important;
     }
 
     /* Fix navigation centering */
     .glass-nav {
         top: 70px !important;
         left: 50% !important;
-        transform: translateX(-50%) !important;
+        transform: translateX(-50%) translateZ(0) !important;
         width: auto !important;
         padding: 10px 24px !important;
+        will-change: transform;
     }
 
-    /* Slightly reduce blur for better performance */
+    /* Reduce blur significantly for performance */
     .glass-nav,
     .modal>div,
-    .brew-pill {
-        backdrop-filter: blur(12px) !important;
-        -webkit-backdrop-filter: blur(12px) !important;
+    .brew-pill,
+    .tile {
+        backdrop-filter: blur(4px) !important;
+        -webkit-backdrop-filter: blur(4px) !important;
+    }
+
+    /* Disable all hover effects on mobile */
+    .tile:hover,
+    .nav-btn:hover,
+    .brew-pill:hover,
+    .action-btn:hover {
+        transform: none !important;
+    }
+
+    /* Simplify transitions */
+    .tile,
+    .nav-btn,
+    .brew-pill,
+    .action-btn {
+        transition: opacity 0.2s ease !important;
+    }
+
+    /* Disable brand logo letter animations */
+    .brand-logo span {
+        transition: none !important;
+    }
+
+    /* Disable GSAP animations on mobile */
+    .tile,
+    [data-gsap] {
+        animation: none !important;
     }
 
     /* Adjust spacing */
@@ -1546,5 +1585,11 @@ body {
 
     .nav-btn {
         padding: 12px !important;
+    }
+
+    /* Further reduce blur on small screens */
+    * {
+        backdrop-filter: blur(2px) !important;
+        -webkit-backdrop-filter: blur(2px) !important;
     }
 }
