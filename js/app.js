@@ -1,3 +1,6 @@
+/* --- COFFEE APP JS v9 --- */
+console.log('☕ App v9 Loading...');
+
 /* --- GLOBAL UTILS --- */
 const utils = {
     vibrate: (pattern = 10) => {
@@ -152,6 +155,245 @@ const router = {
         utils.vibrate(20);
     }
 };
+
+/* --- KNOWLEDGE MANAGER --- */
+const KNOWLEDGE_DATA = [
+    {
+        id: 'extraction',
+        icon: 'science',
+        title: 'Extraktions-Physik',
+        desc: 'Das Variablen-Dreieck, Brew Ratio und Extraktionsstufen.',
+        content: `
+            <h3>1. Das Variablen-Dreieck</h3>
+            <p>Jeder Shot wird von drei Hauptvariablen bestimmt, die sich gegenseitig beeinflussen:</p>
+            <ul>
+                <li><strong>Dosis (In):</strong> Die Menge an gemahlenem Kaffee (Standard: 17g – 19g für ein Doppelsieb).</li>
+                <li><strong>Ertrag (Out / Yield):</strong> Das Gewicht des fertigen Getränks in der Tasse.</li>
+                <li><strong>Zeit:</strong> Die Dauer des Wasserflusses (Ziel: 25–32 Sek.).</li>
+            </ul>
+
+            <h3>2. Die Brew Ratio (Brühverhältnis)</h3>
+            <p>Die Ratio definiert den Stil des Espressos:</p>
+            <ul>
+                <li><strong>Ristretto (1:1 bis 1:1,5):</strong> Extrem viskos, intensiv, oft säurebetont.</li>
+                <li><strong>Standard Espresso (1:2 bis 1:2,5):</strong> Die goldene Mitte für Balance und Klarheit.</li>
+                <li><strong>Lungo (1:3 oder höher):</strong> Mehr Klarheit, weniger Körper, oft eher bitter.</li>
+            </ul>
+
+            <h3>3. Extraktionsstufen</h3>
+            <p>Wasser löst Inhaltsstoffe in einer festen Reihenfolge:</p>
+            <ol>
+                <li><strong>Fruchtsäuren & Lipide:</strong> Werden sofort gelöst.</li>
+                <li><strong>Maillard-Aromen & Zucker:</strong> Sorgen für Süße und Körper.</li>
+                <li><strong>Tannine & Bitterstoffe:</strong> Lösen sich erst spät bei hoher Hitze.</li>
+            </ol>
+        `
+    },
+    {
+        id: 'puck',
+        icon: 'layers',
+        title: 'Puck-Vorbereitung',
+        desc: 'Mahlgrad, WDT, Leveling und Tamping für channel-freie Shots.',
+        content: `
+            <h3>1. Die Mühle (Der Fokus)</h3>
+            <ul>
+                <li><strong>Mahlgrad-Konsistenz:</strong> Die Partikelverteilung entscheidet über den Fließwiderstand.</li>
+                <li><strong>RDT (Ross Droplet Technique):</strong> Ein Sprühstoß Wasser auf die Bohnen eliminiert Statik.</li>
+                <li><strong>RPM-Einfluss:</strong> Höhere Drehzahlen erzeugen mehr "Fines" (Feinstaub), was die Extraktion erhöht.</li>
+            </ul>
+
+            <h3>2. Distribution & Tamping</h3>
+            <ul>
+                <li><strong>WDT (Weiss Distribution Technique):</strong> Umrühren mit dünnen Nadeln (0.3mm) bricht Klumpen auf.</li>
+                <li><strong>Leveling:</strong> Die Oberfläche muss vor dem Tampen absolut plan sein.</li>
+                <li><strong>Tamping:</strong> 10–15kg Druck reichen. Wichtiger ist, absolut gerade zu tampen.</li>
+                <li><strong>Puck Screen:</strong> Schützt die Dusche und verteilt Wasser sanfter.</li>
+            </ul>
+        `
+    },
+    {
+        id: 'milk',
+        icon: 'water_drop',
+        title: 'Milchhandwerk',
+        desc: 'Chemie der Milch, Ziehphase, Rollphase und Latte Art.',
+        content: `
+            <h3>1. Chemie der Milch</h3>
+            <ul>
+                <li><strong>Proteine:</strong> Verantwortlich für Schaumstabilität. Denaturieren über 70°C (Geschmack "nach Ei").</li>
+                <li><strong>Laktose:</strong> Süße nimmt bei Erwärmung subjektiv zu.</li>
+                <li><strong>Fett:</strong> Geschmacksträger für das seidige Mundgefühl.</li>
+            </ul>
+
+            <h3>2. Die Zwei-Phasen-Technik</h3>
+            <ul>
+                <li><strong>Ziehphase (Stretching):</strong> Lanze knapp unter Oberfläche, "Ripping-Geräusch". Volumen entsteht.</li>
+                <li><strong>Rollphase (Rolling):</b> Lanze tiefer, Wirbel (Vortex) erzeugen. Zerkleinert Blasen zu Mikroschaum.</li>
+                <li><strong>Temp-Limit:</strong> Stop bei ca. 60–65°C (wenn Kännchen heiß wird).</li>
+            </ul>
+
+            <h3>3. Definitionen</h3>
+            <ul>
+                <li><strong>Cappuccino:</strong> 1/3 Espresso, 1/3 Milch, 1/3 Schaum.</li>
+                <li><strong>Flat White:</strong> Double Shot, dünne Schicht Mikroschaum. Fokus auf Kaffee.</li>
+            </ul>
+        `
+    },
+    {
+        id: 'expert',
+        icon: 'psychology',
+        title: 'Expertenwissen',
+        desc: 'Flow Profiling, Wasserchemie und TDS-Messung.',
+        content: `
+            <h3>1. Manuelle Extraktion</h3>
+            <ul>
+                <li><strong>Pre-Infusion:</strong> Puck bei 2 Bar für 10s tränken (verhindert Channeling).</li>
+                <li><strong>Flow Profiling:</strong> Druck am Ende senken (z.B. 9 auf 6 Bar), um Bitterkeit zu reduzieren.</li>
+            </ul>
+
+            <h3>2. Wasserchemie</h3>
+            <ul>
+                <li><strong>Gesamthärte (GH):</strong> 3–6° dH (Magnesium/Calcium als Geschmacksträger).</li>
+                <li><strong>Karbonathärte (KH):</strong> 2–3° dH (Puffert Säure). Zu hoch = flach/kalkig.</li>
+            </ul>
+
+            <h3>3. TDS & Refraktometrie</h3>
+            <ul>
+                <li><strong>TDS:</strong> Total Dissolved Solids (Typisch 8–12%).</li>
+                <li><strong>Extraction Yield (EY):</strong> Ziel 18–22% der Bohne gelöst.</li>
+            </ul>
+        `
+    },
+    {
+        id: 'roast',
+        icon: 'local_fire_department',
+        title: 'Röstphysik',
+        desc: 'Von der Maillard-Reaktion bis zum First Crack.',
+        content: `
+            <h3>Phasen der Röstung</h3>
+            <ul>
+                <li><strong>Drying Phase (Gelb):</strong> Feuchtigkeitsverlust.</li>
+                <li><strong>Maillard-Reaktion:</strong> Ab 160°C. Zucker & Aminosäuren reagieren (Aromen entstehen).</li>
+                <li><strong>Caramelization:</strong> Zucker karamellisiert, Bitterkeit steigt, Körper bildet sich.</li>
+                <li><strong>First Crack:</strong> "Popcorn"-Geräusch. Zellstruktur bricht auf.</li>
+            </ul>
+
+            <h3>Röstprofile</h3>
+            <ul>
+                <li><strong>Light Roast:</strong> Kurz nach 1st Crack beenden (Fruchtig/Floral).</li>
+                <li><strong>Medium Roast:</strong> Maximale Süße (Mitte Development Time).</li>
+            </ul>
+            <p><strong>Degassing:</strong> Frisch gerösteter Kaffee braucht mind. 7 Tage Ruhe (CO2-Ausgasung).</p>
+        `
+    },
+    {
+        id: 'trouble',
+        icon: 'build',
+        title: 'Troubleshooting',
+        desc: 'Probleme im Geschmack erkennen und beheben.',
+        content: `
+            <h3>Fehlerdiagnose</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Geschmack</th>
+                        <th>Ursache</th>
+                        <th>Lösung</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sauer / Stechend</td>
+                        <td>Unterextraktion</td>
+                        <td>Feiner mahlen / Wärmer / Mehr Yield</td>
+                    </tr>
+                    <tr>
+                        <td>Bitter / Trocken</td>
+                        <td>Überextraktion</td>
+                        <td>Gröber mahlen / Kälter / Weniger Yield</td>
+                    </tr>
+                    <tr>
+                        <td>Salzig / Wässrig</td>
+                        <td>Massive Unterextraktion</td>
+                        <td>Viel feiner mahlen / Dosis erhöhen</td>
+                    </tr>
+                    <tr>
+                        <td>Flach / Langweilig</td>
+                        <td>Wasser zu hart (KH)</td>
+                        <td>Wasser filtern / Weicheres Wasser</td>
+                    </tr>
+                    <tr>
+                        <td>Sauer & Bitter</td>
+                        <td>Channeling</td>
+                        <td>Bessere Puck-Prep (WDT)</td>
+                    </tr>
+                </tbody>
+            </table>
+        `
+    }
+];
+
+const knowledgeManager = {
+    init: () => {
+        const grid = document.getElementById('knowledge-grid');
+        if (!grid) { console.error('❌ knowledge-grid not found'); return; }
+
+        console.log('✅ knowledgeManager initializing...');
+        knowledgeManager.renderGrid(grid);
+
+        // Event Delegation
+        grid.addEventListener('click', (e) => {
+            const card = e.target.closest('.knowledge-card');
+            if (card) {
+                const id = card.getAttribute('data-topic-id');
+                console.log('🖱️ Knowledge Card Clicked:', id);
+                knowledgeManager.openTopic(id);
+            }
+        });
+
+        // Modal Bindings
+        const modal = document.getElementById('knowledge-modal');
+        const closeModal = () => {
+            modal.classList.remove('visible');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        };
+        document.getElementById('knowledge-modal-close')?.addEventListener('click', closeModal);
+        modal?.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+    },
+
+    renderGrid: (container) => {
+        container.innerHTML = KNOWLEDGE_DATA.map(topic => `
+            <div class="knowledge-card" data-topic-id="${topic.id}">
+                <span class="material-symbols-rounded k-icon">${topic.icon}</span>
+                <div class="k-title">${topic.title}</div>
+                <div class="k-desc">${topic.desc}</div>
+            </div>
+        `).join('');
+        console.log('📚 Knowledge Grid Rendered with', KNOWLEDGE_DATA.length, 'topics.');
+    },
+
+    openTopic: (id) => {
+        console.log('📖 Opening Topic:', id);
+        const topic = KNOWLEDGE_DATA.find(t => t.id === id);
+        if (!topic) { console.error('❌ Topic not found:', id); return; }
+
+        document.getElementById('k-detail-title').textContent = topic.title;
+        document.getElementById('k-detail-icon').textContent = topic.icon;
+        document.getElementById('k-detail-body').innerHTML = topic.content;
+
+        const modal = document.getElementById('knowledge-modal');
+        modal.classList.remove('hidden');
+        void modal.offsetWidth; // Trigger reflow
+        modal.classList.add('visible');
+
+        // Reset scroll position
+        document.querySelector('.knowledge-detail-body').scrollTop = 0;
+    }
+};
+
+// Global Exposure
+window.knowledgeManager = knowledgeManager;
 
 /* --- BREW MANAGER --- */
 const brewManager = {
@@ -775,7 +1017,7 @@ const cursorFollower = {
             });
 
             // Interactive elements: grow cursor
-            document.querySelectorAll('a, button, .tile, .brew-header, input, .nav-btn, .action-btn, .toggle-btn').forEach(el => {
+            document.querySelectorAll('a, button, .tile, .knowledge-card, .brew-header, input, .nav-btn, .action-btn, .toggle-btn').forEach(el => {
                 el.addEventListener('mouseenter', () => {
                     cursorFollower.el.classList.add('active');
                 });
@@ -785,7 +1027,7 @@ const cursorFollower = {
 
                 // Add ripple on click
                 el.addEventListener('click', (e) => {
-                    if (el.classList.contains('tile') || el.classList.contains('nav-btn') || el.classList.contains('action-btn')) {
+                    if (el.classList.contains('tile') || el.classList.contains('knowledge-card') || el.classList.contains('nav-btn') || el.classList.contains('action-btn')) {
                         animationEngine.createRipple(el, e);
                     }
                 });
@@ -893,6 +1135,7 @@ window.addEventListener('load', () => {
     brewManager.init();
     drinkManager.init();
     shopManager.init();
+    knowledgeManager.init();
     cursorFollower.init();
 
     // Enable magnetic effects on tiles and navigation

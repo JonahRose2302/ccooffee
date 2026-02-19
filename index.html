@@ -91,6 +91,8 @@
                 class="material-symbols-rounded">storefront</span></button>
         <button class="nav-btn" onclick="router.navigate('dialin')"><span
                 class="material-symbols-rounded">tune</span></button>
+        <button class="nav-btn" onclick="router.navigate('knowledge')"><span
+                class="material-symbols-rounded">school</span></button>
     </nav>
 
     <!-- ROOTS -->
@@ -130,10 +132,16 @@
                         <h2>Recipes</h2>
                         <p>Manage drinks</p>
                     </div>
-                    <div class="tile epic-tile" onclick="router.navigate('dialin')">
-                        <span class="material-symbols-rounded icon">science</span>
-                        <h2>dial-in</h2>
+                    <div class="menu-card" onclick="router.navigate('dialin')">
+                        <span class="material-symbols-rounded">tune</span>
+                        <h3>Dial-In</h3>
                         <p>Calculate your shot</p>
+                    </div>
+                    <!-- Knowledge Base Entry -->
+                    <div class="menu-card" onclick="router.navigate('knowledge')">
+                        <span class="material-symbols-rounded">school</span>
+                        <h3>Wissen</h3>
+                        <p>Explore coffee knowledge</p>
                     </div>
                     <div class="tile" onclick="router.navigate('shops')">
                         <span class="material-symbols-rounded icon">map</span>
@@ -452,10 +460,35 @@
     </div>
 
 
+    <!-- KNOWLEDGE BASE -->
+    <section id="knowledge" class="page">
+        <div class="header">
+            <h1>Expert Knowledge</h1>
+            <p>The Ultimate Barista Knowledge Base</p>
+        </div>
+        <div class="knowledge-grid" id="knowledge-grid">
+            <!-- Topics rendered via JS -->
+        </div>
+
+        <!-- Knowledge Detail Modal -->
+        <div id="knowledge-modal" class="modal hidden">
+            <div class="modal-content knowledge-modal-content glass-panel">
+                <span class="close" id="knowledge-modal-close">&times;</span>
+                <div class="knowledge-detail-header">
+                    <span class="material-symbols-rounded" id="k-detail-icon">school</span>
+                    <h2 id="k-detail-title">Topic Title</h2>
+                </div>
+                <div class="knowledge-detail-body" id="k-detail-body">
+                    <!-- Content -->
+                </div>
+            </div>
+        </div>
+    </section>
+
     <script type="module" src="js/firebase-config.js"></script>
-    <script type="module" src="js/auth.js?v=7"></script>
+    <script type="module" src="js/auth.js?v=9"></script>
     <script src="js/particle-bg.js"></script>
-    <script src="js/app.js?v=7"></script>
+    <script src="js/app.js?v=9"></script>
 </body>
 
 </html>
