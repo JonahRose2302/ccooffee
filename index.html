@@ -23,11 +23,11 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-    <link rel="stylesheet" href="style.css?v=7">
-    <link rel="stylesheet" href="ui-fixes.css">
-    <link rel="stylesheet" href="mobile-optimizations.css">
-    <link rel="stylesheet" href="warning-style.css">
-    <link rel="stylesheet" href="auth-style.css">
+    <link rel="stylesheet" href="css/style.css?v=7">
+    <link rel="stylesheet" href="css/ui-fixes.css">
+    <link rel="stylesheet" href="css/mobile-optimizations.css">
+    <link rel="stylesheet" href="css/warning-style.css">
+    <link rel="stylesheet" href="css/auth-style.css">
 </head>
 
 <body>
@@ -49,10 +49,26 @@
             <div class="profile-info">
                 <div class="profile-name" id="user-display-name">User</div>
                 <div class="profile-email" id="user-email">user@example.com</div>
-                <div class="profile-points" id="user-points">ccooffee points: 0</div>
             </div>
             <div class="profile-divider"></div>
-            <button class="profile-menu-item">
+            <button class="profile-menu-item" id="level-btn">
+                <span class="material-symbols-rounded">military_tech</span>
+                Level
+            </button>
+            <button class="profile-menu-item" id="stats-btn">
+                <span class="material-symbols-rounded">bar_chart</span>
+                Stats
+            </button>
+            <button class="profile-menu-item" id="favorites-btn">
+                <span class="material-symbols-rounded">favorite</span>
+                Favoriten
+            </button>
+            <button class="profile-menu-item" id="leaderboard-btn">
+                <span class="material-symbols-rounded">leaderboard</span>
+                Leaderboard
+            </button>
+            <div class="profile-divider"></div>
+            <button class="profile-menu-item" id="logout-btn">
                 <span class="material-symbols-rounded">logout</span>
                 Abmelden
             </button>
@@ -357,11 +373,89 @@
         </div>
     </div>
 
+    <!-- Leaderboard Modal -->
+    <div id="leaderboard-modal" class="modal hidden">
+        <div class="modal-content leaderboard-modal-content glass-panel">
+            <span class="close" id="leaderboard-modal-close">&times;</span>
+            <div class="level-header">
+                <span class="material-symbols-rounded level-icon">leaderboard</span>
+                <h2>Leaderboard</h2>
+            </div>
+            <div id="leaderboard-list" class="leaderboard-list">
+                <p class="lb-loading">Lade Rangliste…</p>
+            </div>
+        </div>
+    </div>
 
-    <script type="module" src="firebase-config.js"></script>
-    <script type="module" src="auth.js?v=6"></script>
-    <script src="particle-bg.js"></script>
-    <script src="app.js?v=7"></script>
+    <!-- Stats Modal -->
+    <div id="stats-modal" class="modal hidden">
+        <div class="modal-content stats-modal-content glass-panel">
+            <span class="close" id="stats-modal-close">&times;</span>
+            <div class="level-header">
+                <span class="material-symbols-rounded level-icon">bar_chart</span>
+                <h2>Deine Stats</h2>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="material-symbols-rounded stat-icon">coffee</span>
+                    <span class="stat-value" id="stats-brews">0</span>
+                    <span class="stat-label">Brews</span>
+                </div>
+                <div class="stat-card">
+                    <span class="material-symbols-rounded stat-icon">menu_book</span>
+                    <span class="stat-value" id="stats-recipes">0</span>
+                    <span class="stat-label">Recipes</span>
+                </div>
+                <div class="stat-card">
+                    <span class="material-symbols-rounded stat-icon">storefront</span>
+                    <span class="stat-value" id="stats-shops">0</span>
+                    <span class="stat-label">Shops</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Favorites Modal -->
+    <div id="favorites-modal" class="modal hidden">
+        <div class="modal-content favorites-modal-content glass-panel">
+            <span class="close" id="favorites-modal-close">&times;</span>
+            <div class="level-header">
+                <span class="material-symbols-rounded level-icon"
+                    style="color: #e74c3c; -webkit-text-fill-color: #e74c3c;">favorite</span>
+                <h2
+                    style="background: linear-gradient(135deg, #e74c3c, #ff8c69); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip:text;">
+                    Favoriten</h2>
+            </div>
+            <div id="favorites-brew-list" class="favorites-brew-list"></div>
+        </div>
+    </div>
+
+    <!-- Level Modal -->
+    <div id="level-modal" class="modal hidden">
+        <div class="modal-content level-modal-content glass-panel">
+            <span class="close" id="level-modal-close">&times;</span>
+            <div class="level-header">
+                <span class="material-symbols-rounded level-icon">military_tech</span>
+                <h2 id="level-title">Trainee Barista</h2>
+            </div>
+            <div class="level-points-display">
+                <span class="level-points-label">ccooffee points</span>
+                <span class="level-points-value" id="level-points-value">0</span>
+            </div>
+            <div class="level-progress-section">
+                <div class="level-progress-bar-bg">
+                    <div class="level-progress-bar-fill" id="level-progress-fill"></div>
+                </div>
+                <p class="level-next-info" id="level-next-info">Noch 10 Punkte bis zum nächsten Level</p>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/auth.js?v=7"></script>
+    <script src="js/particle-bg.js"></script>
+    <script src="js/app.js?v=7"></script>
 </body>
 
 </html>

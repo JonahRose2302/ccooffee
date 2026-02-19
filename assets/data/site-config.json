@@ -1,0 +1,7 @@
+{
+  "site_name": "CCOOFFEE",
+  "version": "1.0.0",
+  "description": "Premium Coffee Experience",
+  "features": ["Brewing Guides", "Coffee Lab", "Shop Locator"],
+  "last_updated": "2026-02-19"
+}

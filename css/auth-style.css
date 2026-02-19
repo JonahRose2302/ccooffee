@@ -1,0 +1,516 @@
+/* === USER PROFILE & AUTH UI === */
+.user-profile {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    z-index: 2000;
+    /* Higher than standard elements, lower than modal */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.user-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 2px solid var(--color-gold-medium);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-cream);
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--duration-fast) var(--ease-overshoot);
+}
+
+.user-avatar:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(244, 196, 48, 0.3);
+    border-color: var(--color-gold-light);
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    background: rgba(20, 12, 8, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(244, 196, 48, 0.2);
+    border-radius: 16px;
+    padding: 16px;
+    width: 260px;
+    box-shadow: var(--shadow-lg);
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: all var(--duration-fast) var(--ease-smooth);
+    z-index: 2001;
+}
+
+.profile-dropdown.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    display: block !important;
+    /* Override .hidden display:none to allow transition */
+}
+
+.profile-info {
+    margin-bottom: 12px;
+}
+
+.profile-name {
+    font-family: var(--font-heading);
+    color: var(--color-gold-light);
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+}
+
+.profile-email {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    word-break: break-all;
+}
+
+.profile-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 12px 0;
+}
+
+.profile-menu-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--color-cream);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background var(--duration-fast);
+}
+
+.profile-menu-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.profile-menu-item .material-symbols-rounded {
+    font-size: 20px;
+    color: #e74c3c;
+}
+
+#level-btn .material-symbols-rounded {
+    color: var(--color-gold-medium);
+}
+
+/* === LEVEL MODAL === */
+.level-modal-content {
+    max-width: 340px;
+    width: 90%;
+    padding: 36px 28px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+    text-align: center;
+}
+
+.level-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.level-icon {
+    font-size: 48px;
+    background: linear-gradient(135deg, var(--color-gold-light), var(--color-gold-medium));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 12px rgba(244, 196, 48, 0.4));
+}
+
+.level-header h2 {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    background: linear-gradient(135deg, var(--color-gold-light), #e6b830);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+    letter-spacing: 0.02em;
+}
+
+.level-points-display {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+}
+
+.level-points-label {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.level-points-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--color-cream);
+    line-height: 1;
+}
+
+.level-progress-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.level-progress-bar-bg {
+    width: 100%;
+    height: 8px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.level-progress-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--color-gold-medium), var(--color-gold-light));
+    box-shadow: 0 0 8px rgba(244, 196, 48, 0.5);
+    transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    width: 0%;
+}
+
+.level-next-info {
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+}
+
+/* === LEADERBOARD MODAL === */
+.leaderboard-modal-content {
+    max-width: 420px;
+    width: 92%;
+    max-height: 82vh;
+    padding: 36px 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow: hidden;
+}
+
+#leaderboard-btn .material-symbols-rounded {
+    color: var(--color-gold-medium);
+}
+
+.leaderboard-list {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: calc(82vh - 130px);
+    padding-right: 4px;
+}
+
+.lb-loading {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.9rem;
+    padding: 24px 0;
+    margin: 0;
+}
+
+.lb-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    transition: background var(--duration-fast);
+}
+
+.lb-row:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Current user highlight */
+.lb-row.lb-me {
+    background: rgba(244, 196, 48, 0.1);
+    border-color: rgba(244, 196, 48, 0.4);
+}
+
+.lb-rank {
+    font-size: 1.15rem;
+    min-width: 36px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.lb-row.lb-me .lb-rank {
+    color: var(--color-gold-medium);
+}
+
+.lb-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+}
+
+.lb-name {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-cream);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lb-you {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: rgba(244, 196, 48, 0.2);
+    color: var(--color-gold-medium);
+    border-radius: 4px;
+    padding: 1px 5px;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
+.lb-title {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.lb-points {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-gold-medium);
+    white-space: nowrap;
+}
+
+/* === STATS MODAL === */
+.stats-modal-content {
+    max-width: 380px;
+    width: 90%;
+    padding: 36px 28px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+    text-align: center;
+}
+
+#stats-btn .material-symbols-rounded {
+    color: var(--color-gold-medium);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    width: 100%;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    padding: 16px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    transition: border-color var(--duration-fast);
+}
+
+.stat-card:hover {
+    border-color: rgba(244, 196, 48, 0.35);
+}
+
+.stat-icon {
+    font-size: 24px;
+    color: var(--color-gold-medium);
+}
+
+.stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-cream);
+    line-height: 1;
+}
+
+.stat-label {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+/* === FAVORITES MODAL === */
+.favorites-modal-content {
+    max-width: 420px;
+    width: 92%;
+    max-height: 80vh;
+    padding: 36px 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow: hidden;
+}
+
+#favorites-btn .material-symbols-rounded {
+    color: #e74c3c;
+}
+
+.favorites-brew-list {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: calc(80vh - 120px);
+    padding-right: 4px;
+}
+
+.fav-empty {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    padding: 24px 0;
+    margin: 0;
+}
+
+/* .fav-icon-btn styles live in style.css next to .brew-header */
+
+/* Fav icon shown inside Favorites modal list */
+.fav-active-icon {
+    font-size: 18px;
+    color: #e74c3c;
+    margin-right: 6px;
+    filter: drop-shadow(0 0 4px rgba(231, 76, 60, 0.5));
+}
+
+/* Login Button Positioning */
+.login-btn {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    z-index: 2000;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-cream);
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-smooth);
+    box-shadow: var(--shadow-sm);
+}
+
+.login-btn:hover {
+    background: rgba(244, 196, 48, 0.15);
+    border-color: var(--color-gold-medium);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(244, 196, 48, 0.15);
+}
+
+.login-btn .material-symbols-rounded {
+    color: var(--color-gold-medium);
+}
+
+/* Minimized Login Button (Scroll/Non-Home) */
+.login-btn.minimized {
+    padding: 0;
+    width: 44px;
+    height: 44px;
+    justify-content: center;
+    border-radius: 50%;
+    gap: 0;
+}
+
+.login-btn.minimized::after {
+    content: '';
+    /* Hide text content accessibly if needed, but here we rely on width/overflow */
+    display: none;
+}
+
+.login-btn.minimized span {
+    /* Ensure icon is centered */
+    margin: 0;
+}
+
+/* Hide text node in minimized state */
+.login-btn.minimized {
+    font-size: 0;
+}
+
+.login-btn.minimized .material-symbols-rounded {
+    font-size: 24px;
+    /* Slightly larger icon */
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+
+    .user-profile,
+    .login-btn {
+        top: 20px !important;
+        left: 20px !important;
+        z-index: 10011 !important;
+        /* Ensure visibility over everything on mobile */
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .login-btn {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+}

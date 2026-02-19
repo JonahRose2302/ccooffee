@@ -614,6 +614,43 @@ h3 {
     font-size: 1.1rem;
 }
 
+/* Favorite heart icon — lives inside .brew-header */
+.fav-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 2px;
+    margin-right: 8px;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    flex-shrink: 0;
+    transition: transform var(--duration-fast) var(--ease-overshoot);
+}
+
+/* Inactive: muted gold outline — blends into the theme */
+.fav-icon-btn .material-symbols-rounded {
+    font-size: 22px;
+    color: rgba(212, 175, 55, 0.35);
+    transition: color 0.2s ease, filter 0.2s ease;
+}
+
+/* Hover: hint of red before committing */
+.fav-icon-btn:hover .material-symbols-rounded {
+    color: rgba(231, 76, 60, 0.65);
+}
+
+/* Active (favorited): bold, filled, glowing red */
+.fav-icon-btn.active .material-symbols-rounded {
+    color: #e74c3c;
+    filter: drop-shadow(0 0 6px rgba(231, 76, 60, 0.7));
+}
+
+.fav-icon-btn:hover {
+    transform: scale(1.25);
+}
+
 .brew-details {
     max-height: 0;
     overflow: hidden;

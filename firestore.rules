@@ -1,14 +1,12 @@
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users collection - only authenticated users can access their own data
     match /users/{userId} {
-      // Allow read and write only if the user is authenticated and accessing their own document
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      // Any logged-in user can read profiles (needed for leaderboard)
+      allow read: if request.auth != null;
+      // Only the user themselves can write their own document
+      allow write: if request.auth != null && request.auth.uid == userId;
     }
-    
-    // Deny all other access by default
     match /{document=**} {
       allow read, write: if false;
     }

@@ -277,6 +277,20 @@ const brewManager = {
         setTimeout(() => m.classList.add('hidden'), 300);
     },
 
+    toggleFavorite: (id, e) => {
+        e.stopPropagation();
+        const brew = brewManager.brews.find(b => b.id === id);
+        if (!brew) return;
+        brew.favorite = !brew.favorite;
+
+        if (window.authManager && window.authManager.currentUser) {
+            window.authManager.saveBrews(brewManager.brews);
+        } else {
+            localStorage.setItem('coffee_brews', JSON.stringify(brewManager.brews));
+        }
+        brewManager.renderList();
+        utils.vibrate(15);
+    },
     renderList: () => {
         const container = document.getElementById('brew-list');
         container.innerHTML = '';
@@ -336,6 +350,9 @@ const brewManager = {
                         <h3>${brew.beanName}</h3>
                         <small style="opacity:0.7">${brew.roastDate || 'No Date'}</small>
                     </div>
+                    <span class="fav-icon-btn${brew.favorite ? ' active' : ''}" onclick="brewManager.toggleFavorite('${brew.id}', event)">
+                        <span class="material-symbols-rounded">${brew.favorite ? 'favorite' : 'favorite_border'}</span>
+                    </span>
                     <span class="material-symbols-rounded" id="icon-${brew.id}">expand_more</span>
                 </div>
                 <div class="brew-details" id="details-${brew.id}">
@@ -363,6 +380,42 @@ const brewManager = {
             icon.innerText = 'expand_less';
         }
         utils.vibrate(10);
+    },
+
+    renderFavorites: () => {
+        const container = document.getElementById('favorites-brew-list');
+        if (!container) return;
+        container.innerHTML = '';
+        const favs = brewManager.brews.filter(b => b.favorite);
+        if (favs.length === 0) {
+            container.innerHTML = `<p class="fav-empty">Noch keine Favoriten.<br>Tippe das ♥ bei einem Brew.</p>`;
+            return;
+        }
+        favs.forEach(brew => {
+            const el = document.createElement('div');
+            el.className = 'brew-pill glass-panel';
+            el.innerHTML = `
+                <div class="brew-header" onclick="brewManager.toggle('fav-${brew.id}')">
+                    <div style="flex:1">
+                        <h3>${brew.beanName}</h3>
+                        <small style="opacity:0.7">${brew.roastDate || 'No Date'}</small>
+                    </div>
+                    <span class="material-symbols-rounded fav-active-icon">favorite</span>
+                    <span class="material-symbols-rounded" id="icon-fav-${brew.id}">expand_more</span>
+                </div>
+                <div class="brew-details" id="details-fav-${brew.id}">
+                    <div class="detail-grid">
+                        <div class="detail-item"><label>GRINDER</label><span>${brew.grinder || '-'}</span></div>
+                        <div class="detail-item"><label>GRIND SIZE</label><span>${brew.grindSize || '-'}</span></div>
+                        <div class="detail-item"><label>DOSE</label><span>${brew.doseIn}g</span></div>
+                        <div class="detail-item"><label>YIELD</label><span>${(brew.doseIn * brew.ratio).toFixed(1)}g (1:${brew.ratio})</span></div>
+                        <div class="detail-item"><label>TEMP</label><span>${brew.temp || '-'}°C</span></div>
+                        <div class="detail-item"><label>RPM</label><span>${brew.rpm || '-'}</span></div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(el);
+        });
     }
 };
 
@@ -776,7 +829,7 @@ window.addEventListener('load', () => {
     canvas.width = 1280;
     canvas.height = 720;
     const frameCount = 240;
-    const currentFrame = index => `./img/ezgif-frame-${(index + 1).toString().padStart(3, '0')}.jpg`;
+    const currentFrame = index => `./assets/animations/coffee-pour/ezgif-frame-${(index + 1).toString().padStart(3, '0')}.jpg`;
     const images = [];
     const sequence = { frame: 0 };
 

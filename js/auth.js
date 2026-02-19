@@ -14,8 +14,37 @@ import {
     setDoc,
     getDoc,
     updateDoc,
-    serverTimestamp
+    serverTimestamp,
+    collection,
+    query,
+    orderBy,
+    limit,
+    getDocs
 } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+// ── Level table ─────────────────────────────────────────────────────────────
+const LEVELS = [
+    { title: 'Trainee Barista', min: 0, max: 10 },
+    { title: 'Junior Barista', min: 11, max: 60 },
+    { title: 'Barista', min: 61, max: 149 },
+    { title: 'Senior Barista', min: 150, max: 220 },
+    { title: 'Lead Barista', min: 221, max: 310 },
+    { title: 'Head Barista', min: 311, max: 420 },
+    { title: 'Barista Manager', min: 421, max: 550 },
+    { title: 'Coffee Quality Manager', min: 551, max: 680 },
+    { title: 'Head of Coffee', min: 681, max: 750 },
+    { title: 'Master Barista', min: 751, max: 1000 },
+];
+
+function getLevel(points) {
+    const lvl = LEVELS.find(l => points >= l.min && points <= l.max)
+        || LEVELS[LEVELS.length - 1];
+    const isMax = lvl === LEVELS[LEVELS.length - 1];
+    const progress = isMax ? 100
+        : Math.round(((points - lvl.min) / (lvl.max - lvl.min)) * 100);
+    const needed = isMax ? 0 : lvl.max - points + 1;
+    return { title: lvl.title, progress, needed, isMax };
+}
 
 class AuthManager {
     constructor() {
@@ -111,7 +140,7 @@ class AuthManager {
         }
 
         // Logout Button
-        const logoutBtn = document.querySelector('.profile-menu-item');
+        const logoutBtn = document.getElementById('logout-btn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => {
                 console.log('🖱️ Logout clicked');
@@ -149,6 +178,67 @@ class AuthManager {
                 userProfile && !userProfile.contains(e.target)) {
                 dropdown.classList.add('hidden');
             }
+        });
+
+        // Level button → open Level Modal
+        const levelBtn = document.getElementById('level-btn');
+        if (levelBtn) {
+            levelBtn.addEventListener('click', () => {
+                document.getElementById('profile-dropdown').classList.add('hidden');
+                this.openLevelModal();
+            });
+        }
+
+        // Level Modal close
+        const levelClose = document.getElementById('level-modal-close');
+        if (levelClose) {
+            levelClose.addEventListener('click', () => this.closeLevelModal());
+        }
+        // Close level modal on backdrop click
+        const levelModal = document.getElementById('level-modal');
+        if (levelModal) {
+            levelModal.addEventListener('click', (e) => {
+                if (e.target === levelModal) this.closeLevelModal();
+            });
+        }
+
+        // Stats button
+        const statsBtn = document.getElementById('stats-btn');
+        if (statsBtn) {
+            statsBtn.addEventListener('click', () => {
+                document.getElementById('profile-dropdown').classList.add('hidden');
+                this.openStatsModal();
+            });
+        }
+        document.getElementById('stats-modal-close')?.addEventListener('click', () => this.closeStatsModal());
+        document.getElementById('stats-modal')?.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('stats-modal')) this.closeStatsModal();
+        });
+
+        // Favorites button
+        const favBtn = document.getElementById('favorites-btn');
+        if (favBtn) {
+            favBtn.addEventListener('click', () => {
+                document.getElementById('profile-dropdown').classList.add('hidden');
+                this.openFavoritesModal();
+            });
+        }
+        document.getElementById('favorites-modal-close')?.addEventListener('click', () => this.closeFavoritesModal());
+        document.getElementById('favorites-modal')?.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('favorites-modal')) this.closeFavoritesModal();
+        });
+
+        // Leaderboard button
+        const lbBtn = document.getElementById('leaderboard-btn');
+        if (lbBtn) {
+            lbBtn.addEventListener('click', () => {
+                document.getElementById('profile-dropdown').classList.add('hidden');
+                this.openLeaderboardModal();
+            });
+        }
+        document.getElementById('leaderboard-modal-close')?.addEventListener('click', () => this.closeLeaderboardModal());
+        document.getElementById('leaderboard-modal')?.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('leaderboard-modal')) this.closeLeaderboardModal();
         });
     }
 
@@ -359,13 +449,12 @@ class AuthManager {
             const userDoc = await getDoc(doc(db, 'users', uid));
             if (userDoc.exists()) {
                 const userData = userDoc.data();
-                // Update display name if available
                 if (userData.displayName && this.currentUser) {
                     document.getElementById('user-display-name').textContent = userData.displayName;
                 }
-                // Update points
                 const points = userData.points || 0;
-                document.getElementById('user-points').textContent = `ccooffee points: ${points}`;
+                this._cachedPoints = points;
+                this.updateLevelUI(points);
             }
         } catch (error) {
             console.error('Error loading user profile:', error);
@@ -377,13 +466,6 @@ class AuthManager {
         if (!this.currentUser) return;
         try {
             const userRef = doc(db, 'users', this.currentUser.uid);
-            // Use Firestore increment for atomic updates
-            // We need to import increment first, but to keep it simple with current imports, 
-            // we will read-modify-write or use simple update if we assume single client.
-            // Better to standard read-write for now to avoid import issues if not available in current block.
-            // Actually, let's just use the current data since we load it.
-
-            // Re-fetch to be safe
             const userDoc = await getDoc(userRef);
             let currentPoints = 0;
             if (userDoc.exists()) {
@@ -392,23 +474,149 @@ class AuthManager {
 
             const newPoints = currentPoints + amount;
             await updateDoc(userRef, { points: newPoints });
-
-            // Update UI
-            document.getElementById('user-points').textContent = `ccooffee points: ${newPoints}`;
-
-            // Visual feedback
-            const pointsEl = document.getElementById('user-points');
-            pointsEl.style.color = 'var(--color-gold-bright)';
-            pointsEl.style.transform = 'scale(1.2)';
-            setTimeout(() => {
-                pointsEl.style.color = '';
-                pointsEl.style.transform = '';
-            }, 500);
+            this._cachedPoints = newPoints;
+            this.updateLevelUI(newPoints);
 
             console.log(`🌟 Granted ${amount} points. New total: ${newPoints}`);
         } catch (error) {
             console.error('Error granting points:', error);
         }
+    }
+
+    // Update level modal UI given a point value
+    updateLevelUI(points) {
+        const { title, progress, needed, isMax } = getLevel(points);
+        // Points value in modal
+        const pv = document.getElementById('level-points-value');
+        if (pv) pv.textContent = points;
+        // Title
+        const lt = document.getElementById('level-title');
+        if (lt) lt.textContent = title;
+        // Progress bar
+        const fill = document.getElementById('level-progress-fill');
+        if (fill) fill.style.width = `${progress}%`;
+        // Next-level hint
+        const info = document.getElementById('level-next-info');
+        if (info) {
+            info.textContent = isMax
+                ? '🏆 Maximales Level erreicht!'
+                : `Noch ${needed} Punkte bis zum nächsten Level`;
+        }
+    }
+
+    // Open / close level modal
+    openLevelModal() {
+        // Refresh with cached points in case modal wasn't open yet
+        this.updateLevelUI(this._cachedPoints || 0);
+        const m = document.getElementById('level-modal');
+        m.classList.remove('hidden');
+        void m.offsetWidth;
+        m.classList.add('visible');
+    }
+
+    closeLevelModal() {
+        const m = document.getElementById('level-modal');
+        m.classList.remove('visible');
+        setTimeout(() => m.classList.add('hidden'), 300);
+    }
+
+    // Stats Modal
+    openStatsModal() {
+        // Refresh counts
+        document.getElementById('stats-brews').textContent =
+            (typeof brewManager !== 'undefined') ? brewManager.brews.length : 0;
+        document.getElementById('stats-recipes').textContent =
+            (typeof drinkManager !== 'undefined') ? drinkManager.drinks.length : 0;
+        document.getElementById('stats-shops').textContent =
+            (typeof shopManager !== 'undefined') ? shopManager.shops.length : 0;
+
+        const m = document.getElementById('stats-modal');
+        m.classList.remove('hidden');
+        void m.offsetWidth;
+        m.classList.add('visible');
+    }
+
+    closeStatsModal() {
+        const m = document.getElementById('stats-modal');
+        m.classList.remove('visible');
+        setTimeout(() => m.classList.add('hidden'), 300);
+    }
+
+    // Favorites Modal
+    openFavoritesModal() {
+        if (typeof brewManager !== 'undefined') brewManager.renderFavorites();
+        const m = document.getElementById('favorites-modal');
+        m.classList.remove('hidden');
+        void m.offsetWidth;
+        m.classList.add('visible');
+    }
+
+    closeFavoritesModal() {
+        const m = document.getElementById('favorites-modal');
+        m.classList.remove('visible');
+        setTimeout(() => m.classList.add('hidden'), 300);
+    }
+
+    // Leaderboard Modal
+    async openLeaderboardModal() {
+        const m = document.getElementById('leaderboard-modal');
+        const listEl = document.getElementById('leaderboard-list');
+
+        // Show modal immediately with loading state
+        m.classList.remove('hidden');
+        void m.offsetWidth;
+        m.classList.add('visible');
+        listEl.innerHTML = '<p class="lb-loading">Lade Rangliste\u2026</p>';
+
+        try {
+            const q = query(
+                collection(db, 'users'),
+                orderBy('points', 'desc'),
+                limit(50)
+            );
+            const snapshot = await getDocs(q);
+            const currentUid = this.currentUser?.uid;
+
+            if (snapshot.empty) {
+                listEl.innerHTML = '<p class="lb-loading">Noch keine Eintr\u00e4ge.</p>';
+                return;
+            }
+
+            const medals = ['🥇', '🥈', '🥉'];
+            let html = '';
+            let rank = 1;
+
+            snapshot.forEach(docSnap => {
+                const u = docSnap.data();
+                const pts = u.points || 0;
+                const name = u.displayName || u.email?.split('@')[0] || 'User';
+                const levelTitle = getLevel(pts).title;
+                const isMe = docSnap.id === currentUid;
+                const rankDisplay = rank <= 3 ? medals[rank - 1] : `#${rank}`;
+
+                html += `
+                    <div class="lb-row${isMe ? ' lb-me' : ''}">
+                        <span class="lb-rank">${rankDisplay}</span>
+                        <div class="lb-info">
+                            <span class="lb-name">${name}${isMe ? ' <span class="lb-you">Du</span>' : ''}</span>
+                            <span class="lb-title">${levelTitle}</span>
+                        </div>
+                        <span class="lb-points">${pts}</span>
+                    </div>`;
+                rank++;
+            });
+
+            listEl.innerHTML = html;
+        } catch (err) {
+            console.error('Leaderboard fetch error:', err);
+            listEl.innerHTML = '<p class="lb-loading">Fehler beim Laden. Bitte einloggen.</p>';
+        }
+    }
+
+    closeLeaderboardModal() {
+        const m = document.getElementById('leaderboard-modal');
+        m.classList.remove('visible');
+        setTimeout(() => m.classList.add('hidden'), 300);
     }
 
     // Update UI based on auth state
