@@ -283,12 +283,27 @@ const brewManager = {
         if (!brew) return;
         brew.favorite = !brew.favorite;
 
+        // Direct DOM update — no re-render needed, CSS specificity proof
+        const btn = e.currentTarget;
+        const icon = btn.querySelector('.material-symbols-rounded');
+        if (brew.favorite) {
+            btn.classList.add('active');
+            icon.textContent = 'favorite';
+            icon.style.color = '#e74c3c';
+            icon.style.filter = 'drop-shadow(0 0 7px rgba(231,76,60,0.8))';
+        } else {
+            btn.classList.remove('active');
+            icon.textContent = 'favorite_border';
+            icon.style.color = 'rgba(212,175,55,0.35)';
+            icon.style.filter = '';
+        }
+
+        // Save in background
         if (window.authManager && window.authManager.currentUser) {
             window.authManager.saveBrews(brewManager.brews);
         } else {
             localStorage.setItem('coffee_brews', JSON.stringify(brewManager.brews));
         }
-        brewManager.renderList();
         utils.vibrate(15);
     },
     renderList: () => {
