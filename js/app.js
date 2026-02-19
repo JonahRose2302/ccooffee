@@ -795,6 +795,62 @@ const dialIn = {
         document.getElementById('result-grind').innerText = targetGrind.toFixed(2);
         document.getElementById('dial-result').classList.remove('hidden');
         utils.vibrate([100, 50, 100]);
+    },
+
+    init: () => {
+        // Randomly trigger the "Epic Feature" popup to hype the user
+        // Chance is 30% on load, or guaranteed if it's the first time
+        const hasSeen = sessionStorage.getItem('epic_promo_seen');
+        if (!hasSeen || Math.random() > 0.7) {
+            setTimeout(() => dialIn.triggerPromo(), 2000);
+        }
+    },
+
+    triggerPromo: () => {
+        // Don't show if already on Dial-In page
+        if (document.getElementById('dialin').classList.contains('active')) return;
+
+        const messages = [
+            { title: "Dial-In Calculator", text: "Stop wasting beans. Calculate your optimal grind size now." },
+            { title: "Perfect Extraction", text: "Use our linear interpolation tool to find the sweet spot." },
+            { title: "Smart Adjustment", text: "Input two test shots and get your target setting instantly." }
+        ];
+        const msg = messages[Math.floor(Math.random() * messages.length)];
+
+        const popup = document.createElement('div');
+        popup.className = 'feature-popup glass-panel';
+        popup.style.cursor = 'pointer'; // Make it obvious
+        popup.onclick = () => {
+            // Check if router exists, otherwise fallback to hash or manual
+            if (typeof router !== 'undefined' && router.navigate) {
+                router.navigate('dialin');
+            } else {
+                // Fallback for simple tab switching if router isn't global
+                const dialInLink = document.querySelector('[data-page="dialin"]');
+                if (dialInLink) dialInLink.click();
+            }
+            popup.classList.remove('active');
+            setTimeout(() => popup.remove(), 300);
+        };
+
+        popup.innerHTML = `
+            <div class="shine"></div>
+            <span class="material-symbols-rounded" style="color:#FFD700; font-size:2rem; margin-bottom:4px;">calculate</span>
+            <strong>${msg.title}</strong>
+            <p>${msg.text}</p>
+            <small style="color:var(--color-gold-dark); font-size:0.7rem; margin-top:4px;">Tap to open</small>
+        `;
+        document.body.appendChild(popup);
+
+        // Animate In
+        requestAnimationFrame(() => popup.classList.add('active'));
+
+        // Remove
+        setTimeout(() => {
+            popup.classList.remove('active');
+            setTimeout(() => popup.remove(), 600);
+            sessionStorage.setItem('epic_promo_seen', 'true');
+        }, 6000); // Increased duration slightly so they can read it
     }
 };
 
@@ -1138,6 +1194,7 @@ window.addEventListener('load', () => {
     drinkManager.init();
     shopManager.init();
     knowledgeManager.init();
+    dialIn.init(); // Init Epic Dial-In Logic
     cursorFollower.init();
 
     // Enable magnetic effects on tiles and navigation
