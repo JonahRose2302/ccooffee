@@ -607,10 +607,12 @@ const brewManager = {
                         <h3>${brew.beanName}</h3>
                         <small style="opacity:0.7">${brew.roastDate || 'No Date'}</small>
                     </div>
-                    <span class="fav-icon-btn${brew.favorite ? ' active' : ''}" onclick="brewManager.toggleFavorite('${brew.id}', event)">
-                        <span class="material-symbols-rounded">${brew.favorite ? 'favorite' : 'favorite_border'}</span>
-                    </span>
-                    <span class="material-symbols-rounded" id="icon-${brew.id}">expand_more</span>
+                    <div class="brew-actions">
+                        <span class="fav-icon-btn${brew.favorite ? ' active' : ''}" onclick="brewManager.toggleFavorite('${brew.id}', event)">
+                            <span class="material-symbols-rounded">${brew.favorite ? 'favorite' : 'favorite_border'}</span>
+                        </span>
+                        <span class="material-symbols-rounded" id="icon-${brew.id}">expand_more</span>
+                    </div>
                 </div>
                 <div class="brew-details" id="details-${brew.id}">
                     ${detailsHtml}
@@ -1141,6 +1143,7 @@ window.addEventListener('load', () => {
     // Enable magnetic effects on tiles and navigation
     setTimeout(() => {
         animationEngine.enableMagnetic('.tile', 0.3);
+        animationEngine.enableMagnetic('.knowledge-card', 0.3); // Added Knowledge Base Cards
         animationEngine.enableMagnetic('.nav-btn', 0.25);
         // Removed glass-nav magnetic effect to prevent shifting
         animationEngine.enableMagnetic('.toggle-btn', 0.2);

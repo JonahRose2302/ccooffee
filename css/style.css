@@ -614,6 +614,14 @@ h3 {
     font-size: 1.1rem;
 }
 
+/* Container for heart and expand arrow */
+.brew-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    /* Fix for icons being too close */
+}
+
 /* Favorite heart icon — lives inside .brew-header */
 .fav-icon-btn {
     display: inline-flex;
@@ -1253,7 +1261,8 @@ input[type="file"]+*:hover {
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    z-index: 10000;
+    z-index: 10005;
+    /* Moved up to beat nav (9999) */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2251,5 +2260,36 @@ body {
 
     #k-detail-title {
         font-size: 1.4rem;
+    }
+
+    /* Fix Level Title Visibility */
+    #level-title {
+        color: var(--color-gold-bright) !important;
+        font-size: 1.5rem !important;
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    /* Fix Close Button Overlap with Top Nav */
+    .modal .close {
+        top: 90px !important;
+        right: 20px !important;
+        font-size: 2.5rem !important;
+        z-index: 10010 !important;
+        background: rgba(0, 0, 0, 0.5);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+
+    .modal-content {
+        padding-top: 80px !important;
     }
 }
