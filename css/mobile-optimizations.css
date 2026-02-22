@@ -105,8 +105,8 @@
         right: 20px;
     }
 
-    /* Reduce scroll animation complexity */
-    #video-canvas {
+    /* Reduce scroll animation / Spline complexity */
+    #canvas3d {
         display: none;
     }
 

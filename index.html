@@ -100,14 +100,6 @@
 
         <!-- HOME PAGE -->
         <section id="home" class="page active">
-            <!-- Scroll Animation Container -->
-            <div class="v-container">
-                <canvas id="video-canvas"></canvas>
-                <div class="scroll-instruction">
-                    <span class="material-symbols-rounded">keyboard_arrow_down</span>
-                </div>
-            </div>
-
             <!-- Guest Mode Warning -->
             <div id="guest-warning" class="guest-warning glass-panel hidden">
                 <span class="material-symbols-rounded">info</span>
@@ -118,10 +110,14 @@
             <!-- Dashboard / Tile Navigation -->
             <div class="content-section">
                 <!-- Removed inner glass-panel to allow full bleed gradient blend -->
-                <h1>WELCOME</h1>
-                <p class="subtitle">Your Personal Precision Barista</p>
 
                 <div class="tile-grid">
+                    <div class="tile tile-large"
+                        onclick="document.getElementById('about-modal').classList.add('visible')">
+                        <span class="material-symbols-rounded icon">person</span>
+                        <h2>Über mich</h2>
+                        <p>Das Gesicht hinter ccooffee</p>
+                    </div>
                     <div class="tile" onclick="router.navigate('brew')">
                         <span class="material-symbols-rounded icon">coffee_maker</span>
                         <h2>Brew Tracker</h2>
@@ -225,6 +221,7 @@
             </div>
         </section>
 
+
         <!-- SHOPS PAGE -->
         <section id="shops" class="page">
             <header class="page-header">
@@ -250,9 +247,58 @@
             <div id="shop-map-container" class="map-container hidden"></div>
         </section>
 
+        <!-- KNOWLEDGE BASE -->
+        <section id="knowledge" class="page">
+            <div class="header">
+                <h1>Expert Knowledge</h1>
+                <p>The Ultimate Barista Knowledge Base</p>
+            </div>
+            <div class="knowledge-grid" id="knowledge-grid">
+                <!-- Topics rendered via JS -->
+            </div>
+
+            <!-- Knowledge Detail Modal -->
+            <div id="knowledge-modal" class="modal hidden">
+                <div class="modal-content knowledge-modal-content glass-panel">
+                    <span class="close" id="knowledge-modal-close">&times;</span>
+                    <div class="knowledge-detail-header">
+                        <span class="material-symbols-rounded" id="k-detail-icon">school</span>
+                        <h2 id="k-detail-title">Topic Title</h2>
+                    </div>
+                    <div class="knowledge-detail-body" id="k-detail-body">
+                        <!-- Content -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- MODALS -->
+    <!-- About Modal -->
+    <div id="about-modal" class="modal">
+        <div class="modal-content glass-panel" style="text-align: center; padding: 40px 20px;">
+            <span class="close"
+                onclick="document.getElementById('about-modal').classList.remove('visible')">&times;</span>
+            <div style="margin-bottom: 20px;">
+                <span class="material-symbols-rounded"
+                    style="font-size: 64px; color: var(--color-gold-bright);">person</span>
+            </div>
+            <h2>Hey, ich bin Jonah!</h2>
+            <br>
+            <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 30px;">
+                Willkommen bei <strong>ccooffee</strong> – deinem ultimativen Barista-Begleiter. Ich habe dieses Projekt
+                ins Leben gerufen, um Baristas und Specialty Coffee Fans ein Tool zur Hand zu geben, um ihre Skills zu
+                perfektionieren.
+                <br><br>
+                Wenn du mehr über meine Arbeit und meine Projekte erfahren willst, schau gerne auf meinem YouTube-Kanal
+                vorbei!
+            </p>
+            <a href="https://www.youtube.com/@its_noxram" target="_blank"
+                style="display: inline-block; background: var(--color-gold-bright); color: #000; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; font-family: var(--font-display); letter-spacing: 1px;">Zum
+                YouTube Kanal</a>
+        </div>
+    </div>
     <!-- Brew Modal -->
     <div id="brew-modal" class="modal">
         <div class="modal-content glass-panel">
@@ -458,32 +504,6 @@
             </div>
         </div>
     </div>
-
-
-    <!-- KNOWLEDGE BASE -->
-    <section id="knowledge" class="page">
-        <div class="header">
-            <h1>Expert Knowledge</h1>
-            <p>The Ultimate Barista Knowledge Base</p>
-        </div>
-        <div class="knowledge-grid" id="knowledge-grid">
-            <!-- Topics rendered via JS -->
-        </div>
-
-        <!-- Knowledge Detail Modal -->
-        <div id="knowledge-modal" class="modal hidden">
-            <div class="modal-content knowledge-modal-content glass-panel">
-                <span class="close" id="knowledge-modal-close">&times;</span>
-                <div class="knowledge-detail-header">
-                    <span class="material-symbols-rounded" id="k-detail-icon">school</span>
-                    <h2 id="k-detail-title">Topic Title</h2>
-                </div>
-                <div class="knowledge-detail-body" id="k-detail-body">
-                    <!-- Content -->
-                </div>
-            </div>
-        </div>
-    </section>
 
     <script type="module" src="js/firebase-config.js"></script>
     <script type="module" src="js/auth.js?v=9"></script>
