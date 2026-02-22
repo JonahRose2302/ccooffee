@@ -596,19 +596,23 @@ const brewManager = {
 
     toggle: (id) => {
         const details = document.getElementById(`details-${id}`);
+        if (!details) return;
         const parent = details.parentElement;
         const icon = document.getElementById(`icon-${id}`);
 
         if (parent.classList.contains('expanded')) {
             parent.classList.remove('expanded');
-            icon.innerText = 'expand_more';
+            if (icon) icon.innerText = 'expand_more';
         } else {
+            // Close other expanded items
             document.querySelectorAll('.brew-pill.expanded').forEach(p => {
                 p.classList.remove('expanded');
-                try { p.querySelector('.material-symbols-rounded').innerText = 'expand_more'; } catch (e) { }
+                // Try to find an expand-icon class first, fallback to first material icon
+                const otherIcon = p.querySelector('.expand-icon') || p.querySelector('.material-symbols-rounded');
+                if (otherIcon) otherIcon.innerText = 'expand_more';
             });
             parent.classList.add('expanded');
-            icon.innerText = 'expand_less';
+            if (icon) icon.innerText = 'expand_less';
         }
         utils.vibrate(10);
     },
@@ -724,6 +728,7 @@ const drinkManager = {
     },
     renderList: () => {
         const container = document.getElementById('drink-list');
+        if (!container) return;
         container.innerHTML = '';
         drinkManager.drinks.forEach(d => {
             const el = document.createElement('div');
@@ -946,6 +951,27 @@ const shopManager = {
         m.classList.remove('visible'); setTimeout(() => m.classList.add('hidden'), 300);
     },
 
+    toggle: (id) => {
+        const details = document.getElementById(`details-${id}`);
+        if (!details) return;
+        const parent = details.parentElement;
+        const icon = document.getElementById(`icon-${id}`);
+
+        if (parent.classList.contains('expanded')) {
+            parent.classList.remove('expanded');
+            if (icon) icon.innerText = 'expand_more';
+        } else {
+            // Close other expanded shops
+            document.querySelectorAll('.brew-pill.expanded').forEach(p => {
+                p.classList.remove('expanded');
+                const otherIcon = p.querySelector('.expand-icon');
+                if (otherIcon) otherIcon.innerText = 'expand_more';
+            });
+            parent.classList.add('expanded');
+            if (icon) icon.innerText = 'expand_less';
+        }
+    },
+
     switchView: (view) => {
         document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
         document.querySelector(`.toggle-btn[onclick="shopManager.switchView('${view}')"]`).classList.add('active');
@@ -983,22 +1009,29 @@ const shopManager = {
 
     renderList: () => {
         const container = document.getElementById('shop-list');
+        if (!container) return;
         container.innerHTML = '';
         shopManager.shops.forEach(s => {
             const el = document.createElement('div');
             el.className = 'brew-pill glass-panel';
+            const rating = parseInt(s.rating) || 0;
             el.innerHTML = `
-                <div class="brew-header" onclick="brewManager.toggle('${s.id}')">
-                   <h3>${s.shopName}</h3>
-                   <span>${'★'.repeat(s.rating)}</span>
+                <div class="brew-header" onclick="shopManager.toggle('${s.id}')">
+                   <div style="flex: 1">
+                       <h3>${s.shopName}</h3>
+                       <p style="font-size: 0.8rem; opacity: 0.7; margin: 0;">${s.address || s.location}</p>
+                   </div>
+                   <div class="brew-actions">
+                       <span style="color: var(--color-gold-bright)">${'★'.repeat(rating)}</span>
+                       <span class="material-symbols-rounded expand-icon" id="icon-${s.id}">expand_more</span>
+                   </div>
                 </div>
                 <div class="brew-details" id="details-${s.id}">
                      <div class="actions-row">
                         <button class="action-btn edit" onclick="shopManager.edit('${s.id}', event)"><span class="material-symbols-rounded">edit</span> Edit</button>
                         <button class="action-btn delete" onclick="shopManager.delete('${s.id}', event)"><span class="material-symbols-rounded">delete</span> Delete</button>
                     </div>
-                    <p style="opacity: 0.8; margin-top:10px;"><strong>Loc:</strong> ${s.address || s.location}</p>
-                    <p style="opacity: 0.8"><strong>Notes:</strong> ${s.notes || ''}</p>
+                    <p style="opacity: 0.8; margin-top:10px;"><strong>Notes:</strong> ${s.notes || 'Keine Notizen'}</p>
                 </div>
             `;
             container.appendChild(el);
