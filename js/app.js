@@ -51,6 +51,10 @@ const animationEngine = {
     revealElements: (selector, delay = 0.08) => {
         const elements = document.querySelectorAll(selector);
         if (elements.length === 0) return;
+
+        // Disable CSS transitions before GSAP animation to prevent conflict
+        elements.forEach(el => el.style.transition = 'none');
+
         gsap.from(elements, {
             opacity: 0,
             y: 50,
@@ -58,7 +62,11 @@ const animationEngine = {
             stagger: delay,
             duration: 0.6,
             ease: "power3.out",
-            clearProps: "all"
+            clearProps: "all",
+            onComplete: () => {
+                // Restore CSS transition after animation if clearProps missed anything
+                elements.forEach(el => el.style.transition = '');
+            }
         });
     },
 

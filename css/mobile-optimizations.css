@@ -136,7 +136,9 @@
     }
 
     .tile-grid {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
     }
 
     .detail-grid {

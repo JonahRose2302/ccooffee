@@ -441,8 +441,9 @@ h3 {
 
 /* === MAGNETIC TILES WITH 3D EFFECTS === */
 .tile-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 24px;
     width: 100%;
     max-width: 1000px;
@@ -451,6 +452,8 @@ h3 {
 }
 
 .tile {
+    width: 220px;
+    min-height: 220px;
     background: var(--glass-bg);
     backdrop-filter: blur(var(--glass-blur));
     -webkit-backdrop-filter: blur(var(--glass-blur));
@@ -460,6 +463,7 @@ h3 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     text-align: center;
     gap: 14px;
     cursor: pointer;

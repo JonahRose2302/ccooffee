@@ -5,6 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coffee Assistant</title>
+    <script>
+        // Redirect mobile users to explore.html immediately, bypassing the 3D scene
+        if (window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent)) {
+            window.location.replace('explore.html');
+        }
+    </script>
 
     <!-- Material Symbols -->
     <link rel="stylesheet"
