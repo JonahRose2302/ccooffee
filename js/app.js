@@ -50,6 +50,7 @@ const animationEngine = {
     // Staggered reveal for lists/grids
     revealElements: (selector, delay = 0.08) => {
         const elements = document.querySelectorAll(selector);
+        if (elements.length === 0) return;
         gsap.from(elements, {
             opacity: 0,
             y: 50,
@@ -94,7 +95,7 @@ const animationEngine = {
         });
     },
 
-    // Enhanced page transition
+    // Enhanced page transition on load
     transitionPage: () => {
         const activePage = document.querySelector('.page.active');
         if (activePage) {
@@ -117,44 +118,7 @@ const animationEngine = {
     }
 };
 
-/* --- ROUTER --- */
-const router = {
-    navigate: (pageId) => {
-        document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-
-        // Trigger page transition animation
-        animationEngine.transitionPage();
-
-        // Handle Nav Visibility
-        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-nav'));
-        const navBtn = document.querySelector(`.nav-btn[onclick="router.navigate('${pageId}')"]`);
-        if (navBtn) navBtn.classList.add('active-nav');
-
-        document.getElementById('main-nav').classList.remove('hidden');
-
-        // Trigger map resize if shops
-        if (pageId === 'shops' && shopManager.map) {
-            setTimeout(() => shopManager.map.invalidateSize(), 100);
-        }
-
-        // Handle Home Scroll Fix
-        if (pageId === 'home') {
-            // Force scroll top immediately
-            window.scrollTo(0, 0);
-            // Refresh GSAP after a slight delay to ensure layout is ready
-            setTimeout(() => {
-                window.scrollTo(0, 0);
-                ScrollTrigger.refresh();
-            }, 50);
-        } else {
-            window.scrollTo(0, 0);
-        }
-
-        updateLoginBtnState();
-        utils.vibrate(20);
-    }
-};
+// Router removed entirely in favor of multi-page setup.
 
 /* --- KNOWLEDGE MANAGER --- */
 const KNOWLEDGE_DATA = [
@@ -1138,64 +1102,16 @@ window.addEventListener('auth-logout', () => {
 });
 
 window.addEventListener('load', () => {
-    // Scroll Animation Init
-    const canvas = document.getElementById("video-canvas");
-    const context = canvas.getContext("2d");
-    canvas.width = 1280;
-    canvas.height = 720;
-    const frameCount = 240;
-    const currentFrame = index => `./assets/animations/coffee-pour/ezgif-frame-${(index + 1).toString().padStart(3, '0')}.jpg`;
-    const images = [];
-    const sequence = { frame: 0 };
-
-    let loaded = 0;
-    for (let i = 0; i < frameCount; i++) {
-        const img = new Image();
-        img.src = currentFrame(i);
-        images.push(img);
-        img.onload = () => { loaded++; if (loaded === frameCount) startScrollAnim(); };
-    }
-
-    function startScrollAnim() {
-        gsap.to(sequence, {
-            frame: frameCount - 1,
-            snap: "frame",
-            ease: "none",
-            scrollTrigger: {
-                trigger: ".v-container",
-                start: "top top",
-                end: "+=3000", // User specified scroll distance
-                scrub: 0.5,
-                pin: true,
-                pinSpacing: true, // User requested this logic
-                anticipatePin: 1
-            },
-            onUpdate: renderFrame
-        });
-        renderFrame();
-    }
-
-    function renderFrame() {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        const img = images[sequence.frame];
-        if (!img) return;
-        const hRatio = canvas.width / img.width;
-        const vRatio = canvas.height / img.height;
-        const ratio = Math.max(hRatio, vRatio);
-        const centerShift_x = (canvas.width - img.width * ratio) / 2;
-        const centerShift_y = (canvas.height - img.height * ratio) / 2;
-        context.drawImage(img, 0, 0, img.width, img.height,
-            centerShift_x, centerShift_y, img.width * ratio, img.height * ratio);
-    }
-    window.addEventListener("resize", renderFrame);
-
     // Feature Inits
-    brewManager.init();
-    drinkManager.init();
-    shopManager.init();
-    knowledgeManager.init();
-    dialIn.init(); // Init Epic Dial-In Logic
+    if (document.getElementById('brew-list')) brewManager.init();
+    if (document.getElementById('drink-list')) drinkManager.init();
+    if (document.getElementById('shop-list')) shopManager.init();
+    if (document.getElementById('knowledge-grid')) knowledgeManager.init();
+    if (document.getElementById('dialin')) dialIn.init();
     cursorFollower.init();
+
+    // Trigger page transition
+    animationEngine.transitionPage();
 
     // Enable magnetic effects on tiles and navigation
     setTimeout(() => {
@@ -1285,8 +1201,7 @@ function updateLoginBtnState() {
     const loginBtn = document.getElementById('login-btn');
     if (!loginBtn) return;
 
-    const activePage = document.querySelector('.page.active');
-    const isHome = activePage && activePage.id === 'home';
+    const isHome = location.pathname === '/' || location.pathname.endsWith('index.html');
     const isAtTop = window.scrollY < 50;
 
     if (isHome && isAtTop) {

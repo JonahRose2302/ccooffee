@@ -81,7 +81,7 @@
 
     <!-- Navigation (Top, Fixed, Always Visible) -->
     <nav id="main-nav" class="glass-nav">
-        <button class="nav-btn active-nav" onclick="window.location.href='explore.html'"><span
+        <button class="nav-btn" onclick="window.location.href='explore.html'"><span
                 class="material-symbols-rounded">home</span></button>
         <button class="nav-btn" onclick="window.location.href='brew.html'"><span
                 class="material-symbols-rounded">coffee_maker</span></button>
@@ -91,36 +91,36 @@
                 class="material-symbols-rounded">storefront</span></button>
         <button class="nav-btn" onclick="window.location.href='dialin.html'"><span
                 class="material-symbols-rounded">tune</span></button>
-        <button class="nav-btn" onclick="window.location.href='knowledge.html'"><span
+        <button class="nav-btn active-nav" onclick="window.location.href='knowledge.html'"><span
                 class="material-symbols-rounded">school</span></button>
     </nav>
     <!-- ROOTS -->
 
     <main id="app">
-        <section id="home" class="page active epic-page" style="position: relative; overflow: hidden; height: 100vh;">
-            <div class="epic-background" style="position: absolute; width: 100%; height: 100%; z-index: 0;"></div>
-
-            <div class="spline-container"
-                style="width: 100%; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1;">
-                <canvas id="canvas3d" style="width: 100%; height: 100%; outline: none;"></canvas>
-            </div>
-
-            <div class="hero-content"
-                style="position: absolute; z-index: 2; top: 85%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
-                <button class="entdecken-btn" onclick="window.location.href='explore.html'"
-                    style="pointer-events: auto; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1.2rem; padding: 15px 40px; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">Entdecken</button>
-            </div>
-
-            <script type="module">
-                import { Application } from 'https://esm.sh/@splinetool/runtime';
-                const canvas = document.getElementById('canvas3d');
-                const spline = new Application(canvas);
-                spline.load('https://prod.spline.design/Bfk2mBe62HHnDOlz/scene.splinecode')
-                    .then(() => console.log('Scene loaded!'));
-            </script>
-        </section>
     </main>
+    <section id="knowledge" class="page active">
+        <header class="page-header">
+            <h1>Expert Knowledge</h1>
+            <p>The Ultimate Barista Knowledge Base</p>
+        </header>
+        <div class="knowledge-grid" id="knowledge-grid">
+            <!-- Topics rendered via JS -->
+        </div>
 
+        <!-- Knowledge Detail Modal -->
+        <div id="knowledge-modal" class="modal hidden">
+            <div class="modal-content knowledge-modal-content glass-panel">
+                <span class="close" id="knowledge-modal-close">&times;</span>
+                <div class="knowledge-detail-header">
+                    <span class="material-symbols-rounded" id="k-detail-icon">school</span>
+                    <h2 id="k-detail-title">Topic Title</h2>
+                </div>
+                <div class="knowledge-detail-body" id="k-detail-body">
+                    <!-- Content -->
+                </div>
+            </div>
+        </div>
+    </section>
     <!-- MODALS -->
     <!-- Auth Modal (Login/Signup) -->
     <div id="auth-modal" class="modal hidden">

@@ -81,7 +81,7 @@
 
     <!-- Navigation (Top, Fixed, Always Visible) -->
     <nav id="main-nav" class="glass-nav">
-        <button class="nav-btn active-nav" onclick="window.location.href='explore.html'"><span
+        <button class="nav-btn" onclick="window.location.href='explore.html'"><span
                 class="material-symbols-rounded">home</span></button>
         <button class="nav-btn" onclick="window.location.href='brew.html'"><span
                 class="material-symbols-rounded">coffee_maker</span></button>
@@ -89,7 +89,7 @@
                 class="material-symbols-rounded">menu_book</span></button>
         <button class="nav-btn" onclick="window.location.href='shops.html'"><span
                 class="material-symbols-rounded">storefront</span></button>
-        <button class="nav-btn" onclick="window.location.href='dialin.html'"><span
+        <button class="nav-btn active-nav" onclick="window.location.href='dialin.html'"><span
                 class="material-symbols-rounded">tune</span></button>
         <button class="nav-btn" onclick="window.location.href='knowledge.html'"><span
                 class="material-symbols-rounded">school</span></button>
@@ -97,27 +97,40 @@
     <!-- ROOTS -->
 
     <main id="app">
-        <section id="home" class="page active epic-page" style="position: relative; overflow: hidden; height: 100vh;">
-            <div class="epic-background" style="position: absolute; width: 100%; height: 100%; z-index: 0;"></div>
+        <section id="dialin" class="page epic-page active">
+            <div class="epic-background"></div>
+            <header class="page-header epic-header">
+                <h1>dial-in</h1>
+            </header>
 
-            <div class="spline-container"
-                style="width: 100%; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1;">
-                <canvas id="canvas3d" style="width: 100%; height: 100%; outline: none;"></canvas>
+            <div class="dial-in-container glass-panel-dark">
+                <div class="input-group">
+                    <label>Target Time (s)</label>
+                    <input type="number" id="target-time" placeholder="25" step="1">
+                </div>
+
+                <div class="shot-inputs">
+                    <div class="shot-card">
+                        <h3>Test Shot 1</h3>
+                        <input type="number" id="g1" placeholder="Grind Setting (e.g. 10)" step="0.1">
+                        <input type="number" id="t1" placeholder="Time (s)" step="1">
+                    </div>
+                    <div class="shot-card">
+                        <h3>Test Shot 2</h3>
+                        <input type="number" id="g2" placeholder="Grind Setting (e.g. 12)" step="0.1">
+                        <input type="number" id="t2" placeholder="Time (s)" step="1">
+                    </div>
+                </div>
+
+                <button class="calculate-btn" onclick="dialIn.calculate()">CALCULATE</button>
+
+                <div id="dial-result" class="result-box hidden">
+                    <span class="label">Recommended Grind</span>
+                    <span class="value" id="result-grind">--</span>
+                    <p class="warning-text">Note: Due to non-linear particle distribution, consider adjusting 0.2 - 0.5
+                        steps coarser.</p>
+                </div>
             </div>
-
-            <div class="hero-content"
-                style="position: absolute; z-index: 2; top: 85%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
-                <button class="entdecken-btn" onclick="window.location.href='explore.html'"
-                    style="pointer-events: auto; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1.2rem; padding: 15px 40px; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">Entdecken</button>
-            </div>
-
-            <script type="module">
-                import { Application } from 'https://esm.sh/@splinetool/runtime';
-                const canvas = document.getElementById('canvas3d');
-                const spline = new Application(canvas);
-                spline.load('https://prod.spline.design/Bfk2mBe62HHnDOlz/scene.splinecode')
-                    .then(() => console.log('Scene loaded!'));
-            </script>
         </section>
     </main>
 

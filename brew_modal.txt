@@ -1,0 +1,58 @@
+    <div id="brew-modal" class="modal">
+        <div class="modal-content glass-panel">
+            <span class="close" onclick="brewManager.closeModal()">&times;</span>
+            <h2>New Espresso</h2>
+            <form id="brew-form">
+                <input type="text" name="beanName" placeholder="Bean Name" required>
+                <input type="date" name="roastDate" placeholder="Roast Date">
+                <input type="text" name="grinder" placeholder="Grinder">
+                <input type="number" name="grindSize" placeholder="Grind Size" step="0.1">
+                <input type="number" name="rpm" placeholder="RPM" step="10">
+                <input type="number" name="temp" placeholder="Temperature (°C)" step="0.1">
+                <div class="row">
+                    <input type="number" name="doseIn" id="doseIn" placeholder="Dose In (g)" step="0.1" required>
+                    <input type="number" name="ratio" id="ratio" placeholder="Ratio (1:x)" step="0.1" required>
+                </div>
+                <div class="suggestion">Target Yield: <span id="target-yield">--</span> g</div>
+
+                <div class="toggle-group">
+                    <label class="switch">
+                        <input type="checkbox" name="preinfusion" id="preinfusion-check"
+                            onchange="toggleSection('preinfusion-details')">
+                        <span class="slider round"></span>
+                    </label>
+                    <span>Preinfusion?</span>
+                </div>
+                <div id="preinfusion-details" class="details-section hidden">
+                    <input type="number" name="piBar" placeholder="Pressure (Bar)">
+                    <input type="number" name="piWeight" placeholder="Weight (g)">
+                </div>
+
+                <div class="section-label">Peak Extraction</div>
+                <input type="number" name="peakBar" placeholder="Pressure (Bar)">
+                <input type="number" name="peakWeight" placeholder="Weight (g)">
+
+                <div class="toggle-group">
+                    <label class="switch">
+                        <input type="checkbox" name="tapering" id="tapering-check"
+                            onchange="toggleSection('tapering-details')">
+                        <span class="slider round"></span>
+                    </label>
+                    <span>Tapering?</span>
+                </div>
+                <div id="tapering-details" class="details-section hidden">
+                    <input type="number" name="tapBar" placeholder="Pressure (Bar)">
+                    <input type="number" name="tapWeight" placeholder="Weight (g)">
+                </div>
+
+                <div class="file-upload">
+                    <label for="curve-upload" class="upload-btn">
+                        <span class="material-symbols-rounded">upload</span> Extraction Curve (PNG)
+                    </label>
+                    <input type="file" id="curve-upload" accept="image/png">
+                </div>
+
+                <button type="submit" class="save-btn">Save Brew</button>
+            </form>
+        </div>
+    </div>

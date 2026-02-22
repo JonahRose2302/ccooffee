@@ -93,10 +93,14 @@ class AuthManager {
                 window.dispatchEvent(new CustomEvent('auth-logout'));
 
                 this.updateUI(false);
-                // Auto-open modal if not logged in
+                // Auto-open modal if not logged in (only once on index.html)
                 setTimeout(() => {
                     if (!this.currentUser) {
-                        this.showLoginModal();
+                        const isHome = location.pathname === '/' || location.pathname.endsWith('index.html');
+                        if (isHome && !sessionStorage.getItem('auth_modal_shown')) {
+                            this.showLoginModal();
+                            sessionStorage.setItem('auth_modal_shown', 'true');
+                        }
                         document.querySelectorAll('.guest-warning').forEach(el => el.classList.remove('hidden'));
                     }
                 }, 100);

@@ -81,13 +81,13 @@
 
     <!-- Navigation (Top, Fixed, Always Visible) -->
     <nav id="main-nav" class="glass-nav">
-        <button class="nav-btn active-nav" onclick="window.location.href='explore.html'"><span
+        <button class="nav-btn" onclick="window.location.href='explore.html'"><span
                 class="material-symbols-rounded">home</span></button>
         <button class="nav-btn" onclick="window.location.href='brew.html'"><span
                 class="material-symbols-rounded">coffee_maker</span></button>
         <button class="nav-btn" onclick="window.location.href='drinks.html'"><span
                 class="material-symbols-rounded">menu_book</span></button>
-        <button class="nav-btn" onclick="window.location.href='shops.html'"><span
+        <button class="nav-btn active-nav" onclick="window.location.href='shops.html'"><span
                 class="material-symbols-rounded">storefront</span></button>
         <button class="nav-btn" onclick="window.location.href='dialin.html'"><span
                 class="material-symbols-rounded">tune</span></button>
@@ -97,31 +97,56 @@
     <!-- ROOTS -->
 
     <main id="app">
-        <section id="home" class="page active epic-page" style="position: relative; overflow: hidden; height: 100vh;">
-            <div class="epic-background" style="position: absolute; width: 100%; height: 100%; z-index: 0;"></div>
+        <section id="shops" class="page active">
+            <header class="page-header">
+                <h1>CCOOFFEE SHOP</h1>
+                <button class="fab" onclick="shopManager.openAddModal()"><span
+                        class="material-symbols-rounded">add</span></button>
+            </header>
 
-            <div class="spline-container"
-                style="width: 100%; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1;">
-                <canvas id="canvas3d" style="width: 100%; height: 100%; outline: none;"></canvas>
+            <!-- Guest Mode Warning -->
+            <div class="guest-warning glass-panel hidden">
+                <span class="material-symbols-rounded">info</span>
+                <p><strong>Gast-Modus:</strong> Deine Einträge werden nur temporär gespeichert.</p>
             </div>
 
-            <div class="hero-content"
-                style="position: absolute; z-index: 2; top: 85%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
-                <button class="entdecken-btn" onclick="window.location.href='explore.html'"
-                    style="pointer-events: auto; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1.2rem; padding: 15px 40px; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">Entdecken</button>
+            <div class="map-toggle-container">
+                <button id="view-list" class="toggle-btn active" onclick="shopManager.switchView('list')">List</button>
+                <button id="view-map" class="toggle-btn" onclick="shopManager.switchView('map')">Map</button>
             </div>
 
-            <script type="module">
-                import { Application } from 'https://esm.sh/@splinetool/runtime';
-                const canvas = document.getElementById('canvas3d');
-                const spline = new Application(canvas);
-                spline.load('https://prod.spline.design/Bfk2mBe62HHnDOlz/scene.splinecode')
-                    .then(() => console.log('Scene loaded!'));
-            </script>
+            <div id="shop-list" class="shop-list-container">
+                <!-- Shop Pills -->
+            </div>
+            <div id="shop-map-container" class="map-container hidden"></div>
         </section>
     </main>
 
     <!-- MODALS -->
+    <!-- Shop Modal -->
+    <div id="shop-modal" class="modal">
+        <div class="modal-content glass-panel">
+            <span class="close" onclick="shopManager.closeModal()">&times;</span>
+            <h2>New Spot</h2>
+            <form id="shop-form">
+                <input type="text" name="shopName" placeholder="Shop Name" required>
+                <div class="row">
+                    <input type="text" name="location" id="shop-location" placeholder="City / Search">
+                    <button type="button" class="icon-btn" onclick="shopManager.getCurrentLocation()"><span
+                            class="material-symbols-rounded">my_location</span></button>
+                </div>
+                <textarea name="notes" placeholder="Notes..."></textarea>
+                <div class="rating-input">
+                    <label>Rating (1-5)</label>
+                    <input type="range" name="rating" min="1" max="5" value="5"
+                        oninput="document.getElementById('rating-val').innerText = this.value">
+                    <span id="rating-val">5</span>
+                </div>
+                <button type="submit" class="save-btn">Save Spot</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Auth Modal (Login/Signup) -->
     <div id="auth-modal" class="modal hidden">
         <div class="modal-content glass-panel">

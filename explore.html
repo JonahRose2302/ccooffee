@@ -97,27 +97,49 @@
     <!-- ROOTS -->
 
     <main id="app">
-        <section id="home" class="page active epic-page" style="position: relative; overflow: hidden; height: 100vh;">
-            <div class="epic-background" style="position: absolute; width: 100%; height: 100%; z-index: 0;"></div>
-
-            <div class="spline-container"
-                style="width: 100%; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1;">
-                <canvas id="canvas3d" style="width: 100%; height: 100%; outline: none;"></canvas>
+        <section id="explore" class="page active">
+            <!-- Guest Mode Warning -->
+            <div id="guest-warning" class="guest-warning glass-panel hidden">
+                <span class="material-symbols-rounded">info</span>
+                <p><strong>Gast-Modus:</strong> Deine Einträge werden nur temporär auf diesem Gerät gespeichert. Melde
+                    dich an, um sie sicher zu synchronisieren.</p>
             </div>
 
-            <div class="hero-content"
-                style="position: absolute; z-index: 2; top: 85%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
-                <button class="entdecken-btn" onclick="window.location.href='explore.html'"
-                    style="pointer-events: auto; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1.2rem; padding: 15px 40px; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">Entdecken</button>
-            </div>
+            <!-- Dashboard / Tile Navigation -->
+            <div class="content-section">
+                <!-- Removed inner glass-panel to allow full bleed gradient blend -->
+                <h1>WELCOME</h1>
+                <p class="subtitle">Your Personal Precision Barista</p>
 
-            <script type="module">
-                import { Application } from 'https://esm.sh/@splinetool/runtime';
-                const canvas = document.getElementById('canvas3d');
-                const spline = new Application(canvas);
-                spline.load('https://prod.spline.design/Bfk2mBe62HHnDOlz/scene.splinecode')
-                    .then(() => console.log('Scene loaded!'));
-            </script>
+                <div class="tile-grid">
+                    <div class="tile" onclick="window.location.href='brew.html'">
+                        <span class="material-symbols-rounded icon">coffee_maker</span>
+                        <h2>Brew Tracker</h2>
+                        <p>Track your shots</p>
+                    </div>
+                    <div class="tile" onclick="window.location.href='drinks.html'">
+                        <span class="material-symbols-rounded icon">local_cafe</span>
+                        <h2>Recipes</h2>
+                        <p>Manage drinks</p>
+                    </div>
+                    <div class="tile" onclick="window.location.href='dialin.html'">
+                        <span class="material-symbols-rounded icon">tune</span>
+                        <h2>Dial-In</h2>
+                        <p>Calculate your shot</p>
+                    </div>
+                    <!-- Knowledge Base Entry -->
+                    <div class="tile" onclick="window.location.href='knowledge.html'">
+                        <span class="material-symbols-rounded icon">school</span>
+                        <h2>Wissen</h2>
+                        <p>Explore coffee knowledge</p>
+                    </div>
+                    <div class="tile" onclick="window.location.href='shops.html'">
+                        <span class="material-symbols-rounded icon">map</span>
+                        <h2>ccooffee shops</h2>
+                        <p>Explore spots</p>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
 
