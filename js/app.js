@@ -931,16 +931,39 @@ const shopManager = {
         m.classList.remove('hidden'); void m.offsetWidth; m.classList.add('visible');
     },
 
-    delete: (id, e) => {
-        e.stopPropagation();
-        if (confirm('Delete spot?')) {
+    delete: async (id, e) => {
+        if (e) e.stopPropagation();
+        console.log('🗑️ Attempting to delete shop:', id);
+
+        if (confirm('Diesen Spot wirklich löschen?')) {
+            const originalCount = shopManager.shops.length;
             shopManager.shops = shopManager.shops.filter(s => s.id !== id);
 
-            if (window.authManager && window.authManager.currentUser) {
-                window.authManager.saveShops(shopManager.shops);
-            } else {
-                localStorage.setItem('coffee_shops', JSON.stringify(shopManager.shops));
+            if (shopManager.shops.length === originalCount) {
+                console.warn('⚠️ Shop with ID not found in local array:', id);
+                // Fallback: try matching by name if ID is missing (common for older entries)
+                const shopEl = e?.target.closest('.brew-pill');
+                if (shopEl) {
+                    const name = shopEl.querySelector('h3')?.innerText;
+                    if (name) {
+                        shopManager.shops = shopManager.shops.filter(s => s.shopName !== name);
+                    }
+                }
             }
+
+            try {
+                if (window.authManager && window.authManager.currentUser) {
+                    await window.authManager.saveShops(shopManager.shops);
+                    console.log('✅ Deleted shop from Cloud');
+                } else {
+                    localStorage.setItem('coffee_shops', JSON.stringify(shopManager.shops));
+                    console.log('✅ Deleted shop from LocalStorage');
+                }
+            } catch (err) {
+                console.error('❌ Error saving deletion:', err);
+                alert('Fehler beim Löschen. Bitte Seite neu laden.');
+            }
+
             shopManager.renderList();
             shopManager.renderMarkers();
         }
@@ -1010,28 +1033,40 @@ const shopManager = {
     renderList: () => {
         const container = document.getElementById('shop-list');
         if (!container) return;
+
+        if (shopManager.shops.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state glass-panel" style="padding: 40px; text-align: center; opacity: 0.7;">
+                    <span class="material-symbols-rounded" style="font-size: 3rem; margin-bottom: 10px;">map</span>
+                    <p>Noch keine Coffee Spots gespeichert.<br>Tippe auf das Plus um einen hinzuzufügen.</p>
+                </div>`;
+            return;
+        }
+
         container.innerHTML = '';
         shopManager.shops.forEach(s => {
             const el = document.createElement('div');
             el.className = 'brew-pill glass-panel';
             const rating = parseInt(s.rating) || 0;
+            const shopId = s.id || `temp-${Math.random().toString(36).substr(2, 9)}`;
+
             el.innerHTML = `
-                <div class="brew-header" onclick="shopManager.toggle('${s.id}')">
+                <div class="brew-header" onclick="shopManager.toggle('${shopId}')">
                    <div style="flex: 1">
-                       <h3>${s.shopName}</h3>
-                       <p style="font-size: 0.8rem; opacity: 0.7; margin: 0;">${s.address || s.location}</p>
+                       <h3>${s.shopName || 'Unbenannter Spot'}</h3>
+                       <p style="font-size: 0.8rem; opacity: 0.7; margin: 0;">${s.address || s.location || 'Keine Adresse'}</p>
                    </div>
                    <div class="brew-actions">
                        <span style="color: var(--color-gold-bright)">${'★'.repeat(rating)}</span>
-                       <span class="material-symbols-rounded expand-icon" id="icon-${s.id}">expand_more</span>
+                       <span class="material-symbols-rounded expand-icon" id="icon-${shopId}">expand_more</span>
                    </div>
                 </div>
-                <div class="brew-details" id="details-${s.id}">
+                <div class="brew-details" id="details-${shopId}">
                      <div class="actions-row">
-                        <button class="action-btn edit" onclick="shopManager.edit('${s.id}', event)"><span class="material-symbols-rounded">edit</span> Edit</button>
-                        <button class="action-btn delete" onclick="shopManager.delete('${s.id}', event)"><span class="material-symbols-rounded">delete</span> Delete</button>
+                        <button class="action-btn edit" onclick="shopManager.edit('${shopId}', event)"><span class="material-symbols-rounded">edit</span> Edit</button>
+                        <button class="action-btn delete" onclick="shopManager.delete('${shopId}', event)"><span class="material-symbols-rounded">delete</span> Delete</button>
                     </div>
-                    <p style="opacity: 0.8; margin-top:10px;"><strong>Notes:</strong> ${s.notes || 'Keine Notizen'}</p>
+                    <p style="opacity: 0.8; margin-top:10px;"><strong>Notizen:</strong> ${s.notes || 'Keine Notizen'}</p>
                 </div>
             `;
             container.appendChild(el);

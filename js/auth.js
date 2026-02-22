@@ -667,32 +667,59 @@ class AuthManager {
             const userDocRef = doc(db, 'users', this.currentUser.uid);
             const userDoc = await getDoc(userDocRef);
 
-            // Only migrate if user doc exists and no data has been migrated
             if (userDoc.exists()) {
                 const userData = userDoc.data();
-                const hasData = userData.brews?.length > 0 || userData.drinks?.length > 0 || userData.shops?.length > 0;
 
-                if (!hasData) {
-                    // Get data from localStorage
-                    const brews = JSON.parse(localStorage.getItem('coffee_brews') || '[]');
-                    const drinks = JSON.parse(localStorage.getItem('coffee_drinks') || '[]');
-                    const shops = JSON.parse(localStorage.getItem('coffee_shops') || '[]');
+                // Get data from localStorage
+                const localBrews = JSON.parse(localStorage.getItem('coffee_brews') || '[]');
+                const localDrinks = JSON.parse(localStorage.getItem('coffee_drinks') || '[]');
+                const localShops = JSON.parse(localStorage.getItem('coffee_shops') || '[]');
 
-                    if (brews.length > 0 || drinks.length > 0 || shops.length > 0) {
-                        // Migrate to Firestore
+                if (localBrews.length > 0 || localDrinks.length > 0 || localShops.length > 0) {
+                    // Merge logic: Add items if they don't exist in cloud (match by ID or Name as fallback)
+                    const cloudBrews = userData.brews || [];
+                    const cloudDrinks = userData.drinks || [];
+                    const cloudShops = userData.shops || [];
+
+                    const mergedBrews = [...cloudBrews];
+                    localBrews.forEach(lb => {
+                        if (!mergedBrews.find(cb => cb.id === lb.id || (cb.beanName === lb.beanName && cb.roastDate === lb.roastDate))) {
+                            mergedBrews.push(lb);
+                        }
+                    });
+
+                    const mergedDrinks = [...cloudDrinks];
+                    localDrinks.forEach(ld => {
+                        if (!mergedDrinks.find(cd => cd.id === ld.id || cd.drinkName === ld.drinkName)) {
+                            mergedDrinks.push(ld);
+                        }
+                    });
+
+                    const mergedShops = [...cloudShops];
+                    localShops.forEach(ls => {
+                        if (!mergedShops.find(cs => cs.id === ls.id || (cs.shopName === ls.shopName && cs.location === ls.location))) {
+                            mergedShops.push(ls);
+                        }
+                    });
+
+                    // Update Firestore if there are new items to add
+                    const hasNewItems = mergedBrews.length > cloudBrews.length ||
+                        mergedDrinks.length > cloudDrinks.length ||
+                        mergedShops.length > cloudShops.length;
+
+                    if (hasNewItems) {
                         await updateDoc(userDocRef, {
-                            brews,
-                            drinks,
-                            shops,
-                            points: 0 // Initialize points
+                            brews: mergedBrews,
+                            drinks: mergedDrinks,
+                            shops: mergedShops
                         });
-                        console.log('📦 Migrated localStorage data to Firestore');
-
-                        // Clear Local Data for Strict Separation
-                        localStorage.removeItem('coffee_brews');
-                        localStorage.removeItem('coffee_drinks');
-                        localStorage.removeItem('coffee_shops');
+                        console.log('📦 Merged local data into Firestore');
                     }
+
+                    // Clear Local Data after migration attempt
+                    localStorage.removeItem('coffee_brews');
+                    localStorage.removeItem('coffee_drinks');
+                    localStorage.removeItem('coffee_shops');
                 }
             }
         } catch (error) {
