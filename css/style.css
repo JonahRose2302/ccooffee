@@ -1222,6 +1222,52 @@ input[type="checkbox"] {
     background: rgba(255, 255, 255, 0.05);
 }
 
+.toggle-group label {
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* Extraction Profiling Row (Expert Form) */
+.profile-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.profile-row label {
+    font-family: var(--font-body);
+    font-weight: 600;
+    color: var(--color-gold-bright);
+    font-size: 0.9rem;
+    flex: 1;
+}
+
+.profile-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 2;
+}
+
+.profile-inputs input {
+    margin-bottom: 0;
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    padding: 8px;
+}
+
+.profile-inputs span {
+    color: var(--color-cream);
+    font-family: var(--font-mono);
+    opacity: 0.7;
+}
+
 /* File Upload Styling */
 input[type="file"] {
     opacity: 0;

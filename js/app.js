@@ -457,10 +457,8 @@ const brewManager = {
             const formData = new FormData(e.target);
             const brew = Object.fromEntries(formData.entries());
 
-            // Toggles
-            brew.preinfusion = document.getElementById('preinfusion-check').checked;
-            brew.tapering = document.getElementById('tapering-check').checked;
-
+            // The preinfusion and tapering toggles have been removed. 
+            // The data is now fully driven by the populated profile inputs.
             if (brewManager.editingId) {
                 // Update existing
                 const index = brewManager.brews.findIndex(b => b.id === brewManager.editingId);
@@ -522,10 +520,6 @@ const brewManager = {
 
         document.querySelector('#brew-modal h2').innerText = 'New Espresso';
         document.getElementById('target-ratio').innerText = '1:--';
-        toggleSection('preinfusion-details', false);
-        toggleSection('tapering-details', false);
-        document.getElementById('preinfusion-check').checked = false;
-        document.getElementById('tapering-check').checked = false;
 
         const m = document.getElementById('brew-modal');
         m.classList.remove('hidden');
@@ -551,12 +545,6 @@ const brewManager = {
         for (const [key, value] of Object.entries(brew)) {
             if (form.elements[key]) form.elements[key].value = value;
         }
-
-        document.getElementById('preinfusion-check').checked = !!brew.preinfusion;
-        toggleSection('preinfusion-details', !!brew.preinfusion);
-
-        document.getElementById('tapering-check').checked = !!brew.tapering;
-        toggleSection('tapering-details', !!brew.tapering);
 
         const doseIn = parseFloat(brew.doseIn) || 0;
         const doseOut = parseFloat(brew.doseOut) || 0;
@@ -645,38 +633,23 @@ const brewManager = {
                         <div class="detail-item"><label>GRIND SIZE</label><span>${brew.grindSize || '-'}</span></div>
                         <div class="detail-item"><label>DOSE</label><span>${doseIn}g</span></div>
                         <div class="detail-item"><label>YIELD</label><span>${doseOut.toFixed(1)}g (1:${ratio})</span></div>
+                        <div class="detail-item"><label>TIME</label><span>${brew.targetTime || '-'}s</span></div>
                         <div class="detail-item"><label>TEMP</label><span>${brew.temp || '-'}°C</span></div>
                         <div class="detail-item"><label>RPM</label><span>${brew.rpm || '-'}</span></div>
                     </div>
             `;
 
-            if (brew.preinfusion) {
+            if (brew.skillLevel === 'expert' && (brew.piTime || brew.peakTime || brew.tapTime)) {
                 detailsHtml += `
-                    <div style="margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;">
-                        <label style="color:var(--md-sys-color-primary);">PREINFUSION</label>
-                        <div class="detail-grid">
-                            <div class="detail-item"><label>BAR</label><span>${brew.piBar || '-'}</span></div>
-                            <div class="detail-item"><label>WEIGHT</label><span>${brew.piWeight || '-'}g</span></div>
+                    <div style="margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px;">
+                        <label style="color:var(--md-sys-color-primary); display:block; margin-bottom: 8px;">EXTRACTION PROFILE</label>
+                        <div class="detail-grid" style="margin-bottom: 12px; font-size: 0.9em; opacity: 0.8;">
+                            ${brew.piTime ? `<div class="detail-item"><label>PREINFUSION</label><span>${brew.piBar || '0'} bar @ ${brew.piTime} s</span></div>` : ''}
+                            ${brew.peakTime ? `<div class="detail-item"><label>PEAK</label><span>${brew.peakBar || '0'} bar @ ${brew.peakTime} s</span></div>` : ''}
+                            ${brew.tapTime ? `<div class="detail-item"><label>TAPERING</label><span>${brew.tapBar || '0'} bar @ ${brew.tapTime} s</span></div>` : ''}
                         </div>
-                    </div>`;
-            }
-
-            detailsHtml += `
-                    <div style="margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;">
-                        <label style="color:var(--md-sys-color-primary);">EXTRACTION</label>
-                        <div class="detail-grid">
-                            <div class="detail-item"><label>PEAK BAR</label><span>${brew.peakBar || '-'}</span></div>
-                            <div class="detail-item"><label>PEAK WEIGHT</label><span>${brew.peakWeight || '-'}g</span></div>
-                        </div>
-                    </div>`;
-
-            if (brew.tapering) {
-                detailsHtml += `
-                    <div style="margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;">
-                        <label style="color:var(--md-sys-color-primary);">TAPERING</label>
-                        <div class="detail-grid">
-                            <div class="detail-item"><label>END BAR</label><span>${brew.tapBar || '-'}</span></div>
-                            <div class="detail-item"><label>END WEIGHT</label><span>${brew.tapWeight || '-'}g</span></div>
+                        <div class="chart-container" style="position: relative; height:200px; width:100%">
+                            <canvas id="chart-${brew.id}"></canvas>
                         </div>
                     </div>`;
             }
@@ -717,8 +690,146 @@ const brewManager = {
             });
             parent.classList.add('expanded');
             icon.innerText = 'expand_less';
+
+            // Render chart if it's an expert brew and has a canvas
+            const canvas = document.getElementById(`chart-${id.replace('fav-', '')}`); // handle both normal and fav lists
+            if (canvas) {
+                // Ensure the container is visible before calculating dimensions
+                setTimeout(() => {
+                    const brewId = id.replace('fav-', '');
+                    const brew = brewManager.brews.find(b => b.id === brewId);
+                    if (brew) brewManager.renderChart(canvas, brew);
+                }, 50);
+            }
         }
         utils.vibrate(10);
+    },
+
+    activeCharts: {}, // Store chart instances to destroy them before re-rendering
+
+    renderChart: (canvas, brew) => {
+        if (!window.Chart) return;
+
+        // Destroy existing chart on this canvas if any
+        if (brewManager.activeCharts[canvas.id]) {
+            brewManager.activeCharts[canvas.id].destroy();
+        }
+
+        const dataPoints = [{ x: 0, y: 0 }]; // Always start at 0,0
+
+        // Parse inputs to build instant ramps and sustained pressure blocks
+        let currentTime = 0;
+        const addPhase = (bar, time) => {
+            time = parseFloat(time);
+            bar = parseFloat(bar) || 0;
+            if (!isNaN(time) && time > currentTime) {
+                // Ramp up in 0.5s (or less if phase is shorter) for almost instant build-up
+                const rampTime = Math.min(currentTime + 0.5, time);
+                dataPoints.push({ x: rampTime, y: bar });
+
+                // Maintain pressure until the end of the phase
+                if (time > rampTime) {
+                    dataPoints.push({ x: time, y: bar });
+                }
+                currentTime = time;
+            }
+        };
+
+        addPhase(brew.piBar, brew.piTime);
+        addPhase(brew.peakBar, brew.peakTime);
+        addPhase(brew.tapBar, brew.tapTime);
+
+        brewManager.activeCharts[canvas.id] = new Chart(canvas, {
+            type: 'line',
+            data: {
+                datasets: [{
+                    label: 'Pressure (Bar)',
+                    data: dataPoints,
+                    borderColor: '#D4AF37', // Gold Bright
+                    backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#121212',
+                    pointBorderColor: '#D4AF37',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true,
+                    tension: 0.4, // Smooth curves...
+                    cubicInterpolationMode: 'monotone' // ...but prevent overshooting the sharp ramps
+
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(18, 18, 18, 0.9)',
+                        titleColor: '#D4AF37',
+                        bodyColor: '#e0e0e0',
+                        borderColor: 'rgba(212, 175, 55, 0.3)',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function (context) {
+                                return context.parsed.y + ' Bar';
+                            },
+                            title: function (context) {
+                                return context[0].parsed.x + 's';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        type: 'linear',
+                        title: {
+                            display: true,
+                            text: 'Time (s)',
+                            color: 'rgba(255, 255, 255, 0.5)',
+                            font: { family: "'JetBrains Mono', monospace", size: 10 }
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.5)',
+                            font: { family: "'JetBrains Mono', monospace", size: 10 }
+                        },
+                        // Ensure x-axis always starts at 0
+                        min: 0
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Pressure (Bar)',
+                            color: 'rgba(255, 255, 255, 0.5)',
+                            font: { family: "'JetBrains Mono', monospace", size: 10 }
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.5)',
+                            font: { family: "'JetBrains Mono', monospace", size: 10 },
+                            stepSize: 3
+                        },
+                        // Cap Y nicely 
+                        min: 0,
+                        suggestedMax: 12
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                }
+            }
+        });
     },
 
     renderFavorites: () => {
@@ -748,6 +859,7 @@ const brewManager = {
                         <div class="detail-item"><label>GRIND SIZE</label><span>${brew.grindSize || '-'}</span></div>
                         <div class="detail-item"><label>DOSE</label><span>${brew.doseIn}g</span></div>
                         <div class="detail-item"><label>YIELD</label><span>${(brew.doseIn * brew.ratio).toFixed(1)}g (1:${brew.ratio})</span></div>
+                        <div class="detail-item"><label>TIME</label><span>${brew.targetTime || '-'}s</span></div>
                         <div class="detail-item"><label>TEMP</label><span>${brew.temp || '-'}°C</span></div>
                         <div class="detail-item"><label>RPM</label><span>${brew.rpm || '-'}</span></div>
                     </div>

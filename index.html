@@ -14,6 +14,9 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Tangerine:wght@400;700&family=JetBrains+Mono:wght@400;500;700&family=Doto:wght@100..900&family=Major+Mono+Display&display=swap"
         rel="stylesheet">
 
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -364,8 +367,8 @@
                 <input type="hidden" name="skillLevel" id="skillLevel" value="easy">
 
                 <input type="text" name="beanName" placeholder="Bean Name" required>
-                <!-- Medium & Expert -->
-                <input type="date" name="roastDate" class="lvl-medium lvl-expert" placeholder="Roast Date">
+                <!-- All levels -->
+                <input type="date" name="roastDate" placeholder="Roast Date">
 
                 <!-- Expert -->
                 <input type="text" name="grinder" class="lvl-expert" placeholder="Grinder">
@@ -382,39 +385,41 @@
                     <input type="number" name="doseIn" id="doseIn" placeholder="Dose In (g)" step="0.1" required>
                     <input type="number" name="doseOut" id="doseOut" placeholder="Dose Out (g)" step="0.1" required>
                 </div>
+                <!-- All levels -->
+                <input type="number" name="targetTime" placeholder="Target Time (s)" step="1">
                 <div class="suggestion" style="margin-bottom: 20px;">Yield Ratio: <span id="target-ratio">1:--</span>
                 </div>
 
                 <!-- Expert Only Section -->
                 <div class="lvl-expert expert-mechanics">
-                    <div class="toggle-group">
-                        <label class="switch">
-                            <input type="checkbox" name="preinfusion" id="preinfusion-check"
-                                onchange="toggleSection('preinfusion-details')">
-                            <span class="slider round"></span>
-                        </label>
-                        <span>Preinfusion?</span>
-                    </div>
-                    <div id="preinfusion-details" class="details-section hidden">
-                        <input type="number" name="piBar" placeholder="Pressure (Bar)">
-                        <input type="number" name="piWeight" placeholder="Weight (g)">
+                    <p style="font-size: 0.8rem; color: var(--color-gold-dark); margin-bottom: 12px;">i: wenn keine
+                        preinfusion oder tapering gemacht wird einfach felder leer lassen</p>
+
+                    <div class="profile-row">
+                        <label>Preinfusion</label>
+                        <div class="profile-inputs">
+                            <input type="number" name="piBar" placeholder="bar" step="0.1" min="0" max="12">
+                            <span>@</span>
+                            <input type="number" name="piTime" placeholder="time (s)" step="0.1" min="0">
+                        </div>
                     </div>
 
-                    <div class="section-label">Peak Extraction</div>
-                    <input type="number" name="peakBar" placeholder="Pressure (Bar)">
-                    <input type="number" name="peakWeight" placeholder="Weight (g)">
-
-                    <div class="toggle-group">
-                        <label class="switch">
-                            <input type="checkbox" name="tapering" id="tapering-check"
-                                onchange="toggleSection('tapering-details')">
-                            <span class="slider round"></span>
-                        </label>
-                        <span>Tapering?</span>
+                    <div class="profile-row">
+                        <label>Peak</label>
+                        <div class="profile-inputs">
+                            <input type="number" name="peakBar" placeholder="bar" step="0.1" min="0" max="15">
+                            <span>@</span>
+                            <input type="number" name="peakTime" placeholder="time (s)" step="0.1" min="0">
+                        </div>
                     </div>
-                    <div id="tapering-details" class="details-section hidden">
-                        <input type="number" name="tapBar" placeholder="Pressure (Bar)">
-                        <input type="number" name="tapWeight" placeholder="Weight (g)">
+
+                    <div class="profile-row">
+                        <label>Tapering</label>
+                        <div class="profile-inputs">
+                            <input type="number" name="tapBar" placeholder="bar" step="0.1" min="0" max="15">
+                            <span>@</span>
+                            <input type="number" name="tapTime" placeholder="time (s)" step="0.1" min="0">
+                        </div>
                     </div>
 
                     <div class="file-upload">
