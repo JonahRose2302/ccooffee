@@ -674,6 +674,15 @@ h3 {
     padding: 24px;
 }
 
+/* Instant open on PC */
+@media (hover: hover) {
+
+    .brew-pill,
+    .brew-details {
+        transition: none !important;
+    }
+}
+
 /* --- Detail Grid --- */
 .detail-grid {
     display: grid;
