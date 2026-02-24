@@ -774,6 +774,64 @@ input:focus {
     background: rgba(255, 255, 255, 0.08);
 }
 
+/* Mention Dropdown */
+.mention-dropdown {
+    position: absolute;
+    bottom: calc(100% - 10px);
+    left: 0;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background: rgba(25, 15, 8, 0.95);
+    border: 1px solid var(--color-gold-medium);
+    border-radius: 12px;
+    z-index: 200;
+    box-shadow: var(--shadow-md), 0 0 20px rgba(244, 196, 48, 0.1);
+}
+
+.mention-dropdown.hidden {
+    display: none;
+}
+
+.mention-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--color-cream);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background 0.2s, color 0.2s;
+}
+
+.mention-item:hover {
+    background: rgba(244, 196, 48, 0.15);
+    color: var(--color-gold-bright);
+}
+
+.mention-item:last-child {
+    border-bottom: none;
+}
+
+/* Brew Link inside text */
+.brew-link {
+    display: inline-block;
+    padding: 2px 10px;
+    margin: 0 4px;
+    border: 1px solid var(--color-gold-medium);
+    border-radius: 12px;
+    background: rgba(244, 196, 48, 0.15);
+    color: var(--color-gold-bright);
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    vertical-align: middle;
+}
+
+.brew-link:hover {
+    background: rgba(244, 196, 48, 0.3);
+    box-shadow: 0 0 12px rgba(244, 196, 48, 0.4);
+    transform: scale(1.05);
+}
+
 .fab {
     position: fixed;
     bottom: 40px;

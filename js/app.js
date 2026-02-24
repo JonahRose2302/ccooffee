@@ -877,6 +877,55 @@ const drinkManager = {
 
     init: () => {
         drinkManager.renderList();
+
+        // Setup Mentions
+        const mentionDropdown = document.getElementById('mention-dropdown');
+        const recipeTextarea = document.getElementById('recipe-textarea');
+        if (recipeTextarea && mentionDropdown) {
+            recipeTextarea.addEventListener('input', (e) => {
+                const val = recipeTextarea.value;
+                const cursorPos = recipeTextarea.selectionStart;
+                const textBeforeCursor = val.slice(0, cursorPos);
+
+                const match = textBeforeCursor.match(/@([a-zA-Z0-9\s]*)$/);
+                if (match) {
+                    const query = match[1].toLowerCase();
+                    const brews = brewManager.brews.filter(b => (b.beanName || '').toLowerCase().includes(query));
+
+                    if (brews.length > 0) {
+                        mentionDropdown.innerHTML = '';
+                        brews.forEach(brew => {
+                            const item = document.createElement('div');
+                            item.className = 'mention-item';
+                            item.innerText = brew.beanName || 'Unknown Brew';
+                            item.onmousedown = (ev) => {
+                                // Prevent blur from firing before click is registered
+                                ev.preventDefault();
+                            };
+                            item.onclick = () => {
+                                const before = textBeforeCursor.slice(0, -match[0].length);
+                                const after = val.slice(cursorPos);
+                                const mentionString = `@[${brew.beanName}](${brew.id}) `;
+                                recipeTextarea.value = before + mentionString + after;
+                                mentionDropdown.classList.add('hidden');
+                                recipeTextarea.focus();
+                            };
+                            mentionDropdown.appendChild(item);
+                        });
+                        mentionDropdown.classList.remove('hidden');
+                    } else {
+                        mentionDropdown.classList.add('hidden');
+                    }
+                } else {
+                    mentionDropdown.classList.add('hidden');
+                }
+            });
+
+            recipeTextarea.addEventListener('blur', () => {
+                mentionDropdown.classList.add('hidden');
+            });
+        }
+
         document.getElementById('drink-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
@@ -948,6 +997,13 @@ const drinkManager = {
         drinkManager.drinks.forEach(d => {
             const el = document.createElement('div');
             el.className = 'brew-pill glass-panel';
+
+            // Format recipe text: Replace < > to prevent HTML injection, then parse @mentions
+            let formattedRecipe = (d.recipe || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            formattedRecipe = formattedRecipe.replace(/@\[(.*?)\]\((.*?)\)/g,
+                `<span class="brew-link" onclick="router.navigate('home'); setTimeout(() => brewManager.toggle('$2'), 350); event.stopPropagation();"><span class="material-symbols-rounded" style="font-size:14px; vertical-align:middle; margin-right:4px;">coffee</span>$1</span>`
+            );
+
             el.innerHTML = `
                 <div class="brew-header" onclick="brewManager.toggle('${d.id}')">
                     <h3>${d.drinkName}</h3>
@@ -958,7 +1014,7 @@ const drinkManager = {
                         <button class="action-btn edit" onclick="drinkManager.edit('${d.id}', event)"><span class="material-symbols-rounded">edit</span> Edit</button>
                         <button class="action-btn delete" onclick="drinkManager.delete('${d.id}', event)"><span class="material-symbols-rounded">delete</span> Delete</button>
                     </div>
-                     <p style="white-space: pre-wrap; line-height: 1.6; margin-top:10px;">${d.recipe}</p>
+                     <p style="white-space: pre-wrap; line-height: 1.6; margin-top:10px;">${formattedRecipe}</p>
                 </div>
             `;
             container.appendChild(el);

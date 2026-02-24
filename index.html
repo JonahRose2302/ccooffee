@@ -443,7 +443,11 @@
             <h2>New Recipe</h2>
             <form id="drink-form">
                 <input type="text" name="drinkName" placeholder="Drink Name" required>
-                <textarea name="recipe" placeholder="Recipe Instructions..." rows="5"></textarea>
+                <div style="position: relative;">
+                    <textarea name="recipe" id="recipe-textarea" placeholder="Recipe Instructions (@ for brews)..."
+                        rows="5"></textarea>
+                    <div id="mention-dropdown" class="mention-dropdown hidden glass-panel"></div>
+                </div>
                 <!-- Image input handled technically differently or simplify for now -->
                 <button type="submit" class="save-btn">Save Recipe</button>
             </form>
