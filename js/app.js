@@ -905,7 +905,8 @@ const drinkManager = {
                             item.onclick = () => {
                                 const before = textBeforeCursor.slice(0, -match[0].length);
                                 const after = val.slice(cursorPos);
-                                const mentionString = `@[${brew.beanName}](${brew.id}) `;
+                                // Insert just the plain text for the user
+                                const mentionString = `@${brew.beanName} `;
                                 recipeTextarea.value = before + mentionString + after;
                                 mentionDropdown.classList.add('hidden');
                                 recipeTextarea.focus();
@@ -998,11 +999,19 @@ const drinkManager = {
             const el = document.createElement('div');
             el.className = 'brew-pill glass-panel';
 
-            // Format recipe text: Replace < > to prevent HTML injection, then parse @mentions
+            // Format recipe text: Replace < > to prevent HTML injection, then parse plain @mentions
             let formattedRecipe = (d.recipe || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            formattedRecipe = formattedRecipe.replace(/@\[(.*?)\]\((.*?)\)/g,
-                `<span class="brew-link" onclick="router.navigate('home'); setTimeout(() => brewManager.toggle('$2'), 350); event.stopPropagation();"><span class="material-symbols-rounded" style="font-size:14px; vertical-align:middle; margin-right:4px;">coffee</span>$1</span>`
-            );
+
+            // Sort brews by name length (descending) to match longer names first
+            const sortedBrews = [...brewManager.brews].sort((a, b) => (b.beanName || '').length - (a.beanName || '').length);
+            sortedBrews.forEach(brew => {
+                if (!brew.beanName) return;
+                const escapedName = brew.beanName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(`@${escapedName}`, 'gi');
+                formattedRecipe = formattedRecipe.replace(regex,
+                    `<span class="brew-link" onclick="router.navigate('brew'); setTimeout(() => brewManager.toggle('${brew.id}'), 350); event.stopPropagation();"><span class="material-symbols-rounded" style="font-size:14px; vertical-align:middle; margin-right:4px;">coffee</span>${brew.beanName}</span>`
+                );
+            });
 
             el.innerHTML = `
                 <div class="brew-header" onclick="brewManager.toggle('${d.id}')">
