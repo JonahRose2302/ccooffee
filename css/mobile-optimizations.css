@@ -142,6 +142,15 @@
     .detail-grid {
         grid-template-columns: 1fr;
     }
+
+    .skill-btn {
+        padding: 12px;
+        min-width: 60px;
+    }
+
+    .skill-btn .skill-text {
+        display: none;
+    }
 }
 
 /* === Troubleshooting Responsive Layout === */

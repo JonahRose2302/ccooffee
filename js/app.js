@@ -439,15 +439,18 @@ const brewManager = {
     init: () => {
         brewManager.renderList();
 
-        const calcYield = () => {
-            const dose = parseFloat(document.getElementById('doseIn').value) || 0;
-            const ratio = parseFloat(document.getElementById('ratio').value) || 0;
-            if (dose && ratio) {
-                document.getElementById('target-yield').innerText = (dose * ratio).toFixed(1);
+        const calcRatio = () => {
+            const doseIn = parseFloat(document.getElementById('doseIn').value) || 0;
+            const doseOut = parseFloat(document.getElementById('doseOut').value) || 0;
+            if (doseIn && doseOut && doseIn > 0) {
+                const ratioVal = (doseOut / doseIn).toFixed(1);
+                document.getElementById('target-ratio').innerText = `1:${ratioVal}`;
+            } else {
+                document.getElementById('target-ratio').innerText = `1:--`;
             }
         };
-        document.getElementById('doseIn').addEventListener('input', calcYield);
-        document.getElementById('ratio').addEventListener('input', calcYield);
+        document.getElementById('doseIn').addEventListener('input', calcRatio);
+        document.getElementById('doseOut').addEventListener('input', calcRatio);
 
         document.getElementById('brew-form').addEventListener('submit', (e) => {
             e.preventDefault();
@@ -488,11 +491,37 @@ const brewManager = {
         });
     },
 
+    openSkillModal: () => {
+        const m = document.getElementById('brew-skill-modal');
+        m.classList.remove('hidden');
+        void m.offsetWidth;
+        m.classList.add('visible');
+    },
+
+    selectSkillLevel: (level) => {
+        const sm = document.getElementById('brew-skill-modal');
+        sm.classList.remove('visible');
+        setTimeout(() => sm.classList.add('hidden'), 300);
+
+        document.getElementById('skillLevel').value = level;
+        const form = document.getElementById('brew-form');
+        form.classList.remove('form-easy', 'form-medium', 'form-expert');
+        form.classList.add(`form-${level}`);
+
+        brewManager.openAddModal();
+    },
+
     openAddModal: () => {
         brewManager.editingId = null;
         document.getElementById('brew-form').reset();
+
+        // Ensure skillLevel stays what we just set
+        const currentLevel = document.getElementById('brew-form').classList.contains('form-expert') ? 'expert' :
+            document.getElementById('brew-form').classList.contains('form-medium') ? 'medium' : 'easy';
+        document.getElementById('skillLevel').value = currentLevel;
+
         document.querySelector('#brew-modal h2').innerText = 'New Espresso';
-        document.getElementById('target-yield').innerText = '--';
+        document.getElementById('target-ratio').innerText = '1:--';
         toggleSection('preinfusion-details', false);
         toggleSection('tapering-details', false);
         document.getElementById('preinfusion-check').checked = false;
@@ -513,6 +542,12 @@ const brewManager = {
         document.querySelector('#brew-modal h2').innerText = 'Edit Espresso';
 
         const form = document.getElementById('brew-form');
+
+        const level = brew.skillLevel || 'expert'; // Default to expert for old brews
+        form.classList.remove('form-easy', 'form-medium', 'form-expert');
+        form.classList.add(`form-${level}`);
+        document.getElementById('skillLevel').value = level;
+
         for (const [key, value] of Object.entries(brew)) {
             if (form.elements[key]) form.elements[key].value = value;
         }
@@ -523,9 +558,13 @@ const brewManager = {
         document.getElementById('tapering-check').checked = !!brew.tapering;
         toggleSection('tapering-details', !!brew.tapering);
 
-        const dose = parseFloat(brew.doseIn) || 0;
-        const ratio = parseFloat(brew.ratio) || 0;
-        if (dose && ratio) document.getElementById('target-yield').innerText = (dose * ratio).toFixed(1);
+        const doseIn = parseFloat(brew.doseIn) || 0;
+        const doseOut = parseFloat(brew.doseOut) || 0;
+        if (doseIn && doseOut && doseIn > 0) {
+            document.getElementById('target-ratio').innerText = `1:${(doseOut / doseIn).toFixed(1)}`;
+        } else {
+            document.getElementById('target-ratio').innerText = '1:--';
+        }
 
         const m = document.getElementById('brew-modal');
         m.classList.remove('hidden');
@@ -591,16 +630,21 @@ const brewManager = {
             const el = document.createElement('div');
             el.className = 'brew-pill glass-panel';
 
+            const doseIn = parseFloat(brew.doseIn) || 0;
+            const doseOut = brew.doseOut ? parseFloat(brew.doseOut) : doseIn * parseFloat(brew.ratio || 0);
+            const ratio = doseIn && doseOut ? (doseOut / doseIn).toFixed(1) : brew.ratio || '--';
+
             let detailsHtml = `
                     <div class="actions-row">
                         <button class="action-btn edit" onclick="brewManager.edit('${brew.id}', event)"><span class="material-symbols-rounded">edit</span> Edit</button>
                         <button class="action-btn delete" onclick="brewManager.delete('${brew.id}', event)"><span class="material-symbols-rounded">delete</span> Delete</button>
                     </div>
                     <div class="detail-grid">
+                        <div class="detail-item" style="grid-column: 1 / -1;"><label>SKILL LEVEL</label><span style="text-transform: capitalize; color: var(--color-gold-bright); font-weight: bold;">${brew.skillLevel || 'expert'}</span></div>
                         <div class="detail-item"><label>GRINDER</label><span>${brew.grinder || '-'}</span></div>
                         <div class="detail-item"><label>GRIND SIZE</label><span>${brew.grindSize || '-'}</span></div>
-                        <div class="detail-item"><label>DOSE</label><span>${brew.doseIn}g</span></div>
-                        <div class="detail-item"><label>YIELD</label><span>${(brew.doseIn * brew.ratio).toFixed(1)}g (1:${brew.ratio})</span></div>
+                        <div class="detail-item"><label>DOSE</label><span>${doseIn}g</span></div>
+                        <div class="detail-item"><label>YIELD</label><span>${doseOut.toFixed(1)}g (1:${ratio})</span></div>
                         <div class="detail-item"><label>TEMP</label><span>${brew.temp || '-'}°C</span></div>
                         <div class="detail-item"><label>RPM</label><span>${brew.rpm || '-'}</span></div>
                     </div>

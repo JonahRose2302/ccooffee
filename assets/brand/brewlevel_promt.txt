@@ -1,0 +1,43 @@
+man soll auf der brews seite wenn man einen neuen brew hinzufügt jetzt erstmal wählen müssen zwichen: Easy, Medium, Expert. (in dem fenster dann mit symbolen am pc, und am handy zum platzsparen nur symbole)
+man soll nicht einstekkeb können bevor man nicht eins dieser dinge gewält hat, denn die ganze + seite passt scih an den skill grad an. 
+
+funktionsumfang im...
+
+... Easy mode:
+	name:
+	grindsize:
+	dose in:
+	dose out:
+
+	ratio (automatisch ausrechnen)
+
+... medium mode:
+	name:
+	roast date:
+	Grindsize:
+	dose in:
+	dose out:
+
+	ratoi (automatisch ausrechnen)
+
+... expert mode:
+	name:
+	roast date:
+	grinder:
+	grindsize:
+	rpm:
+	temperature:
+	dose in:
+	dose out:  
+
+	ratio (automatisch ausrechnen)
+
+	if preinfusion yes: peak preasure "..." @ "..." g out
+
+	peak preasure "..." @ "..." g out
+
+	if tapering yes: peak preasure "..." @ "..." g out
+
+
+
+das ist der funktionsumfang. bevor sich die richtige "+" kachel öffnet soll sich wie gesagt erstmal ein fenster öffnen in dem der skill level für diese bohne abgefragtwird. in der AUFGEKLAPPTEN bohnen pille hinterher in der überischt soll man dann sehen welchen skill level man nutzt. 

@@ -152,7 +152,7 @@
         <section id="brew" class="page">
             <header class="page-header">
                 <h1>BREWS</h1>
-                <button class="fab" onclick="brewManager.openAddModal()"><span
+                <button class="fab" onclick="brewManager.openSkillModal()"><span
                         class="material-symbols-rounded">add</span></button>
             </header>
 
@@ -329,59 +329,100 @@
                 YouTube Kanal</a>
         </div>
     </div>
+    <!-- Brew Skill Level Modal -->
+    <div id="brew-skill-modal" class="modal">
+        <div class="modal-content glass-panel" style="text-align: center;">
+            <span class="close"
+                onclick="document.getElementById('brew-skill-modal').classList.remove('visible'); setTimeout(() => document.getElementById('brew-skill-modal').classList.add('hidden'), 300);">&times;</span>
+            <h2 style="margin-bottom: 24px;">Select Skill Level</h2>
+            <div class="skill-level-container">
+                <button class="skill-btn" onclick="brewManager.selectSkillLevel('easy')">
+                    <span class="material-symbols-rounded">sentiment_satisfied</span>
+                    <span class="skill-text">Easy</span>
+                </button>
+                <button class="skill-btn" onclick="brewManager.selectSkillLevel('medium')">
+                    <span class="material-symbols-rounded">psychology</span>
+                    <span class="skill-text">Medium</span>
+                </button>
+                <button class="skill-btn" onclick="brewManager.selectSkillLevel('expert')">
+                    <span class="material-symbols-rounded">science</span>
+                    <span class="skill-text">Expert</span>
+                </button>
+            </div>
+            <p style="margin-top: 20px; font-size: 0.9rem; color: var(--color-gold-dark);">Wähle das Level passend zu
+                deiner Erfahrung und deinen Messwerkzeugen.</p>
+        </div>
+    </div>
+
     <!-- Brew Modal -->
     <div id="brew-modal" class="modal">
         <div class="modal-content glass-panel">
             <span class="close" onclick="brewManager.closeModal()">&times;</span>
             <h2>New Espresso</h2>
+            <!-- form classes: form-easy | form-medium | form-expert -->
             <form id="brew-form">
+                <input type="hidden" name="skillLevel" id="skillLevel" value="easy">
+
                 <input type="text" name="beanName" placeholder="Bean Name" required>
-                <input type="date" name="roastDate" placeholder="Roast Date">
-                <input type="text" name="grinder" placeholder="Grinder">
+                <!-- Medium & Expert -->
+                <input type="date" name="roastDate" class="lvl-medium lvl-expert" placeholder="Roast Date">
+
+                <!-- Expert -->
+                <input type="text" name="grinder" class="lvl-expert" placeholder="Grinder">
+
+                <!-- All levels -->
                 <input type="number" name="grindSize" placeholder="Grind Size" step="0.1">
-                <input type="number" name="rpm" placeholder="RPM" step="10">
-                <input type="number" name="temp" placeholder="Temperature (°C)" step="0.1">
+
+                <!-- Expert -->
+                <input type="number" name="rpm" class="lvl-expert" placeholder="RPM" step="10">
+                <input type="number" name="temp" class="lvl-expert" placeholder="Temperature (°C)" step="0.1">
+
                 <div class="row">
+                    <!-- All levels -->
                     <input type="number" name="doseIn" id="doseIn" placeholder="Dose In (g)" step="0.1" required>
-                    <input type="number" name="ratio" id="ratio" placeholder="Ratio (1:x)" step="0.1" required>
+                    <input type="number" name="doseOut" id="doseOut" placeholder="Dose Out (g)" step="0.1" required>
                 </div>
-                <div class="suggestion">Target Yield: <span id="target-yield">--</span> g</div>
-
-                <div class="toggle-group">
-                    <label class="switch">
-                        <input type="checkbox" name="preinfusion" id="preinfusion-check"
-                            onchange="toggleSection('preinfusion-details')">
-                        <span class="slider round"></span>
-                    </label>
-                    <span>Preinfusion?</span>
-                </div>
-                <div id="preinfusion-details" class="details-section hidden">
-                    <input type="number" name="piBar" placeholder="Pressure (Bar)">
-                    <input type="number" name="piWeight" placeholder="Weight (g)">
+                <div class="suggestion" style="margin-bottom: 20px;">Yield Ratio: <span id="target-ratio">1:--</span>
                 </div>
 
-                <div class="section-label">Peak Extraction</div>
-                <input type="number" name="peakBar" placeholder="Pressure (Bar)">
-                <input type="number" name="peakWeight" placeholder="Weight (g)">
+                <!-- Expert Only Section -->
+                <div class="lvl-expert expert-mechanics">
+                    <div class="toggle-group">
+                        <label class="switch">
+                            <input type="checkbox" name="preinfusion" id="preinfusion-check"
+                                onchange="toggleSection('preinfusion-details')">
+                            <span class="slider round"></span>
+                        </label>
+                        <span>Preinfusion?</span>
+                    </div>
+                    <div id="preinfusion-details" class="details-section hidden">
+                        <input type="number" name="piBar" placeholder="Pressure (Bar)">
+                        <input type="number" name="piWeight" placeholder="Weight (g)">
+                    </div>
 
-                <div class="toggle-group">
-                    <label class="switch">
-                        <input type="checkbox" name="tapering" id="tapering-check"
-                            onchange="toggleSection('tapering-details')">
-                        <span class="slider round"></span>
-                    </label>
-                    <span>Tapering?</span>
-                </div>
-                <div id="tapering-details" class="details-section hidden">
-                    <input type="number" name="tapBar" placeholder="Pressure (Bar)">
-                    <input type="number" name="tapWeight" placeholder="Weight (g)">
-                </div>
+                    <div class="section-label">Peak Extraction</div>
+                    <input type="number" name="peakBar" placeholder="Pressure (Bar)">
+                    <input type="number" name="peakWeight" placeholder="Weight (g)">
 
-                <div class="file-upload">
-                    <label for="curve-upload" class="upload-btn">
-                        <span class="material-symbols-rounded">upload</span> Extraction Curve (PNG)
-                    </label>
-                    <input type="file" id="curve-upload" accept="image/png">
+                    <div class="toggle-group">
+                        <label class="switch">
+                            <input type="checkbox" name="tapering" id="tapering-check"
+                                onchange="toggleSection('tapering-details')">
+                            <span class="slider round"></span>
+                        </label>
+                        <span>Tapering?</span>
+                    </div>
+                    <div id="tapering-details" class="details-section hidden">
+                        <input type="number" name="tapBar" placeholder="Pressure (Bar)">
+                        <input type="number" name="tapWeight" placeholder="Weight (g)">
+                    </div>
+
+                    <div class="file-upload">
+                        <label for="curve-upload" class="upload-btn">
+                            <span class="material-symbols-rounded">upload</span> Extraction Curve (PNG)
+                        </label>
+                        <input type="file" id="curve-upload" accept="image/png">
+                    </div>
                 </div>
 
                 <button type="submit" class="save-btn">Save Brew</button>
