@@ -270,6 +270,36 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Trouble Detail Modal (Mobile) -->
+            <div id="trouble-detail-modal" class="modal hidden">
+                <div class="modal-content trouble-modal-content glass-panel">
+                    <span class="close"
+                        onclick="document.getElementById('trouble-detail-modal').classList.remove('visible'); setTimeout(() => document.getElementById('trouble-detail-modal').classList.add('hidden'), 300);">&times;</span>
+                    <div class="knowledge-detail-header">
+                        <span class="material-symbols-rounded"
+                            style="color:var(--color-gold-bright); font-size:32px;">build</span>
+                        <h2 id="td-title"
+                            style="margin:0; font-family:var(--font-display); font-size:1.8rem; background: linear-gradient(90deg, #fff, var(--color-gold-light)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                            Symptom</h2>
+                    </div>
+                    <div class="knowledge-detail-body" style="padding: 30px;">
+                        <h3
+                            style="color:var(--color-gold-medium); font-family:var(--font-heading); margin-bottom:10px;">
+                            Ursache</h3>
+                        <p id="td-cause"
+                            style="font-family:var(--font-body); color:var(--color-cream); margin-bottom: 24px; line-height:1.6; font-size:1.1rem;">
+                        </p>
+
+                        <h3
+                            style="color:var(--md-sys-color-primary); font-family:var(--font-heading); margin-bottom:10px;">
+                            Lösung</h3>
+                        <p id="td-solution"
+                            style="font-family:var(--font-body); color:var(--color-cream); line-height:1.6; font-size:1.1rem;">
+                        </p>
+                    </div>
+                </div>
+            </div>
         </section>
 
     </main>

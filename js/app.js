@@ -292,42 +292,67 @@ const KNOWLEDGE_DATA = [
         desc: 'Probleme im Geschmack erkennen und beheben.',
         content: `
             <h3>Fehlerdiagnose</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Geschmack</th>
-                        <th>Ursache</th>
-                        <th>Lösung</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Sauer / Stechend</td>
-                        <td>Unterextraktion</td>
-                        <td>Feiner mahlen / Wärmer / Mehr Yield</td>
-                    </tr>
-                    <tr>
-                        <td>Bitter / Trocken</td>
-                        <td>Überextraktion</td>
-                        <td>Gröber mahlen / Kälter / Weniger Yield</td>
-                    </tr>
-                    <tr>
-                        <td>Salzig / Wässrig</td>
-                        <td>Massive Unterextraktion</td>
-                        <td>Viel feiner mahlen / Dosis erhöhen</td>
-                    </tr>
-                    <tr>
-                        <td>Flach / Langweilig</td>
-                        <td>Wasser zu hart (KH)</td>
-                        <td>Wasser filtern / Weicheres Wasser</td>
-                    </tr>
-                    <tr>
-                        <td>Sauer & Bitter</td>
-                        <td>Channeling</td>
-                        <td>Bessere Puck-Prep (WDT)</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="trouble-desktop-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Geschmack</th>
+                            <th>Ursache</th>
+                            <th>Lösung</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Sauer / Stechend</td>
+                            <td>Unterextraktion</td>
+                            <td>Feiner mahlen / Wärmer / Mehr Yield</td>
+                        </tr>
+                        <tr>
+                            <td>Bitter / Trocken</td>
+                            <td>Überextraktion</td>
+                            <td>Gröber mahlen / Kälter / Weniger Yield</td>
+                        </tr>
+                        <tr>
+                            <td>Salzig / Wässrig</td>
+                            <td>Massive Unterextraktion</td>
+                            <td>Viel feiner mahlen / Dosis erhöhen</td>
+                        </tr>
+                        <tr>
+                            <td>Flach / Langweilig</td>
+                            <td>Wasser zu hart (KH)</td>
+                            <td>Wasser filtern / Weicheres Wasser</td>
+                        </tr>
+                        <tr>
+                            <td>Sauer & Bitter</td>
+                            <td>Channeling</td>
+                            <td>Bessere Puck-Prep (WDT)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="trouble-mobile-pills">
+                <div class="trouble-pill" onclick="knowledgeManager.openTroubleDetail('Sauer / Stechend', 'Unterextraktion', 'Feiner mahlen / Wärmer / Mehr Yield')">
+                    <span>Sauer / Stechend</span>
+                    <span class="material-symbols-rounded">chevron_right</span>
+                </div>
+                <div class="trouble-pill" onclick="knowledgeManager.openTroubleDetail('Bitter / Trocken', 'Überextraktion', 'Gröber mahlen / Kälter / Weniger Yield')">
+                    <span>Bitter / Trocken</span>
+                    <span class="material-symbols-rounded">chevron_right</span>
+                </div>
+                <div class="trouble-pill" onclick="knowledgeManager.openTroubleDetail('Salzig / Wässrig', 'Massive Unterextraktion', 'Viel feiner mahlen / Dosis erhöhen')">
+                    <span>Salzig / Wässrig</span>
+                    <span class="material-symbols-rounded">chevron_right</span>
+                </div>
+                <div class="trouble-pill" onclick="knowledgeManager.openTroubleDetail('Flach / Langweilig', 'Wasser zu hart (KH)', 'Wasser filtern / Weicheres Wasser')">
+                    <span>Flach / Langweilig</span>
+                    <span class="material-symbols-rounded">chevron_right</span>
+                </div>
+                <div class="trouble-pill" onclick="knowledgeManager.openTroubleDetail('Sauer & Bitter', 'Channeling', 'Bessere Puck-Prep (WDT)')">
+                    <span>Sauer & Bitter</span>
+                    <span class="material-symbols-rounded">chevron_right</span>
+                </div>
+            </div>
         `
     }
 ];
@@ -389,6 +414,17 @@ const knowledgeManager = {
 
         // Reset scroll position
         document.querySelector('.knowledge-detail-body').scrollTop = 0;
+    },
+
+    openTroubleDetail: (title, cause, solution) => {
+        document.getElementById('td-title').textContent = title;
+        document.getElementById('td-cause').textContent = cause;
+        document.getElementById('td-solution').textContent = solution;
+
+        const modal = document.getElementById('trouble-detail-modal');
+        modal.classList.remove('hidden');
+        void modal.offsetWidth; // Trigger reflow
+        modal.classList.add('visible');
     }
 };
 

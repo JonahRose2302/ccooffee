@@ -143,3 +143,24 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* === Troubleshooting Responsive Layout === */
+@media (max-width: 768px) {
+
+    div.trouble-desktop-table,
+    .trouble-desktop-table,
+    .trouble-desktop-table table {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        position: absolute !important;
+        z-index: -1 !important;
+    }
+
+    .trouble-mobile-pills {
+        display: flex !important;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 20px;
+    }
+}

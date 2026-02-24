@@ -2383,7 +2383,8 @@ body {
 
 /* Modal Styling */
 .knowledge-modal-content {
-    max-width: 800px;
+    /* Set width larger for PC */
+    max-width: 900px !important;
     width: 95%;
     max-height: 85vh;
     display: flex;
@@ -2666,4 +2667,40 @@ body {
     .modal-content {
         padding-top: 80px !important;
     }
+}
+
+/* === Troubleshooting Responsive Layout === */
+.trouble-mobile-pills {
+    display: none;
+}
+
+.trouble-desktop-table {
+    display: block;
+    width: 100%;
+}
+
+.trouble-pill {
+    background: rgba(42, 26, 10, 0.4);
+    border: 1px solid rgba(244, 196, 48, 0.2);
+    border-radius: 9999px;
+    padding: 16px 24px;
+    color: var(--color-cream);
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-overshoot);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.trouble-pill:hover {
+    background: rgba(42, 26, 10, 0.6);
+    border-color: var(--color-gold-bright);
+    box-shadow: 0 0 15px rgba(244, 196, 48, 0.2);
+    transform: translateY(-2px);
+}
+
+.trouble-pill span.material-symbols-rounded {
+    color: var(--color-gold-medium);
 }
