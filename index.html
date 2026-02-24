@@ -368,7 +368,8 @@
 
                 <input type="text" name="beanName" placeholder="Bean Name" required>
                 <!-- All levels -->
-                <input type="date" name="roastDate" placeholder="Roast Date">
+                <input type="text" name="roastDate" placeholder="Roast Date" onfocus="(this.type='date')"
+                    onblur="if(!this.value)this.type='text'">
 
                 <!-- Expert -->
                 <input type="text" name="grinder" class="lvl-expert" placeholder="Grinder">
