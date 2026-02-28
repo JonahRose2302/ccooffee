@@ -1252,49 +1252,6 @@ const shopManager = {
     }
 };
 
-/* === ENHANCED MAGNETIC CURSOR === */
-const cursorFollower = {
-    el: document.getElementById('cursor-follower'),
-    init: () => {
-        if (matchMedia('(hover: hover)').matches) {
-            cursorFollower.el.style.display = 'block';
-
-            // Smooth cursor movement
-            document.addEventListener('mousemove', (e) => {
-                gsap.to(cursorFollower.el, {
-                    x: e.clientX,
-                    y: e.clientY,
-                    duration: 0.2,
-                    ease: "power2.out"
-                });
-            });
-
-            // Click ripple effect
-            document.addEventListener('mousedown', () => {
-                cursorFollower.el.classList.add('clicking');
-                setTimeout(() => cursorFollower.el.classList.remove('clicking'), 600);
-            });
-
-            // Interactive elements: grow cursor
-            document.querySelectorAll('a, button, .tile, .knowledge-card, .brew-header, input, .nav-btn, .action-btn, .toggle-btn').forEach(el => {
-                el.addEventListener('mouseenter', () => {
-                    cursorFollower.el.classList.add('active');
-                });
-                el.addEventListener('mouseleave', () => {
-                    cursorFollower.el.classList.remove('active');
-                });
-
-                // Add ripple on click
-                el.addEventListener('click', (e) => {
-                    if (el.classList.contains('tile') || el.classList.contains('knowledge-card') || el.classList.contains('nav-btn') || el.classList.contains('action-btn')) {
-                        animationEngine.createRipple(el, e);
-                    }
-                });
-            });
-        }
-    }
-};
-
 /* --- INIT --- */
 function toggleSection(id, show) {
     const el = document.getElementById(id);
@@ -1344,7 +1301,6 @@ window.addEventListener('load', () => {
     drinkManager.init();
     shopManager.init();
     knowledgeManager.init();
-    cursorFollower.init();
 
     // Enable magnetic effects on tiles and navigation
     setTimeout(() => {

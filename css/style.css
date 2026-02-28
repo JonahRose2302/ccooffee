@@ -67,7 +67,6 @@ body {
     color: var(--color-on-surface);
     font-family: var(--font-body);
     overflow-x: hidden;
-    cursor: none;
     position: relative;
     min-height: 100vh;
 }
@@ -81,7 +80,7 @@ body {
     height: 100%;
     z-index: -1;
     pointer-events: none;
-    opacity: 0.6;
+    opacity: 1;
 }
 
 /* === ENHANCED TYPOGRAPHY === */
@@ -1132,64 +1131,6 @@ input:focus {
     display: none !important;
 }
 
-/* === ENHANCED MAGNETIC CURSOR === */
-#cursor-follower {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 99999;
-    transform: translate(-50%, -50%);
-    background: radial-gradient(circle, rgba(244, 196, 48, 0.08) 0%, rgba(244, 196, 48, 0.03) 40%, transparent 70%);
-    backdrop-filter: blur(3px) brightness(1.15) contrast(1.1) saturate(120%);
-    -webkit-backdrop-filter: blur(3px) brightness(1.15) contrast(1.1) saturate(120%);
-    box-shadow:
-        inset 0 0 30px rgba(244, 196, 48, 0.08),
-        0 0 40px rgba(244, 196, 48, 0.1);
-    border: 2px solid rgba(244, 196, 48, 0.15);
-    transition: width var(--duration-fast) var(--ease-overshoot),
-        height var(--duration-fast) var(--ease-overshoot),
-        border-color var(--duration-instant);
-    mix-blend-mode: screen;
-    display: none;
-    will-change: transform;
-}
-
-#cursor-follower.active {
-    width: 100px;
-    height: 100px;
-    border-color: var(--color-gold-bright);
-    background: radial-gradient(circle, rgba(244, 196, 48, 0.15) 0%, rgba(244, 196, 48, 0.05) 40%, transparent 70%);
-}
-
-#cursor-follower.clicking {
-    animation: cursorRipple 0.6s var(--ease-out-expo);
-}
-
-@keyframes cursorRipple {
-    0% {
-        width: 100px;
-        height: 100px;
-        opacity: 1;
-    }
-
-    100% {
-        width: 200px;
-        height: 200px;
-        opacity: 0.3;
-    }
-}
-
-/* Cursor visible on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-    #cursor-follower {
-        display: block;
-    }
-}
-
 /* === COMPREHENSIVE UI POLISH & FIXES === */
 
 /* Enhanced Save/Submit Buttons */
@@ -1711,14 +1652,6 @@ body {
 
 /* --- Mobile Optimization --- */
 @media (hover: none) and (pointer: coarse) {
-    #cursor-follower {
-        display: none !important;
-    }
-
-    body {
-        cursor: auto;
-    }
-
     .v-container {
         height: 200vh;
         /* Shorter scroll on mobile */
