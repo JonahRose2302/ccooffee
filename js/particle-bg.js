@@ -92,7 +92,7 @@ class ParticleBackground {
         p.angle += p.orbitSpeed;
         let isAttracted = false;
 
-        if (this.hoveredElement) {
+        if (this.hoveredElement && dist < 300) {
             // Swarm around the hovered interactive element (forms an ellipse adapting to width/height)
             const dynRadiusX = (this.hoveredElement.width / 2) + 15 + p.orbitRadius * 0.4;
             const dynRadiusY = (this.hoveredElement.height / 2) + 15 + p.orbitRadius * 0.4;
@@ -120,10 +120,19 @@ class ParticleBackground {
             // Tighter friction when in orbit so they don't overshoot wildly
             p.vx *= 0.88;
             p.vy *= 0.88;
+            p.wasAttracted = true; // Track state for release burst
         } else {
             // Slower friction release so they have inertia and slowly spread apart
             p.vx *= 0.96;
             p.vy *= 0.96;
+
+            // When just released from an orbit, give them a subtle outward drift 
+            // so they spread across the empty space faster
+            if (p.wasAttracted) {
+                p.vx += Math.cos(p.angle) * 1.5;
+                p.vy += Math.sin(p.angle) * 1.5;
+                p.wasAttracted = false;
+            }
 
             // Slowly blend back into normal drifting physics
             const parallaxFactor = 1 + p.depth * 0.3;
