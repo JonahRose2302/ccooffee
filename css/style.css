@@ -1,22 +1,20 @@
 :root {
-    /* === REVOLUTIONARY COLOR SYSTEM === */
-    /* Deep Space Coffee Theme */
-    --color-espresso-dark: #1a0f0a;
-    --color-espresso-medium: #2d1810;
-    --color-espresso-light: #4a3025;
-    --color-gold-bright: #f4c430;
-    --color-gold-medium: #d4af37;
-    --color-gold-dark: #b8941f;
-    --color-cream: #f5e6d3;
-    --color-cream-dark: #e6d4bb;
+    --color-espresso-dark: #4a3b32;
+    --color-espresso-medium: #8b7365;
+    --color-espresso-light: #b8a192;
+    --color-gold-bright: #d69c4f;
+    --color-gold-medium: #b57739;
+    --color-gold-dark: #844c28;
+    --color-cream: #f4ece5;
+    --color-cream-dark: #e3d5c8;
 
     /* Accent Colors */
-    --color-primary: #D0BCFF;
-    --color-primary-glow: rgba(208, 188, 255, 0.3);
-    --color-surface: #141218;
-    --color-surface-elevated: #1e1a24;
-    --color-on-surface: #E6E1E5;
-    --color-outline: #938F99;
+    --color-primary: #c4764b;
+    --color-primary-glow: rgba(196, 118, 75, 0.3);
+    --color-surface: #1c1815;
+    --color-surface-elevated: #28221e;
+    --color-on-surface: #ebdcd0;
+    --color-outline: #6e5f55;
 
     /* === CUSTOM EASING CURVES === */
     /* Meaningful Motion Principles */
@@ -595,6 +593,14 @@ h3 {
     box-shadow: var(--shadow-md), 0 0 30px rgba(244, 196, 48, 0.15);
 }
 
+.brew-pill:hover {
+    transform: scale(1.02);
+}
+
+.brew-pill.expanded:hover {
+    transform: scale(1.01);
+}
+
 .brew-header {
     padding: 20px 32px;
     display: flex;
@@ -602,10 +608,6 @@ h3 {
     align-items: center;
     cursor: pointer;
     transition: background var(--duration-fast);
-}
-
-.brew-header:hover {
-    background: rgba(244, 196, 48, 0.1);
 }
 
 .brew-header h3 {

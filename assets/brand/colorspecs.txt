@@ -1,0 +1,55 @@
+CLASSIC
+
+    --color-espresso-dark: #4e2e1e;
+    --color-espresso-medium: #7c5544;
+    --color-espresso-light: #a5745f;
+    --color-gold-bright: #f4c430;
+    --color-gold-medium: #d4af37;
+    --color-gold-dark: #b8941f;
+    --color-cream: #f5e6d3;
+    --color-cream-dark: #e6d4bb;
+
+
+EXPRESSIV
+ 
+  --color-espresso-dark: #2A1B28;
+  --color-espresso-medium: #743046;
+  --color-espresso-light: #B85B67;
+  --color-gold-bright: #FFB347;
+  --color-gold-medium: #E27B36;
+  --color-gold-dark: #A64E22;
+  --color-cream: #F5EFEB;
+  --color-cream-dark: #DED3CB;
+
+
+NEON
+
+  --color-espresso-dark: #ff00ff;
+  --color-espresso-medium: #ff0066;
+  --color-espresso-light: #00ffff;
+  --color-gold-bright: #39ff14;
+  --color-gold-medium: #eaff00;
+  --color-gold-dark: #ff3300;
+  --color-cream: #ffffff;
+  --color-cream-dark: #bdfcff;
+
+
+PREEEETTTYYY
+
+  --color-espresso-dark: #4a3b32;
+  --color-espresso-medium: #8b7365;
+  --color-espresso-light: #b8a192;
+  --color-gold-bright: #d69c4f;
+  --color-gold-medium: #b57739;
+  --color-gold-dark: #844c28;
+  --color-cream: #f4ece5;
+  --color-cream-dark: #e3d5c8;
+
+/* Accent Colors */
+  --color-primary: #c4764b;
+  --color-primary-glow: rgba(196, 118, 75, 0.3);
+  --color-surface: #1c1815;
+  --color-surface-elevated: #28221e;
+  --color-on-surface: #ebdcd0;
+  --color-outline: #6e5f55;
+

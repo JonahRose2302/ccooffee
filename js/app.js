@@ -19,13 +19,16 @@ const utils = {
 /* === REVOLUTIONARY ANIMATION ENGINE === */
 const animationEngine = {
     // Magnetic hover effect - elements are attracted to cursor
-    enableMagnetic: (selector, strength = 0.25) => {
+    enableMagnetic: (selector, strength = 0.25, lockYOnly = false) => {
         document.querySelectorAll(selector).forEach(el => {
+            if (el.dataset.magneticInit) return;
+            el.dataset.magneticInit = 'true';
+
             el.addEventListener('mousemove', (e) => {
                 const rect = el.getBoundingClientRect();
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
-                const deltaX = (e.clientX - centerX) * strength;
+                const deltaX = lockYOnly ? 0 : (e.clientX - centerX) * strength;
                 const deltaY = (e.clientY - centerY) * strength;
 
                 gsap.to(el, {
@@ -673,6 +676,9 @@ const brewManager = {
             `;
             container.appendChild(el);
         });
+
+        // Enable sticky logic for the new brew pills
+        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.1, true), 50);
     },
 
     toggle: (id) => {
@@ -867,6 +873,8 @@ const brewManager = {
             `;
             container.appendChild(el);
         });
+
+        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.1, true), 50);
     }
 };
 
@@ -1028,6 +1036,8 @@ const drinkManager = {
             `;
             container.appendChild(el);
         });
+
+        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.1, true), 50);
     }
 };
 
@@ -1232,6 +1242,8 @@ const shopManager = {
             `;
             container.appendChild(el);
         });
+
+        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.1, true), 50);
     },
 
     renderMarkers: () => {
