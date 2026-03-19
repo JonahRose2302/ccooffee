@@ -2560,6 +2560,10 @@ body {
     -webkit-text-fill-color: transparent;
 }
 
+.modal .close {
+    display: none !important;
+}
+
 .knowledge-detail-body {
     padding: 30px;
     overflow-y: auto;
