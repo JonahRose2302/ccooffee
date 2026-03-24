@@ -82,16 +82,20 @@ h3 {
 }
 
 h1 {
-    font-family: 'Major Mono Display', monospace;
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 400;
-    margin-top: 6rem;
-    margin-bottom: 3rem;
-    color: var(--color-gold-bright);
-    text-align: center;
+    font-family: 'Major Mono Display', monospace !important;
+    text-transform: uppercase !important;
+    font-size: clamp(2.5rem, 5vw, 4rem) !important;
+    font-weight: 400 !important;
+    margin-top: 120px !important; /* Move safely below navbar */
+    margin-bottom: 2rem !important;
+    color: var(--color-gold-bright) !important;
+    background: none !important;
+    -webkit-text-fill-color: initial !important;
+    text-align: center !important;
+    letter-spacing: 2px !important;
     text-shadow:
         0 0 30px rgba(244, 196, 48, 0.4),
-        0 0 60px rgba(244, 196, 48, 0.2);
+        0 0 60px rgba(244, 196, 48, 0.2) !important;
 }
 
 @keyframes shimmer {
@@ -952,15 +956,7 @@ input:focus {
     background: transparent;
 }
 
-.epic-header h1 {
-    text-align: center;
-    background: linear-gradient(45deg, #FFD700, #DAA520);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    padding-bottom: 20px;
-    font-size: 3rem;
-}
+/* Eliminated .epic-header h1 overrides to force global unification */
 
 .dial-in-container {
     max-width: 600px;
@@ -1832,16 +1828,7 @@ body {
     z-index: 2;
 }
 
-#dialin .epic-header h1 {
-    font-size: 3.5rem;
-    letter-spacing: 4px;
-    background: linear-gradient(180deg, #fff, #a0a0a0);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    text-transform: uppercase;
-}
+/* Eliminated #dialin .epic-header h1 overrides to force global unification */
 
 /* The "Artifact" Container */
 #dialin .dial-in-container {
@@ -2352,16 +2339,7 @@ body {
     animation: fadeInDown 0.8s ease-out;
 }
 
-#knowledge h1 {
-    font-family: var(--font-display);
-    font-size: 3rem;
-    background: linear-gradient(135deg, #fff 0%, var(--color-gold-bright) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 8px;
-    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-}
+/* Eliminated #knowledge h1 overrides to force global unification */
 
 #knowledge p {
     font-family: var(--font-body);
@@ -3369,14 +3347,7 @@ body {
 }
 
 /* Explicit heading restoration for the epic dialin page */
-#dialin h1 {
-    font-family: var(--font-display) !important;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.95) !important;
-    text-shadow: 
-        0 0 20px rgba(244, 196, 48, 0.3),
-        0 0 40px rgba(244, 196, 48, 0.1) !important;
-}
+/* Eliminated #dialin h1 overrides to force global unification */
 
 #dialin.epic-page {
     background: transparent !important;
