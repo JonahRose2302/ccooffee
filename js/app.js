@@ -25,6 +25,10 @@ const animationEngine = {
             el.dataset.magneticInit = 'true';
 
             el.addEventListener('mousemove', (e) => {
+                // Ignore interactions if the intro animation is still running 
+                // (prevents GSAP transform conflicts locking the scale at 0.9)
+                if (gsap.getProperty(el, "opacity") < 1) return;
+
                 const rect = el.getBoundingClientRect();
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
@@ -40,6 +44,9 @@ const animationEngine = {
             });
 
             el.addEventListener('mouseleave', () => {
+                // If it's still animating the intro, do nothing.
+                if (gsap.getProperty(el, "opacity") < 1) return;
+
                 gsap.to(el, {
                     x: 0,
                     y: 0,
@@ -678,7 +685,7 @@ const brewManager = {
         });
 
         // Enable sticky logic for the new brew pills
-        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.1, true), 50);
+        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.03, true), 50);
     },
 
     toggle: (id) => {
@@ -874,7 +881,7 @@ const brewManager = {
             container.appendChild(el);
         });
 
-        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.1, true), 50);
+        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.03, true), 50);
     }
 };
 
@@ -1037,7 +1044,7 @@ const drinkManager = {
             container.appendChild(el);
         });
 
-        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.1, true), 50);
+        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.03, true), 50);
     }
 };
 
@@ -1243,7 +1250,7 @@ const shopManager = {
             container.appendChild(el);
         });
 
-        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.1, true), 50);
+        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.03, true), 50);
     },
 
     renderMarkers: () => {
@@ -1316,11 +1323,10 @@ window.addEventListener('load', () => {
 
     // Enable magnetic effects on tiles and navigation
     setTimeout(() => {
-        animationEngine.enableMagnetic('.tile', 0.3);
-        animationEngine.enableMagnetic('.knowledge-card', 0.3); // Added Knowledge Base Cards
-        animationEngine.enableMagnetic('.nav-btn', 0.25);
-        // Removed glass-nav magnetic effect to prevent shifting
-        animationEngine.enableMagnetic('.toggle-btn', 0.2);
+        animationEngine.enableMagnetic('.tile', 0.05);
+        animationEngine.enableMagnetic('.knowledge-card', 0.05); // Added Knowledge Base Cards
+        // Removed nav-btn magnetic effect to just rely on CSS highlighing
+        animationEngine.enableMagnetic('.toggle-btn', 0.05);
         animationEngine.revealElements('.tile', 0.1);
     }, 100);
 
@@ -1419,3 +1425,151 @@ window.addEventListener('scroll', () => {
 
 // Initial check
 document.addEventListener('DOMContentLoaded', updateLoginBtnState);
+
+/* === DIAL-IN WIZARD === */
+const dialInWizard = {
+    currentStep: 1,
+    totalSteps: 7,
+    data: {},
+
+    init: () => {
+        dialInWizard.reset();
+    },
+
+    next: () => {
+        if (!dialInWizard.validateStep(dialInWizard.currentStep)) return;
+        dialInWizard.saveStepData(dialInWizard.currentStep);
+        
+        if (dialInWizard.currentStep === 3) dialInWizard.calculateHypothesis();
+        if (dialInWizard.currentStep === 5) dialInWizard.calculateFinal();
+        if (dialInWizard.currentStep === 6) dialInWizard.buildSummary();
+        
+        if (dialInWizard.currentStep < dialInWizard.totalSteps) {
+            dialInWizard.goToStep(dialInWizard.currentStep + 1);
+        }
+    },
+
+    prev: () => {
+        if (dialInWizard.currentStep > 1) {
+            dialInWizard.goToStep(dialInWizard.currentStep - 1);
+        }
+    },
+
+    goToStep: (step) => {
+        document.querySelectorAll('.wizard-step').forEach(el => {
+            el.classList.remove('active');
+            el.classList.add('hidden');
+            setTimeout(() => { if(!el.classList.contains('active')) el.style.display = 'none'; }, 600);
+        });
+        
+        const nextEl = document.getElementById(`dialin-step-${step}`);
+        nextEl.style.display = 'block';
+        setTimeout(() => {
+            nextEl.classList.remove('hidden');
+            nextEl.classList.add('active');
+        }, 50);
+
+        dialInWizard.currentStep = step;
+        
+        // Update Progress
+        document.getElementById('dialin-progress').style.width = `${(step / dialInWizard.totalSteps) * 100}%`;
+
+        // Update Nav visibility
+        const prevBtn = document.getElementById('btn-prev');
+        const nextBtn = document.getElementById('btn-next');
+        
+        prevBtn.style.visibility = step === 1 ? 'hidden' : 'visible';
+        
+        if (step === dialInWizard.totalSteps) {
+            nextBtn.style.display = 'none';
+        } else {
+            nextBtn.style.display = 'block';
+            nextBtn.innerText = (step === 3 || step === 5) ? 'BERECHNEN' : 'Weiter';
+        }
+        
+        utils.vibrate(15);
+    },
+
+    validateStep: (step) => {
+        let valid = true;
+        const check = (id) => {
+            const el = document.getElementById(id);
+            if (!el || !el.value) {
+                if (el) { el.style.border = '1px solid #e74c3c'; setTimeout(()=> el.style.border='', 2000); }
+                valid = false;
+            }
+        };
+
+        if (step === 1) { check('di-min-grind'); check('di-max-grind'); }
+        if (step === 2) { check('di-target-time'); }
+        if (step === 3) { check('di-s1-grind'); check('di-s1-time'); }
+        if (step === 5) { check('di-s2-grind'); check('di-s2-time'); }
+        
+        if (!valid) utils.vibrate([100, 50, 100]);
+        return valid;
+    },
+
+    saveStepData: (step) => {
+        const val = (id) => parseFloat(document.getElementById(id).value) || 0;
+        if (step === 1) {
+            dialInWizard.data.minGrind = val('di-min-grind');
+            dialInWizard.data.maxGrind = val('di-max-grind');
+        }
+        if (step === 2) {
+            dialInWizard.data.targetTime = val('di-target-time');
+        }
+        if (step === 3) {
+            dialInWizard.data.s1 = { grind: val('di-s1-grind'), time: val('di-s1-time'), in: val('di-s1-in'), out: val('di-s1-out'), rpm: val('di-s1-rpm') };
+        }
+        if (step === 5) {
+            dialInWizard.data.s2 = { grind: val('di-s2-grind'), time: val('di-s2-time'), in: val('di-s2-in'), out: val('di-s2-out'), rpm: val('di-s2-rpm') };
+        }
+    },
+
+    calculateHypothesis: () => {
+        const { targetTime, s1 } = dialInWizard.data;
+        const timeDiff = targetTime - s1.time; 
+        
+        // As a generic rule of thumb: 1 second ~ 0.2 grind size changes.
+        // If we want +10s (need to slow down extraction), we go finer (smaller number usually).
+        let grindChange = timeDiff * -0.2; 
+        
+        let rawTarget = s1.grind + grindChange;
+        
+        document.getElementById('di-target-range').innerText = `${(rawTarget - 0.5).toFixed(1)} - ${(rawTarget + 0.5).toFixed(1)}`;
+        document.getElementById('di-s2-suggested-grind').innerText = rawTarget.toFixed(1);
+    },
+
+    calculateFinal: () => {
+        const { targetTime, s1, s2 } = dialInWizard.data;
+        
+        let targetGrind = s2.grind; 
+        if (s2.time !== s1.time) {
+            targetGrind = s1.grind + (targetTime - s1.time) * ((s2.grind - s1.grind) / (s2.time - s1.time));
+        }
+        
+        dialInWizard.data.finalGrind = targetGrind;
+        document.getElementById('di-final-grind').innerText = targetGrind.toFixed(1);
+    },
+
+    buildSummary: () => {
+        const grid = document.getElementById('di-summary-grid');
+        const d = dialInWizard.data;
+        grid.innerHTML = `
+            <div class="detail-item"><label>ZIELZEIT</label><span>${d.targetTime}s</span></div>
+            <div class="detail-item"><label>MÜHLE RANGE</label><span>${d.minGrind} - ${d.maxGrind}</span></div>
+            <div class="detail-item"><label>SHOT 1</label><span>Grind ${d.s1.grind} | ${d.s1.time}s</span></div>
+            <div class="detail-item"><label>SHOT 2</label><span>Grind ${d.s2.grind} | ${d.s2.time}s</span></div>
+            <div class="detail-item final-start"><label>PERFEKTER STARTPUNKT</label><span>${d.finalGrind.toFixed(1)}</span></div>
+        `;
+    },
+
+    reset: () => {
+        dialInWizard.data = {};
+        document.querySelectorAll('.wizard-step input').forEach(el => el.value = '');
+        dialInWizard.goToStep(1);
+    }
+};
+
+window.dialInWizard = dialInWizard;
+document.addEventListener('DOMContentLoaded', () => dialInWizard.init());
