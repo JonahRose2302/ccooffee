@@ -3111,46 +3111,45 @@ body {
 
 /* --- LOCAL THEME FOR DIAL-IN: M3E EXACT PALETTE --- */
 #dialin.page, #dialin.epic-page {
-    /* Base Surface: Raw Linen */
+    /* 1. Base Container Surface: Raw Linen */
     --color-surface: #D6BD9A; 
-    /* Secondary Container: Warm Oak */
+    /* 2. Text Fields: Warm Oak */
     --color-surface-elevated: #D7C4B7; 
-    /* Primary: Deep Espresso */
+    /* 3. Important Objects (Text, Progress, Buttons): Deep Espresso */
     --color-primary: #3E2723;
-    /* Tertiary: Sage Leaf */
-    --color-tertiary: #708D81;
+    /* 4. Page Background: Sage Leaf */
+    --color-page-bg: #708D81;
     
-    background: var(--color-surface) !important; /* override global body color */
+    background: var(--color-page-bg) !important; /* override global body color */
     color: var(--color-primary);
 }
 
-/* Neutralize the epic background features to match the light theme */
+/* Neutralize the epic background features */
 #dialin .epic-background {
     display: none;
 }
 
 #dialin.epic-page::before {
-    /* Mute the grid animation to Deep Espresso color */
     background-image:
-        linear-gradient(rgba(62, 39, 35, 0.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(62, 39, 35, 0.06) 1px, transparent 1px) !important;
+        linear-gradient(rgba(62, 39, 35, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(62, 39, 35, 0.08) 1px, transparent 1px) !important;
 }
 
 #dialin.epic-page::after {
-    /* PRECISION watermark to Deep Espresso color */
-    color: rgba(62, 39, 35, 0.04) !important;
+    color: rgba(62, 39, 35, 0.05) !important; /* PRECISION text */
 }
 
 #dialin h1 {
-    color: var(--color-primary);
+    font-family: 'Cutive Mono', monospace !important;
+    color: var(--color-primary) !important;
     text-shadow: none; /* Clean it up */
 }
 
 /* Wizard Overrides */
 #dialin .dial-in-wizard-container {
-    background: var(--color-surface-elevated);
+    background: var(--color-surface); /* Kachelhintergrund = Surface */
     border: none;
-    box-shadow: 0 12px 32px rgba(62, 39, 35, 0.1); /* subtle shadow */
+    box-shadow: 0 12px 32px rgba(62, 39, 35, 0.15); /* subtle shadow */
 }
 
 #dialin .wizard-step h2 {
@@ -3158,15 +3157,16 @@ body {
 }
 
 #dialin .wizard-step .step-desc {
-    color: rgba(62, 39, 35, 0.8);
+    color: var(--color-primary);
+    opacity: 0.8;
 }
 
 #dialin .wizard-progress-bar {
-    background: rgba(62, 39, 35, 0.1);
+    background: rgba(62, 39, 35, 0.15); /* Primary slightly transparent */
 }
 
 #dialin .wizard-progress-fill {
-    background: var(--color-tertiary); 
+    background: var(--color-primary); /* Progress bar = Primary */
 }
 
 #dialin .hypothesis-box {
@@ -3178,25 +3178,26 @@ body {
 }
 
 #dialin .hypothesis-box .value {
-    color: var(--color-tertiary); 
+    color: var(--color-primary); 
 }
 
 #dialin .suggestion-card {
-    background: rgba(112, 141, 129, 0.15); /* Tertiary light */
+    background: rgba(62, 39, 35, 0.08); /* Primary extremely light */
 }
 
 #dialin .suggestion-card::before {
-    background: var(--color-tertiary);
+    background: var(--color-primary);
 }
 
 #dialin .suggestion-card p {
     color: var(--color-primary);
 }
 
+/* Inputs = Secondary */
 #dialin .wizard-step input {
-    background: #FFFBFA;
+    background: var(--color-surface-elevated); /* Text fields = Secondary */
     color: var(--color-primary);
-    border: 1px solid rgba(62, 39, 35, 0.2);
+    border: 2px solid transparent;
 }
 
 #dialin .wizard-step input::placeholder {
@@ -3205,26 +3206,27 @@ body {
 
 #dialin .wizard-step input:focus {
     background: #fff;
-    border-color: var(--color-tertiary);
+    border-color: var(--color-primary);
 }
 
 #dialin .wizard-step .input-group label {
     color: var(--color-primary);
 }
 
+/* Buttons = Primary */
 #dialin .m3-button-primary {
     background: var(--color-primary); 
-    color: #FFFBFA;
+    color: #fff; /* White text on dark primary */
 }
 
 #dialin .m3-button-tonal {
-    background: rgba(62, 39, 35, 0.08); /* Tonal primary */
+    background: rgba(62, 39, 35, 0.1); /* Primary light tonal */
     color: var(--color-primary);
 }
 
 #dialin .m3-button-tertiary {
-    background: var(--color-tertiary); 
-    color: #FFFBFA;
+    background: var(--color-primary); /* All main buttons primary */
+    color: #fff;
 }
 
 #dialin .summary-grid .detail-item {
@@ -3240,13 +3242,13 @@ body {
 }
 
 #dialin .summary-grid .detail-item.final-start {
-    background: rgba(112, 141, 129, 0.2); /* Tertiary container */
+    background: rgba(62, 39, 35, 0.1); 
 }
 
 #dialin .summary-grid .detail-item.final-start label {
-    color: var(--color-tertiary);
+    color: var(--color-primary);
 }
 
 #dialin .summary-grid .detail-item.final-start span {
-    color: var(--color-tertiary);
+    color: var(--color-primary);
 }
