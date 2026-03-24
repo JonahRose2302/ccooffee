@@ -17,10 +17,14 @@
     transition: all 0.3s ease;
 }
 
-/* Specific adjustment for the Home Page warning to pull it up */
+/* Specific adjustment for the Home Page warning to pull it up securely */
 #home .guest-warning {
-    margin-top: 30px;
-    margin-bottom: 30px;
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    z-index: 9999;
 }
 
 .guest-warning .material-symbols-rounded {
@@ -47,6 +51,6 @@
     }
 
     #home .guest-warning {
-        margin-top: 15px;
+        top: 25px;
     }
 }
