@@ -3110,22 +3110,35 @@ body {
 }
 
 /* --- LOCAL THEME FOR DIAL-IN: M3E EXACT PALETTE --- */
-#dialin.page {
-    /* Base Surface: Ceramic White */
-    --color-surface: #FFFBFA; 
-    /* Secondary Container: Natural Wood */
-    --color-surface-elevated: #D7CCC8; 
-    /* Primary: Coffee Bean */
-    --color-primary: #5D4037;
-    /* Tertiary: Coffee Cherry */
-    --color-tertiary: #E91E63;
+#dialin.page, #dialin.epic-page {
+    /* Base Surface: Raw Linen */
+    --color-surface: #D6BD9A; 
+    /* Secondary Container: Warm Oak */
+    --color-surface-elevated: #D7C4B7; 
+    /* Primary: Deep Espresso */
+    --color-primary: #3E2723;
+    /* Tertiary: Sage Leaf */
+    --color-tertiary: #708D81;
     
-    background: var(--color-surface); /* override global body color */
+    background: var(--color-surface) !important; /* override global body color */
     color: var(--color-primary);
 }
 
+/* Neutralize the epic background features to match the light theme */
 #dialin .epic-background {
     display: none;
+}
+
+#dialin.epic-page::before {
+    /* Mute the grid animation to Deep Espresso color */
+    background-image:
+        linear-gradient(rgba(62, 39, 35, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(62, 39, 35, 0.06) 1px, transparent 1px) !important;
+}
+
+#dialin.epic-page::after {
+    /* PRECISION watermark to Deep Espresso color */
+    color: rgba(62, 39, 35, 0.04) !important;
 }
 
 #dialin h1 {
@@ -3137,20 +3150,19 @@ body {
 #dialin .dial-in-wizard-container {
     background: var(--color-surface-elevated);
     border: none;
-    box-shadow: 0 12px 32px rgba(93, 64, 55, 0.15); /* subtle shadow for light theme */
+    box-shadow: 0 12px 32px rgba(62, 39, 35, 0.1); /* subtle shadow */
 }
 
 #dialin .wizard-step h2 {
     color: var(--color-primary); 
-    color: #5D4037; /* Fallback */
 }
 
 #dialin .wizard-step .step-desc {
-    color: rgba(93, 64, 55, 0.8);
+    color: rgba(62, 39, 35, 0.8);
 }
 
 #dialin .wizard-progress-bar {
-    background: rgba(93, 64, 55, 0.1);
+    background: rgba(62, 39, 35, 0.1);
 }
 
 #dialin .wizard-progress-fill {
@@ -3158,7 +3170,7 @@ body {
 }
 
 #dialin .hypothesis-box {
-    background: rgba(255, 251, 250, 0.5); /* Surface overlay */
+    background: rgba(255, 255, 255, 0.3); /* Surface overlay */
 }
 
 #dialin .hypothesis-box .label {
@@ -3170,7 +3182,7 @@ body {
 }
 
 #dialin .suggestion-card {
-    background: rgba(233, 30, 99, 0.08); /* Tertiary light */
+    background: rgba(112, 141, 129, 0.15); /* Tertiary light */
 }
 
 #dialin .suggestion-card::before {
@@ -3184,11 +3196,11 @@ body {
 #dialin .wizard-step input {
     background: #FFFBFA;
     color: var(--color-primary);
-    border: 1px solid rgba(93, 64, 55, 0.2);
+    border: 1px solid rgba(62, 39, 35, 0.2);
 }
 
 #dialin .wizard-step input::placeholder {
-    color: rgba(93, 64, 55, 0.5);
+    color: rgba(62, 39, 35, 0.5);
 }
 
 #dialin .wizard-step input:focus {
@@ -3206,7 +3218,7 @@ body {
 }
 
 #dialin .m3-button-tonal {
-    background: rgba(93, 64, 55, 0.08); /* Tonal primary */
+    background: rgba(62, 39, 35, 0.08); /* Tonal primary */
     color: var(--color-primary);
 }
 
@@ -3216,11 +3228,11 @@ body {
 }
 
 #dialin .summary-grid .detail-item {
-    background: rgba(255, 251, 250, 0.6);
+    background: rgba(255, 255, 255, 0.4);
 }
 
 #dialin .summary-grid .detail-item label {
-    color: rgba(93, 64, 55, 0.7);
+    color: rgba(62, 39, 35, 0.7);
 }
 
 #dialin .summary-grid .detail-item span {
@@ -3228,7 +3240,7 @@ body {
 }
 
 #dialin .summary-grid .detail-item.final-start {
-    background: rgba(233, 30, 99, 0.1); /* Tertiary container */
+    background: rgba(112, 141, 129, 0.2); /* Tertiary container */
 }
 
 #dialin .summary-grid .detail-item.final-start label {
