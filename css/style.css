@@ -3108,3 +3108,133 @@ body {
     font-size: clamp(2.5rem, 5vw, 4rem);
     font-family: var(--font-heading);
 }
+
+/* --- LOCAL THEME FOR DIAL-IN: M3E EXACT PALETTE --- */
+#dialin.page {
+    /* Base Surface: Ceramic White */
+    --color-surface: #FFFBFA; 
+    /* Secondary Container: Natural Wood */
+    --color-surface-elevated: #D7CCC8; 
+    /* Primary: Coffee Bean */
+    --color-primary: #5D4037;
+    /* Tertiary: Coffee Cherry */
+    --color-tertiary: #E91E63;
+    
+    background: var(--color-surface); /* override global body color */
+    color: var(--color-primary);
+}
+
+#dialin .epic-background {
+    display: none;
+}
+
+#dialin h1 {
+    color: var(--color-primary);
+    text-shadow: none; /* Clean it up */
+}
+
+/* Wizard Overrides */
+#dialin .dial-in-wizard-container {
+    background: var(--color-surface-elevated);
+    border: none;
+    box-shadow: 0 12px 32px rgba(93, 64, 55, 0.15); /* subtle shadow for light theme */
+}
+
+#dialin .wizard-step h2 {
+    color: var(--color-primary); 
+    color: #5D4037; /* Fallback */
+}
+
+#dialin .wizard-step .step-desc {
+    color: rgba(93, 64, 55, 0.8);
+}
+
+#dialin .wizard-progress-bar {
+    background: rgba(93, 64, 55, 0.1);
+}
+
+#dialin .wizard-progress-fill {
+    background: var(--color-tertiary); 
+}
+
+#dialin .hypothesis-box {
+    background: rgba(255, 251, 250, 0.5); /* Surface overlay */
+}
+
+#dialin .hypothesis-box .label {
+    color: var(--color-primary);
+}
+
+#dialin .hypothesis-box .value {
+    color: var(--color-tertiary); 
+}
+
+#dialin .suggestion-card {
+    background: rgba(233, 30, 99, 0.08); /* Tertiary light */
+}
+
+#dialin .suggestion-card::before {
+    background: var(--color-tertiary);
+}
+
+#dialin .suggestion-card p {
+    color: var(--color-primary);
+}
+
+#dialin .wizard-step input {
+    background: #FFFBFA;
+    color: var(--color-primary);
+    border: 1px solid rgba(93, 64, 55, 0.2);
+}
+
+#dialin .wizard-step input::placeholder {
+    color: rgba(93, 64, 55, 0.5);
+}
+
+#dialin .wizard-step input:focus {
+    background: #fff;
+    border-color: var(--color-tertiary);
+}
+
+#dialin .wizard-step .input-group label {
+    color: var(--color-primary);
+}
+
+#dialin .m3-button-primary {
+    background: var(--color-primary); 
+    color: #FFFBFA;
+}
+
+#dialin .m3-button-tonal {
+    background: rgba(93, 64, 55, 0.08); /* Tonal primary */
+    color: var(--color-primary);
+}
+
+#dialin .m3-button-tertiary {
+    background: var(--color-tertiary); 
+    color: #FFFBFA;
+}
+
+#dialin .summary-grid .detail-item {
+    background: rgba(255, 251, 250, 0.6);
+}
+
+#dialin .summary-grid .detail-item label {
+    color: rgba(93, 64, 55, 0.7);
+}
+
+#dialin .summary-grid .detail-item span {
+    color: var(--color-primary);
+}
+
+#dialin .summary-grid .detail-item.final-start {
+    background: rgba(233, 30, 99, 0.1); /* Tertiary container */
+}
+
+#dialin .summary-grid .detail-item.final-start label {
+    color: var(--color-tertiary);
+}
+
+#dialin .summary-grid .detail-item.final-start span {
+    color: var(--color-tertiary);
+}
