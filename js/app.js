@@ -1554,7 +1554,7 @@ const dialInWizard = {
             <div class="detail-item"><label>MÜHLE RANGE</label><span>${d.minGrind} - ${d.maxGrind}</span></div>
             <div class="detail-item"><label>SHOT 1</label><span>Grind ${d.s1.grind} | ${d.s1.time}s</span></div>
             <div class="detail-item"><label>SHOT 2</label><span>Grind ${d.s2.grind} | ${d.s2.time}s</span></div>
-            <div class="detail-item" style="grid-column: 1 / -1; background: rgba(212, 175, 55, 0.2);"><label style="color:var(--color-gold-bright);">PERFEKTER STARTPUNKT</label><span style="color:var(--color-gold-bright); font-size:1.5rem;">${d.finalGrind.toFixed(1)}</span></div>
+            <div class="detail-item final-start"><label>PERFEKTER STARTPUNKT</label><span>${d.finalGrind.toFixed(1)}</span></div>
         `;
     },
 

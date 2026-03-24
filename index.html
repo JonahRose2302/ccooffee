@@ -196,7 +196,7 @@
                 <h1>dial-in wizard</h1>
             </header>
 
-            <div class="dial-in-wizard-container glass-panel-dark">
+            <div class="dial-in-wizard-container">
                 
                 <!-- PROGRESS BAR -->
                 <div class="wizard-progress-bar">
@@ -313,12 +313,12 @@
                 <div class="wizard-step hidden" id="dialin-step-6">
                     <h2>Dein perfekter Mahlgrad</h2>
                     
-                    <div class="result-box" style="margin-top: 2rem;">
+                    <div class="hypothesis-box" style="margin-top: 2rem;">
                         <span class="label">Finaler Mahlgrad</span>
-                        <span class="value" id="di-final-grind" style="font-size: 3rem;">--</span>
+                        <span class="value" id="di-final-grind">--</span>
                         
                         <div class="info-container" style="display: flex; gap: 10px; margin-top: 1rem; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; align-items: flex-start;">
-                            <span class="material-symbols-rounded icon-info" style="color: var(--md-sys-color-primary); margin-top: 2px;">info</span>
+                            <span class="material-symbols-rounded icon-info" style="color: var(--color-primary); margin-top: 2px;">info</span>
                             <p class="warning-text" style="margin: 0; font-size: 0.85rem; line-height: 1.4; color: rgba(255,255,255,0.8);"><strong>Hinweis:</strong> Aufgrund der Partikelverteilung der Kaffeemühle kann der reale perfekte Wert um ca. 0.2 - 0.5 Mahlgrade abweichen. Betrachte dies als extrem genauen Startpunkt.</p>
                         </div>
                     </div>
@@ -328,19 +328,19 @@
                 <div class="wizard-step hidden" id="dialin-step-7">
                     <h2>Zusammenfassung</h2>
                     
-                    <div class="summary-grid" id="di-summary-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 1.5rem; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 16px;">
+                    <div class="summary-grid" id="di-summary-grid">
                         <!-- Filled via JS -->
                     </div>
                     
                     <div style="text-align: center; margin-top: 2rem;">
-                        <button class="calculate-btn" onclick="dialInWizard.reset()">NEUER DIAL-IN</button>
+                        <button class="m3-button m3-button-tertiary" onclick="dialInWizard.reset()">NEUER DIAL-IN</button>
                     </div>
                 </div>
 
                 <!-- NAVIGATION BUTTONS -->
-                <div class="wizard-nav" id="wizard-nav" style="display: flex; justify-content: space-between; margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
-                    <button class="nav-btn-outline" id="btn-prev" onclick="dialInWizard.prev()" style="visibility: hidden; background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: var(--font-display);">Zurück</button>
-                    <button class="calculate-btn" id="btn-next" onclick="dialInWizard.next()" style="margin: 0; padding: 10px 20px;">Weiter</button>
+                <div class="wizard-nav" id="wizard-nav">
+                    <button class="m3-button m3-button-tonal" id="btn-prev" onclick="dialInWizard.prev()" style="visibility: hidden;">Zurück</button>
+                    <button class="m3-button m3-button-primary" id="btn-next" onclick="dialInWizard.next()">Weiter</button>
                 </div>
 
             </div>
