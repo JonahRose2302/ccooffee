@@ -432,9 +432,15 @@ h3 {
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 24px;
     width: 100%;
-    max-width: 1000px;
+    max-width: 1100px;
     padding: 0 20px;
     perspective: 1000px;
+}
+
+@media (min-width: 1024px) {
+    .tile-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
 }
 
 .tile-large {
