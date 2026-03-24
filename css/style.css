@@ -146,6 +146,10 @@ h3 {
     padding: 0;
 }
 
+#home .content-section {
+    justify-content: flex-start;
+}
+
 /* === DOMINANT INTERACTIVE BRAND LOGO === */
 .brand-logo {
     position: fixed;

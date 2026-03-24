@@ -102,10 +102,6 @@
 
         <!-- HOME PAGE -->
         <section id="home" class="page active">
-            <header class="page-header epic-header" style="margin-bottom: 2rem;">
-                <h1>hhoommee</h1>
-            </header>
-            
             <!-- Guest Mode Warning -->
             <div id="guest-warning" class="guest-warning glass-panel hidden">
                 <span class="material-symbols-rounded">info</span>
@@ -115,6 +111,10 @@
 
             <!-- Dashboard / Tile Navigation -->
             <div class="content-section">
+                <!-- Move Heading here so it calculates within flex layout -->
+                <header class="page-header epic-header" style="margin-bottom: 4rem; width: 100%;">
+                    <h1>hhoommee</h1>
+                </header>
                 <!-- Removed inner glass-panel to allow full bleed gradient blend -->
 
                 <div class="tile-grid">
