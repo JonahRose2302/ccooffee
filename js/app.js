@@ -678,7 +678,7 @@ const brewManager = {
         });
 
         // Enable sticky logic for the new brew pills
-        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.1, true), 50);
+        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.03, true), 50);
     },
 
     toggle: (id) => {
@@ -874,7 +874,7 @@ const brewManager = {
             container.appendChild(el);
         });
 
-        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.1, true), 50);
+        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.03, true), 50);
     }
 };
 
@@ -1037,7 +1037,7 @@ const drinkManager = {
             container.appendChild(el);
         });
 
-        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.1, true), 50);
+        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.03, true), 50);
     }
 };
 
@@ -1243,7 +1243,7 @@ const shopManager = {
             container.appendChild(el);
         });
 
-        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.1, true), 50);
+        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.03, true), 50);
     },
 
     renderMarkers: () => {
@@ -1316,11 +1316,10 @@ window.addEventListener('load', () => {
 
     // Enable magnetic effects on tiles and navigation
     setTimeout(() => {
-        animationEngine.enableMagnetic('.tile', 0.3);
-        animationEngine.enableMagnetic('.knowledge-card', 0.3); // Added Knowledge Base Cards
-        animationEngine.enableMagnetic('.nav-btn', 0.25);
-        // Removed glass-nav magnetic effect to prevent shifting
-        animationEngine.enableMagnetic('.toggle-btn', 0.2);
+        animationEngine.enableMagnetic('.tile', 0.05);
+        animationEngine.enableMagnetic('.knowledge-card', 0.05); // Added Knowledge Base Cards
+        // Removed nav-btn magnetic effect to just rely on CSS highlighing
+        animationEngine.enableMagnetic('.toggle-btn', 0.05);
         animationEngine.revealElements('.tile', 0.1);
     }, 100);
 
