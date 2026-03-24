@@ -1419,3 +1419,151 @@ window.addEventListener('scroll', () => {
 
 // Initial check
 document.addEventListener('DOMContentLoaded', updateLoginBtnState);
+
+/* === DIAL-IN WIZARD === */
+const dialInWizard = {
+    currentStep: 1,
+    totalSteps: 7,
+    data: {},
+
+    init: () => {
+        dialInWizard.reset();
+    },
+
+    next: () => {
+        if (!dialInWizard.validateStep(dialInWizard.currentStep)) return;
+        dialInWizard.saveStepData(dialInWizard.currentStep);
+        
+        if (dialInWizard.currentStep === 3) dialInWizard.calculateHypothesis();
+        if (dialInWizard.currentStep === 5) dialInWizard.calculateFinal();
+        if (dialInWizard.currentStep === 6) dialInWizard.buildSummary();
+        
+        if (dialInWizard.currentStep < dialInWizard.totalSteps) {
+            dialInWizard.goToStep(dialInWizard.currentStep + 1);
+        }
+    },
+
+    prev: () => {
+        if (dialInWizard.currentStep > 1) {
+            dialInWizard.goToStep(dialInWizard.currentStep - 1);
+        }
+    },
+
+    goToStep: (step) => {
+        document.querySelectorAll('.wizard-step').forEach(el => {
+            el.classList.remove('active');
+            el.classList.add('hidden');
+            setTimeout(() => { if(!el.classList.contains('active')) el.style.display = 'none'; }, 600);
+        });
+        
+        const nextEl = document.getElementById(`dialin-step-${step}`);
+        nextEl.style.display = 'block';
+        setTimeout(() => {
+            nextEl.classList.remove('hidden');
+            nextEl.classList.add('active');
+        }, 50);
+
+        dialInWizard.currentStep = step;
+        
+        // Update Progress
+        document.getElementById('dialin-progress').style.width = `${(step / dialInWizard.totalSteps) * 100}%`;
+
+        // Update Nav visibility
+        const prevBtn = document.getElementById('btn-prev');
+        const nextBtn = document.getElementById('btn-next');
+        
+        prevBtn.style.visibility = step === 1 ? 'hidden' : 'visible';
+        
+        if (step === dialInWizard.totalSteps) {
+            nextBtn.style.display = 'none';
+        } else {
+            nextBtn.style.display = 'block';
+            nextBtn.innerText = (step === 3 || step === 5) ? 'BERECHNEN' : 'Weiter';
+        }
+        
+        utils.vibrate(15);
+    },
+
+    validateStep: (step) => {
+        let valid = true;
+        const check = (id) => {
+            const el = document.getElementById(id);
+            if (!el || !el.value) {
+                if (el) { el.style.border = '1px solid #e74c3c'; setTimeout(()=> el.style.border='', 2000); }
+                valid = false;
+            }
+        };
+
+        if (step === 1) { check('di-min-grind'); check('di-max-grind'); }
+        if (step === 2) { check('di-target-time'); }
+        if (step === 3) { check('di-s1-grind'); check('di-s1-time'); }
+        if (step === 5) { check('di-s2-grind'); check('di-s2-time'); }
+        
+        if (!valid) utils.vibrate([100, 50, 100]);
+        return valid;
+    },
+
+    saveStepData: (step) => {
+        const val = (id) => parseFloat(document.getElementById(id).value) || 0;
+        if (step === 1) {
+            dialInWizard.data.minGrind = val('di-min-grind');
+            dialInWizard.data.maxGrind = val('di-max-grind');
+        }
+        if (step === 2) {
+            dialInWizard.data.targetTime = val('di-target-time');
+        }
+        if (step === 3) {
+            dialInWizard.data.s1 = { grind: val('di-s1-grind'), time: val('di-s1-time'), in: val('di-s1-in'), out: val('di-s1-out'), rpm: val('di-s1-rpm') };
+        }
+        if (step === 5) {
+            dialInWizard.data.s2 = { grind: val('di-s2-grind'), time: val('di-s2-time'), in: val('di-s2-in'), out: val('di-s2-out'), rpm: val('di-s2-rpm') };
+        }
+    },
+
+    calculateHypothesis: () => {
+        const { targetTime, s1 } = dialInWizard.data;
+        const timeDiff = targetTime - s1.time; 
+        
+        // As a generic rule of thumb: 1 second ~ 0.2 grind size changes.
+        // If we want +10s (need to slow down extraction), we go finer (smaller number usually).
+        let grindChange = timeDiff * -0.2; 
+        
+        let rawTarget = s1.grind + grindChange;
+        
+        document.getElementById('di-target-range').innerText = `${(rawTarget - 0.5).toFixed(1)} - ${(rawTarget + 0.5).toFixed(1)}`;
+        document.getElementById('di-s2-suggested-grind').innerText = rawTarget.toFixed(1);
+    },
+
+    calculateFinal: () => {
+        const { targetTime, s1, s2 } = dialInWizard.data;
+        
+        let targetGrind = s2.grind; 
+        if (s2.time !== s1.time) {
+            targetGrind = s1.grind + (targetTime - s1.time) * ((s2.grind - s1.grind) / (s2.time - s1.time));
+        }
+        
+        dialInWizard.data.finalGrind = targetGrind;
+        document.getElementById('di-final-grind').innerText = targetGrind.toFixed(1);
+    },
+
+    buildSummary: () => {
+        const grid = document.getElementById('di-summary-grid');
+        const d = dialInWizard.data;
+        grid.innerHTML = `
+            <div class="detail-item"><label>ZIELZEIT</label><span>${d.targetTime}s</span></div>
+            <div class="detail-item"><label>MÜHLE RANGE</label><span>${d.minGrind} - ${d.maxGrind}</span></div>
+            <div class="detail-item"><label>SHOT 1</label><span>Grind ${d.s1.grind} | ${d.s1.time}s</span></div>
+            <div class="detail-item"><label>SHOT 2</label><span>Grind ${d.s2.grind} | ${d.s2.time}s</span></div>
+            <div class="detail-item" style="grid-column: 1 / -1; background: rgba(212, 175, 55, 0.2);"><label style="color:var(--color-gold-bright);">PERFEKTER STARTPUNKT</label><span style="color:var(--color-gold-bright); font-size:1.5rem;">${d.finalGrind.toFixed(1)}</span></div>
+        `;
+    },
+
+    reset: () => {
+        dialInWizard.data = {};
+        document.querySelectorAll('.wizard-step input').forEach(el => el.value = '');
+        dialInWizard.goToStep(1);
+    }
+};
+
+window.dialInWizard = dialInWizard;
+document.addEventListener('DOMContentLoaded', () => dialInWizard.init());

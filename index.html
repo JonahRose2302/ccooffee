@@ -192,37 +192,157 @@
         <!-- DIAL-IN PAGE -->
         <section id="dialin" class="page epic-page">
             <div class="epic-background"></div>
-            <header class="page-header epic-header">
-                <h1>dial-in</h1>
+            <header class="page-header epic-header" style="margin-bottom: 2rem;">
+                <h1>dial-in wizard</h1>
             </header>
 
-            <div class="dial-in-container glass-panel-dark">
-                <div class="input-group">
-                    <label>Target Time (s)</label>
-                    <input type="number" id="target-time" placeholder="25" step="1">
+            <div class="dial-in-wizard-container glass-panel-dark">
+                
+                <!-- PROGRESS BAR -->
+                <div class="wizard-progress-bar">
+                    <div class="wizard-progress-fill" id="dialin-progress"></div>
                 </div>
 
-                <div class="shot-inputs">
-                    <div class="shot-card">
-                        <h3>Test Shot 1</h3>
-                        <input type="number" id="g1" placeholder="Grind Setting (e.g. 10)" step="0.1">
-                        <input type="number" id="t1" placeholder="Time (s)" step="1">
+                <!-- STEP 1: Grind Range -->
+                <div class="wizard-step active" id="dialin-step-1">
+                    <h2>Schritt 1: Mahlgrad-Spannweite</h2>
+                    <p class="step-desc">Gib die minimalen und maximalen Einstellungen deiner Mühle ein.</p>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Min Grind</label>
+                            <input type="number" id="di-min-grind" placeholder="z.B. 0" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Max Grind</label>
+                            <input type="number" id="di-max-grind" placeholder="z.B. 100" step="0.1">
+                        </div>
                     </div>
-                    <div class="shot-card">
-                        <h3>Test Shot 2</h3>
-                        <input type="number" id="g2" placeholder="Grind Setting (e.g. 12)" step="0.1">
-                        <input type="number" id="t2" placeholder="Time (s)" step="1">
+                </div>
+
+                <!-- STEP 2: Target Time -->
+                <div class="wizard-step hidden" id="dialin-step-2">
+                    <h2>Schritt 2: Zielzeit</h2>
+                    <p class="step-desc">Welche Extraktionszeit peilst du für deinen perfekten Shot an?</p>
+                    <div class="input-group">
+                        <label>Target Time (s)</label>
+                        <input type="number" id="di-target-time" placeholder="z.B. 25" step="1">
                     </div>
                 </div>
 
-                <button class="calculate-btn" onclick="dialIn.calculate()">CALCULATE</button>
-
-                <div id="dial-result" class="result-box hidden">
-                    <span class="label">Recommended Grind</span>
-                    <span class="value" id="result-grind">--</span>
-                    <p class="warning-text">Note: Due to non-linear particle distribution, consider adjusting 0.2 - 0.5
-                        steps coarser.</p>
+                <!-- STEP 3: Test Shot 1 -->
+                <div class="wizard-step hidden" id="dialin-step-3">
+                    <h2>Schritt 3: Erster Test Shot</h2>
+                    <p class="step-desc">Führe einen Shot durch und trage hier alle Werte ein.</p>
+                    
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Grind Setting *</label>
+                            <input type="number" id="di-s1-grind" placeholder="Pflichtfeld" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Time (s) *</label>
+                            <input type="number" id="di-s1-time" placeholder="Pflichtfeld" step="1">
+                        </div>
+                    </div>
+                    
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Dose In (g)</label>
+                            <input type="number" id="di-s1-in" placeholder="Optional" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Yield Out (g)</label>
+                            <input type="number" id="di-s1-out" placeholder="Optional" step="0.1">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>RPM (Optional)</label>
+                        <input type="number" id="di-s1-rpm" placeholder="" step="10">
+                    </div>
                 </div>
+
+                <!-- STEP 4: Hypothesis -->
+                <div class="wizard-step hidden" id="dialin-step-4">
+                    <h2>Hypothese</h2>
+                    <p class="step-desc">Basierend auf deinem ersten Shot ergibt sich folgende Schätzung:</p>
+                    
+                    <div class="hypothesis-box">
+                        <span class="label">Vorraussichtlicher Bereich</span>
+                        <span class="value" id="di-target-range">--</span>
+                    </div>
+
+                    <div class="suggestion-card">
+                        <span class="material-symbols-rounded" style="color:var(--color-gold-bright);">lightbulb</span>
+                        <p>Empfehlung für den 2. Shot: <strong id="di-s2-suggested-grind" style="font-size: 1.2rem; color:var(--color-gold-bright); margin-left: 10px;">--</strong></p>
+                    </div>
+                </div>
+
+                <!-- STEP 5: Test Shot 2 -->
+                <div class="wizard-step hidden" id="dialin-step-5">
+                    <h2>Schritt 5: Zweiter Test Shot</h2>
+                    <p class="step-desc">Versuche den empfohlenen Mahlgrad und trage das Ergebnis ein.</p>
+                    
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Grind Setting *</label>
+                            <input type="number" id="di-s2-grind" placeholder="Pflichtfeld" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Time (s) *</label>
+                            <input type="number" id="di-s2-time" placeholder="Pflichtfeld" step="1">
+                        </div>
+                    </div>
+                    
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Dose In (g)</label>
+                            <input type="number" id="di-s2-in" placeholder="Optional" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Yield Out (g)</label>
+                            <input type="number" id="di-s2-out" placeholder="Optional" step="0.1">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>RPM (Optional)</label>
+                        <input type="number" id="di-s2-rpm" placeholder="" step="10">
+                    </div>
+                </div>
+
+                <!-- STEP 6: Final Result -->
+                <div class="wizard-step hidden" id="dialin-step-6">
+                    <h2>Dein perfekter Mahlgrad</h2>
+                    
+                    <div class="result-box" style="margin-top: 2rem;">
+                        <span class="label">Finaler Mahlgrad</span>
+                        <span class="value" id="di-final-grind" style="font-size: 3rem;">--</span>
+                        
+                        <div class="info-container" style="display: flex; gap: 10px; margin-top: 1rem; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; align-items: flex-start;">
+                            <span class="material-symbols-rounded icon-info" style="color: var(--md-sys-color-primary); margin-top: 2px;">info</span>
+                            <p class="warning-text" style="margin: 0; font-size: 0.85rem; line-height: 1.4; color: rgba(255,255,255,0.8);"><strong>Hinweis:</strong> Aufgrund der Partikelverteilung der Kaffeemühle kann der reale perfekte Wert um ca. 0.2 - 0.5 Mahlgrade abweichen. Betrachte dies als extrem genauen Startpunkt.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 7: Summary -->
+                <div class="wizard-step hidden" id="dialin-step-7">
+                    <h2>Zusammenfassung</h2>
+                    
+                    <div class="summary-grid" id="di-summary-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 1.5rem; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 16px;">
+                        <!-- Filled via JS -->
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="calculate-btn" onclick="dialInWizard.reset()">NEUER DIAL-IN</button>
+                    </div>
+                </div>
+
+                <!-- NAVIGATION BUTTONS -->
+                <div class="wizard-nav" id="wizard-nav" style="display: flex; justify-content: space-between; margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
+                    <button class="nav-btn-outline" id="btn-prev" onclick="dialInWizard.prev()" style="visibility: hidden; background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: var(--font-display);">Zurück</button>
+                    <button class="calculate-btn" id="btn-next" onclick="dialInWizard.next()" style="margin: 0; padding: 10px 20px;">Weiter</button>
+                </div>
+
             </div>
         </section>
 
