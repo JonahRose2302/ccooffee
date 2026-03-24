@@ -61,7 +61,7 @@
 }
 
 body {
-    background: linear-gradient(135deg, var(--color-espresso-dark) 0%, #0a0506 50%, var(--color-espresso-medium) 100%);
+    background: #3e2723;
     color: var(--color-on-surface);
     font-family: var(--font-body);
     overflow-x: hidden;
@@ -69,17 +69,7 @@ body {
     min-height: 100vh;
 }
 
-/* === PARTICLE BACKGROUND CANVAS === */
-#particle-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    pointer-events: none;
-    opacity: 1;
-}
+
 
 /* === ENHANCED TYPOGRAPHY === */
 h1,
@@ -957,7 +947,7 @@ input:focus {
 
 /* --- Epic Dial-In --- */
 .epic-page {
-    background: radial-gradient(circle at center, #2a2a2a, #000);
+    background: transparent;
 }
 
 .epic-header h1 {
@@ -1809,28 +1799,15 @@ body {
 
 /* === CINEMATIC PRECISION THEME (THE ARTIFACT) === */
 #dialin.epic-page {
-    background: #050505 !important;
+    background: transparent !important;
     position: relative;
     overflow: hidden;
     perspective: 1000px;
 }
 
-/* Moving Grid Background */
+/* Moving Grid Background disabled */
 #dialin.epic-page::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background-image:
-        linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px);
-    background-size: 50px 50px;
-    animation: gridMove 20s linear infinite;
-    transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
-    pointer-events: none;
-    z-index: 0;
+    display: none;
 }
 
 @keyframes gridMove {
@@ -1845,18 +1822,7 @@ body {
 
 /* Massive Watermark Text */
 #dialin.epic-page::after {
-    content: 'PRECISION';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 15vw;
-    font-weight: 900;
-    color: rgba(255, 255, 255, 0.02);
-    font-family: var(--font-display);
-    pointer-events: none;
-    z-index: 0;
-    white-space: nowrap;
+    display: none;
 }
 
 #dialin .epic-header {
@@ -3411,19 +3377,17 @@ body {
 }
 
 #dialin.epic-page {
-    background: #050505 !important;
+    background: transparent !important;
 }
 
 #dialin .epic-background {
-    display: block !important;
+    display: none !important;
 }
 
 #dialin.epic-page::before {
-    background-image:
-        linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px) !important;
+    display: none !important;
 }
 
 #dialin.epic-page::after {
-    color: rgba(255, 255, 255, 0.02) !important;
+    display: none !important;
 }
