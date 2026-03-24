@@ -25,6 +25,10 @@ const animationEngine = {
             el.dataset.magneticInit = 'true';
 
             el.addEventListener('mousemove', (e) => {
+                // Ignore interactions if the intro animation is still running 
+                // (prevents GSAP transform conflicts locking the scale at 0.9)
+                if (gsap.getProperty(el, "opacity") < 1) return;
+
                 const rect = el.getBoundingClientRect();
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
@@ -40,6 +44,9 @@ const animationEngine = {
             });
 
             el.addEventListener('mouseleave', () => {
+                // If it's still animating the intro, do nothing.
+                if (gsap.getProperty(el, "opacity") < 1) return;
+
                 gsap.to(el, {
                     x: 0,
                     y: 0,
