@@ -33,8 +33,8 @@
     --duration-lazy: 800ms;
 
     /* === GLASSMORPHISM === */
-    --glass-bg: rgba(30, 25, 40, 0.4);
-    --glass-bg-strong: rgba(30, 25, 40, 0.7);
+    --glass-bg: rgba(42, 26, 10, 0.4);
+    --glass-bg-strong: rgba(42, 26, 10, 0.7);
     --glass-border: rgba(255, 255, 255, 0.08);
     --glass-border-strong: rgba(255, 255, 255, 0.15);
     --glass-blur: 20px;
@@ -291,7 +291,7 @@ h3 {
 
 /* --- Glassmorphism Panels --- */
 .glass-panel {
-    background: rgba(30, 25, 40, 0.6);
+    background: rgba(42, 26, 10, 0.6);
     backdrop-filter: blur(var(--glass-blur));
     -webkit-backdrop-filter: blur(var(--glass-blur));
     border: 1px solid var(--glass-border);
@@ -583,12 +583,14 @@ h3 {
     box-shadow: var(--shadow-md), 0 0 30px rgba(244, 196, 48, 0.15);
 }
 
-.brew-pill:hover {
-    transform: scale(1.02);
-}
+@media (hover: hover) {
+    .brew-pill:hover {
+        transform: scale(1.02);
+    }
 
-.brew-pill.expanded:hover {
-    transform: scale(1.01);
+    .brew-pill.expanded:hover {
+        transform: scale(1); /* No bouncing on PC when expanded */
+    }
 }
 
 .brew-header {
@@ -966,7 +968,7 @@ input:focus {
 }
 
 .glass-panel-dark {
-    background: rgba(10, 10, 10, 0.6);
+    background: rgba(42, 26, 10, 0.8);
     backdrop-filter: blur(30px);
     border: 1px solid rgba(255, 215, 0, 0.2);
     border-radius: 30px;

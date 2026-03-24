@@ -29,6 +29,12 @@ const animationEngine = {
                 // (prevents GSAP transform conflicts locking the scale at 0.9)
                 if (gsap.getProperty(el, "opacity") < 1) return;
 
+                // Disable drag on mobile devices or when the element is expanded
+                if (window.innerWidth <= 768 || el.classList.contains('expanded')) {
+                    gsap.to(el, { x: 0, y: 0, duration: 0.3, ease: "power2.out" });
+                    return;
+                }
+
                 const rect = el.getBoundingClientRect();
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
