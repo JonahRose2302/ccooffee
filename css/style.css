@@ -3092,163 +3092,338 @@ body {
     font-size: 1.25rem;
 }
 
+/* === DIAL-IN WIZARD (GLOBAL THEME MATCH) === */
+.dial-in-wizard-container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 650px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    color: var(--color-cream);
+}
+
+.wizard-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    margin-bottom: 40px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.wizard-progress-fill {
+    height: 100%;
+    width: 14%; /* updated by JS */
+    background: linear-gradient(90deg, var(--color-gold-medium), var(--color-gold-bright));
+    border-radius: 3px;
+    transition: width 0.5s var(--transition-bounce);
+    box-shadow: 0 0 10px rgba(244, 196, 48, 0.5);
+}
+
+.wizard-step {
+    display: none;
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+.wizard-step.active {
+    display: block;
+}
+
+.wizard-step h2 {
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    color: var(--color-gold-bright);
+    margin-bottom: 12px;
+    font-family: var(--font-heading);
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 10px rgba(244, 196, 48, 0.2);
+}
+
+.wizard-step .step-desc {
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    color: var(--color-cream-dark);
+    margin-bottom: 30px;
+    font-weight: 300;
+}
+
+/* Base Input Adjustments for Wizard */
+.wizard-step .input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--color-gold-medium);
+    letter-spacing: 0.5px;
+}
+
+.wizard-step input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    color: var(--color-cream);
+    padding: 16px 20px;
+    border-radius: 9999px; /* Pill shape */
+    font-size: 1.1rem;
+    font-family: var(--font-mono);
+    transition: all 0.3s ease;
+}
+
+.wizard-step input:focus {
+    outline: none;
+    border-color: var(--color-gold-bright);
+    background: rgba(244, 196, 48, 0.05);
+    box-shadow: 0 0 15px rgba(244, 196, 48, 0.2);
+}
+
+.wizard-step input::placeholder {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+/* Nav Buttons Section */
+.wizard-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    gap: 15px;
+}
+
+/* Styled standard action buttons for wizard */
+.m3-button-tonal, .m3-button-primary, .m3-button-tertiary {
+    padding: 14px 28px;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    letter-spacing: 0.5px;
+}
+
+/* Back button - sleek outlined */
+.m3-button-tonal {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-cream-dark);
+}
+.m3-button-tonal:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-cream);
+    transform: translateY(-2px);
+}
+
+/* Next button - solid gold glass */
+.m3-button-primary {
+    background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.05));
+    border: 1px solid var(--color-gold-medium);
+    color: var(--color-gold-bright);
+}
+.m3-button-primary:hover {
+    background: linear-gradient(135deg, rgba(244,196,48,0.25), rgba(244,196,48,0.1));
+    border-color: var(--color-gold-bright);
+    box-shadow: 0 0 15px rgba(244, 196, 48, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Final Action button - glowing */
+.m3-button-tertiary {
+    background: linear-gradient(135deg, var(--color-gold-medium), var(--color-gold-bright));
+    color: #000;
+    box-shadow: 0 0 20px rgba(244, 196, 48, 0.4);
+    font-weight: 700;
+}
+.m3-button-tertiary:hover {
+    box-shadow: 0 0 30px rgba(244, 196, 48, 0.6);
+    transform: translateY(-2px);
+    background: #FFDF00;
+}
+
+/* Special Components: Hypothesis Box */
+.hypothesis-box {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed var(--color-gold-medium);
+    border-radius: 24px;
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.hypothesis-box .label {
+    font-size: 0.9rem;
+    color: var(--color-cream-dark);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.hypothesis-box .value {
+    font-size: 3rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: var(--color-gold-bright);
+    text-shadow: 0 0 20px rgba(244, 196, 48, 0.4);
+}
+
+/* Suggestion Card (e.g., Target Box) */
+.suggestion-card {
+    background: linear-gradient(145deg, rgba(212,175,55,0.1), rgba(0,0,0,0.2));
+    border: 1px solid rgba(244, 196, 48, 0.3);
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.suggestion-card span.material-symbols-rounded {
+    font-size: 2rem;
+    color: var(--color-gold-bright);
+    filter: drop-shadow(0 0 8px rgba(244, 196, 48, 0.5));
+}
+
+.suggestion-card p {
+    font-size: 1.1rem;
+    color: var(--color-cream);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Optional Input Grid */
+.optional-toggles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.metric-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--color-cream-dark);
+    font-weight: 500;
+}
+
+.metric-toggle:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.metric-toggle.active {
+    background: rgba(244, 196, 48, 0.05);
+    border-color: var(--color-gold-medium);
+    color: var(--color-gold-bright);
+}
+
+.metric-toggle .material-symbols-rounded {
+    transition: color 0.3s ease;
+}
+
+.metric-toggle.active .material-symbols-rounded {
+    color: var(--color-gold-bright);
+}
+
+/* Dual Input Row */
+.input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Summary Grid on Step 7 */
+.summary-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.summary-grid .detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+    transition: transform 0.2s, background 0.2s;
+}
+
+.summary-grid .detail-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(4px);
+}
+
+.summary-grid .detail-item label {
+    font-size: 0.95rem;
+    color: var(--color-cream-dark);
+}
+
+.summary-grid .detail-item span {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-cream);
+    font-family: var(--font-mono);
+}
+
 .summary-grid .detail-item.final-start {
-    grid-column: 1 / -1;
-    background: rgba(181, 119, 57, 0.15); /* Tertiary container */
-    border-radius: 28px; /* Extra large shape */
-    padding: 32px;
+    background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(212,175,55,0.02));
+    border-color: var(--color-gold-medium);
+    margin-top: 10px;
+    padding: 24px;
 }
 
 .summary-grid .detail-item.final-start label {
     color: var(--color-gold-medium);
+    font-size: 1.1rem;
 }
 
 .summary-grid .detail-item.final-start span {
     color: var(--color-gold-bright);
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    font-family: var(--font-heading);
+    font-size: clamp(2rem, 5vw, 3rem);
+    text-shadow: 0 0 15px rgba(244, 196, 48, 0.4);
 }
 
-/* --- LOCAL THEME FOR DIAL-IN: M3E EXACT PALETTE --- */
-#dialin.page, #dialin.epic-page {
-    /* 1. Base Container Surface: Raw Linen */
-    --color-surface: #D6BD9A; 
-    /* 2. Text Fields: Warm Oak */
-    --color-surface-elevated: #D7C4B7; 
-    /* 3. Important Objects (Text, Progress, Buttons): Deep Espresso */
-    --color-primary: #3E2723;
-    /* 4. Page Background: Sage Leaf */
-    --color-page-bg: #708D81;
-    
-    background: var(--color-page-bg) !important; /* override global body color */
-    color: var(--color-primary);
+/* Explicit heading restoration for the epic dialin page */
+#dialin h1 {
+    font-family: var(--font-display) !important;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 
+        0 0 20px rgba(244, 196, 48, 0.3),
+        0 0 40px rgba(244, 196, 48, 0.1) !important;
 }
 
-/* Neutralize the epic background features */
+#dialin.epic-page {
+    background: #050505 !important;
+}
+
 #dialin .epic-background {
-    display: none;
+    display: block !important;
 }
 
 #dialin.epic-page::before {
     background-image:
-        linear-gradient(rgba(62, 39, 35, 0.08) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(62, 39, 35, 0.08) 1px, transparent 1px) !important;
+        linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px) !important;
 }
 
 #dialin.epic-page::after {
-    color: rgba(62, 39, 35, 0.05) !important; /* PRECISION text */
-}
-
-#dialin h1 {
-    font-family: 'Cutive Mono', monospace !important;
-    color: var(--color-primary) !important;
-    text-shadow: none; /* Clean it up */
-}
-
-/* Wizard Overrides */
-#dialin .dial-in-wizard-container {
-    background: var(--color-surface); /* Kachelhintergrund = Surface */
-    border: none;
-    box-shadow: 0 12px 32px rgba(62, 39, 35, 0.15); /* subtle shadow */
-}
-
-#dialin .wizard-step h2 {
-    color: var(--color-primary); 
-}
-
-#dialin .wizard-step .step-desc {
-    color: var(--color-primary);
-    opacity: 0.8;
-}
-
-#dialin .wizard-progress-bar {
-    background: rgba(62, 39, 35, 0.15); /* Primary slightly transparent */
-}
-
-#dialin .wizard-progress-fill {
-    background: var(--color-primary); /* Progress bar = Primary */
-}
-
-#dialin .hypothesis-box {
-    background: rgba(255, 255, 255, 0.3); /* Surface overlay */
-}
-
-#dialin .hypothesis-box .label {
-    color: var(--color-primary);
-}
-
-#dialin .hypothesis-box .value {
-    color: var(--color-primary); 
-}
-
-#dialin .suggestion-card {
-    background: rgba(62, 39, 35, 0.08); /* Primary extremely light */
-}
-
-#dialin .suggestion-card::before {
-    background: var(--color-primary);
-}
-
-#dialin .suggestion-card p {
-    color: var(--color-primary);
-}
-
-/* Inputs = Secondary */
-#dialin .wizard-step input {
-    background: var(--color-surface-elevated); /* Text fields = Secondary */
-    color: var(--color-primary);
-    border: 2px solid transparent;
-}
-
-#dialin .wizard-step input::placeholder {
-    color: rgba(62, 39, 35, 0.5);
-}
-
-#dialin .wizard-step input:focus {
-    background: #fff;
-    border-color: var(--color-primary);
-}
-
-#dialin .wizard-step .input-group label {
-    color: var(--color-primary);
-}
-
-/* Buttons = Primary */
-#dialin .m3-button-primary {
-    background: var(--color-primary); 
-    color: #fff; /* White text on dark primary */
-}
-
-#dialin .m3-button-tonal {
-    background: rgba(62, 39, 35, 0.1); /* Primary light tonal */
-    color: var(--color-primary);
-}
-
-#dialin .m3-button-tertiary {
-    background: var(--color-primary); /* All main buttons primary */
-    color: #fff;
-}
-
-#dialin .summary-grid .detail-item {
-    background: rgba(255, 255, 255, 0.4);
-}
-
-#dialin .summary-grid .detail-item label {
-    color: rgba(62, 39, 35, 0.7);
-}
-
-#dialin .summary-grid .detail-item span {
-    color: var(--color-primary);
-}
-
-#dialin .summary-grid .detail-item.final-start {
-    background: rgba(62, 39, 35, 0.1); 
-}
-
-#dialin .summary-grid .detail-item.final-start label {
-    color: var(--color-primary);
-}
-
-#dialin .summary-grid .detail-item.final-start span {
-    color: var(--color-primary);
+    color: rgba(255, 255, 255, 0.02) !important;
 }
