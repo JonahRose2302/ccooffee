@@ -82,20 +82,7 @@ h3 {
 }
 
 h1 {
-    font-family: 'Major Mono Display', monospace !important;
-    text-transform: uppercase !important;
-    font-size: clamp(2.5rem, 5vw, 4rem) !important;
-    font-weight: 400 !important;
-    margin-top: 120px !important; /* Move safely below navbar */
-    margin-bottom: 2rem !important;
-    color: var(--color-gold-bright) !important;
-    background: none !important;
-    -webkit-text-fill-color: initial !important;
-    text-align: center !important;
-    letter-spacing: 2px !important;
-    text-shadow:
-        0 0 30px rgba(244, 196, 48, 0.4),
-        0 0 60px rgba(244, 196, 48, 0.2) !important;
+    display: none !important;
 }
 
 @keyframes shimmer {
@@ -132,7 +119,7 @@ h3 {
 .page {
     display: none;
     min-height: 100vh;
-    padding: 100px 20px 40px 20px;
+    padding: 140px 20px 40px 20px;
     position: relative;
     z-index: 10;
 }
@@ -141,9 +128,9 @@ h3 {
     display: block;
 }
 
-/* Home page specific: no padding top to allow full bleed canvas */
+/* Home page specific: keep side padding 0 for full bleed, but top padding for nav clearance */
 #home.page {
-    padding: 0;
+    padding: 140px 0 0 0;
 }
 
 #home .content-section {
@@ -1684,7 +1671,7 @@ body {
     }
 
     .page {
-        padding-top: 120px;
+        padding-top: 140px;
         /* More space for top nav */
     }
 }

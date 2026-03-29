@@ -17,14 +17,11 @@
     transition: all 0.3s ease;
 }
 
-/* Specific adjustment for the Home Page warning to pull it up securely */
 #home .guest-warning {
-    position: absolute;
-    top: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    margin: 0;
-    z-index: 9999;
+    position: relative;
+    top: 0;
+    margin: 140px auto 80px auto;
+    z-index: 10;
 }
 
 .guest-warning .material-symbols-rounded {
@@ -51,6 +48,6 @@
     }
 
     #home .guest-warning {
-        top: 25px;
+        margin: 100px auto 60px auto;
     }
 }

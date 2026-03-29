@@ -133,11 +133,25 @@ const animationEngine = {
     }
 };
 
+/* --- PAGE TITLE MAPPING --- */
+const PAGE_TITLES = {
+    home: 'hhoommee',
+    brew: 'bbrreeww',
+    drinks: 'ddrriinnkkss',
+    dialin: 'ddiiaal-iinn',
+    shops: 'sshhoopp',
+    knowledge: 'wwiisssseenn'
+};
+
 /* --- ROUTER --- */
 const router = {
     navigate: (pageId) => {
         document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
+
+        // Update brand logo with page title
+        const brandLogo = document.querySelector('.brand-logo');
+        if (brandLogo) brandLogo.textContent = PAGE_TITLES[pageId] || pageId;
 
         // Trigger page transition animation
         animationEngine.transitionPage();
