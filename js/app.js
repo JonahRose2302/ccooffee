@@ -1264,6 +1264,17 @@ const shopManager = {
         shopManager.shops.forEach(s => {
             const el = document.createElement('div');
             el.className = 'brew-pill glass-panel';
+
+            // Google Maps Link Logic
+            let mapsUrl = '#';
+            if (s.location && s.location.includes(',')) {
+                mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${s.location}`;
+            } else if (s.address) {
+                mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.address)}`;
+            } else {
+                mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.shopName)}`;
+            }
+
             el.innerHTML = `
                 <div class="brew-header" onclick="brewManager.toggle('${s.id}')">
                    <h3>${s.shopName}</h3>
@@ -1271,6 +1282,9 @@ const shopManager = {
                 </div>
                 <div class="brew-details" id="details-${s.id}">
                      <div class="actions-row">
+                        <a href="${mapsUrl}" target="_blank" class="action-btn route" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center;">
+                            <span class="material-symbols-rounded">near_me</span> Route
+                        </a>
                         <button class="action-btn edit" onclick="shopManager.edit('${s.id}', event)"><span class="material-symbols-rounded">edit</span> Edit</button>
                         <button class="action-btn delete" onclick="shopManager.delete('${s.id}', event)"><span class="material-symbols-rounded">delete</span> Delete</button>
                     </div>
