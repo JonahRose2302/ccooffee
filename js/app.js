@@ -1099,6 +1099,22 @@ const shopManager = {
     markers: [],
     editingId: null,
 
+    setRating: (val) => {
+        const stars = document.querySelectorAll('#shop-star-rating span');
+        const hiddenInput = document.getElementById('shop-rating-value');
+        if (hiddenInput) hiddenInput.value = val;
+        
+        stars.forEach((s, idx) => {
+            if (idx < val) {
+                s.innerText = 'star';
+                s.classList.add('filled');
+            } else {
+                s.innerText = 'star_outline';
+                s.classList.remove('filled');
+            }
+        });
+    },
+
     init: () => {
         shopManager.renderList();
         // Map is initialized lazily when switching to map view
@@ -1170,7 +1186,7 @@ const shopManager = {
         shopManager.editingId = null;
         document.getElementById('shop-form').reset();
         document.querySelector('#shop-modal h2').innerText = 'New Spot';
-        document.getElementById('rating-val').innerText = '5';
+        shopManager.setRating(5);
         const m = document.getElementById('shop-modal');
         m.classList.remove('hidden'); void m.offsetWidth; m.classList.add('visible');
     },
@@ -1186,8 +1202,7 @@ const shopManager = {
         // Prefill with address string if available, else technical location
         form.elements['location'].value = shop.address || shop.location;
         form.elements['notes'].value = shop.notes;
-        form.elements['rating'].value = shop.rating;
-        document.getElementById('rating-val').innerText = shop.rating;
+        shopManager.setRating(shop.rating || 5);
         const m = document.getElementById('shop-modal');
         m.classList.remove('hidden'); void m.offsetWidth; m.classList.add('visible');
     },
