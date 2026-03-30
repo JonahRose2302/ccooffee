@@ -3300,6 +3300,7 @@ body {
 /* Star Rating System */
 .star-rating {
     display: flex;
+    justify-content: center;
     gap: 8px;
     margin-top: 10px;
     margin-bottom: 24px;

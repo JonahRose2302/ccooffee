@@ -1186,7 +1186,7 @@ const shopManager = {
         shopManager.editingId = null;
         document.getElementById('shop-form').reset();
         document.querySelector('#shop-modal h2').innerText = 'New Spot';
-        shopManager.setRating(5);
+        shopManager.setRating(0);
         const m = document.getElementById('shop-modal');
         m.classList.remove('hidden'); void m.offsetWidth; m.classList.add('visible');
     },

@@ -607,7 +607,6 @@
                 </div>
                 <textarea name="notes" placeholder="Notes..."></textarea>
                 <div class="rating-input">
-                    <label>Rating (1-5)</label>
                     <div class="star-rating" id="shop-star-rating">
                         <span class="material-symbols-rounded" onclick="shopManager.setRating(1)">star_outline</span>
                         <span class="material-symbols-rounded" onclick="shopManager.setRating(2)">star_outline</span>
@@ -615,7 +614,7 @@
                         <span class="material-symbols-rounded" onclick="shopManager.setRating(4)">star_outline</span>
                         <span class="material-symbols-rounded" onclick="shopManager.setRating(5)">star_outline</span>
                     </div>
-                    <input type="hidden" name="rating" id="shop-rating-value" value="5">
+                    <input type="hidden" name="rating" id="shop-rating-value" value="0">
                 </div>
                 <button type="submit" class="save-btn">Save Spot</button>
             </form>
