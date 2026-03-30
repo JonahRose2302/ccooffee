@@ -93,13 +93,12 @@ class AuthManager {
                 window.dispatchEvent(new CustomEvent('auth-logout'));
 
                 this.updateUI(false);
-                // Auto-open modal if not logged in
+                // Show dismissable toast instead of forcing modal
                 setTimeout(() => {
                     if (!this.currentUser) {
-                        this.showLoginModal();
-                        document.querySelectorAll('.guest-warning').forEach(el => el.classList.remove('hidden'));
+                        this.showGuestToast();
                     }
-                }, 100);
+                }, 800);
             }
         });
 
@@ -619,6 +618,23 @@ class AuthManager {
         setTimeout(() => m.classList.add('hidden'), 300);
     }
 
+    // Show a small dismissable guest toast at the bottom of the screen
+    showGuestToast() {
+        const toast = document.getElementById('guest-toast');
+        if (!toast) return;
+        // Remove the gone-state first, allow display to apply, then fade in
+        toast.classList.remove('guest-toast--gone');
+        void toast.offsetWidth; // force reflow so transition fires
+        toast.classList.add('guest-toast--visible');
+    }
+
+    dismissGuestToast() {
+        const toast = document.getElementById('guest-toast');
+        if (!toast) return;
+        toast.classList.remove('guest-toast--visible');
+        setTimeout(() => toast.classList.add('guest-toast--gone'), 400);
+    }
+
     // Update UI based on auth state
     updateUI(isLoggedIn) {
         const userProfile = document.getElementById('user-profile');
@@ -628,6 +644,9 @@ class AuthManager {
             // Show user profile
             userProfile.classList.remove('hidden');
             loginBtn.classList.add('hidden');
+
+            // Dismiss guest toast if visible
+            this.dismissGuestToast();
 
             const displayName = this.currentUser.displayName || this.currentUser.email.split('@')[0];
             document.getElementById('user-display-name').textContent = displayName;

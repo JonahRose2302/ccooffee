@@ -1,5 +1,5 @@
 // Service Worker for ccooffee PWA
-const CACHE_NAME = 'ccooffee-v10';
+const CACHE_NAME = 'ccooffee-v11';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -15,59 +15,80 @@ const ASSETS_TO_CACHE = [
 ];
 
 self.addEventListener('install', event => {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then(cache => {
-            console.log('Caching App Assets...');
-            // Using catch to prevent failure if some files don't exist yet
-            return cache.addAll(ASSETS_TO_CACHE.map(url => new Request(url, { cache: 'reload' })))
-                .catch(err => console.warn("Some assets could not be cached."));
-        })
-    );
+    // Immediately take control - don't wait for old SW to die
     self.skipWaiting();
+
+    event.waitUntil(
+        // Delete ALL old caches first, then cache fresh
+        caches.keys().then(keys =>
+            Promise.all(keys.map(key => caches.delete(key)))
+        ).then(() =>
+            caches.open(CACHE_NAME).then(cache => {
+                console.log('✅ Caching fresh assets v11...');
+                return cache.addAll(ASSETS_TO_CACHE.map(url => new Request(url, { cache: 'reload' })))
+                    .catch(err => console.warn("Some assets could not be cached:", err));
+            })
+        )
+    );
 });
 
 self.addEventListener('activate', event => {
     event.waitUntil(
-        caches.keys().then(keys => {
-            return Promise.all(keys
-                .filter(key => key !== CACHE_NAME)
-                .map(key => caches.delete(key))
+        // Claim all clients immediately so new SW takes over without waiting for reload
+        self.clients.claim().then(() => {
+            // Delete any leftover old caches
+            return caches.keys().then(keys =>
+                Promise.all(keys
+                    .filter(key => key !== CACHE_NAME)
+                    .map(key => caches.delete(key))
+                )
             );
         })
     );
-    self.clients.claim();
 });
 
-// Fetch Event - Stale-While-Revalidate for app files, Ignore Firebase/API requests
+// Fetch Event - Network First for JS/CSS, Cache First for assets
 self.addEventListener('fetch', event => {
-    // Only intercept GET requests
     if (event.request.method !== 'GET') return;
 
     // Let Firebase / Nominatim API calls pass through completely untouched
     if (event.request.url.includes('firestore.googleapis.com') ||
         event.request.url.includes('identitytoolkit.googleapis.com') ||
-        event.request.url.includes('nominatim.openstreetmap.org')) {
+        event.request.url.includes('nominatim.openstreetmap.org') ||
+        event.request.url.includes('googleapis.com') ||
+        event.request.url.includes('gstatic.com') ||
+        event.request.url.includes('cdnjs.cloudflare.com') ||
+        event.request.url.includes('unpkg.com') ||
+        event.request.url.includes('jsdelivr.net')) {
         return;
     }
 
-    // Stale-While-Revalidate strategy
-    event.respondWith(
-        caches.match(event.request).then(cachedResponse => {
-            const fetchPromise = fetch(event.request).then(networkResponse => {
-                // Cache the new response if valid
+    // Network-first for JS and CSS (always get latest code)
+    const url = new URL(event.request.url);
+    if (url.pathname.endsWith('.js') || url.pathname.endsWith('.css') || url.pathname.endsWith('.html')) {
+        event.respondWith(
+            fetch(event.request).then(networkResponse => {
                 if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
                     const responseToCache = networkResponse.clone();
-                    caches.open(CACHE_NAME).then(cache => {
-                        cache.put(event.request, responseToCache);
-                    });
+                    caches.open(CACHE_NAME).then(cache => cache.put(event.request, responseToCache));
                 }
                 return networkResponse;
-            }).catch(err => {
-                console.warn('Network request failed, serving from cache if available:', err);
-            });
+            }).catch(() => caches.match(event.request))
+        );
+        return;
+    }
 
-            // Return cached immediately if available, otherwise wait for network
-            return cachedResponse || fetchPromise;
+    // Cache-first for everything else (images, fonts, etc.)
+    event.respondWith(
+        caches.match(event.request).then(cachedResponse => {
+            if (cachedResponse) return cachedResponse;
+            return fetch(event.request).then(networkResponse => {
+                if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+                    const responseToCache = networkResponse.clone();
+                    caches.open(CACHE_NAME).then(cache => cache.put(event.request, responseToCache));
+                }
+                return networkResponse;
+            });
         })
     );
 });
