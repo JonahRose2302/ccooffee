@@ -1,0 +1,80 @@
+
+/* === PREMIUM DARK MAP STYLING === */
+.map-container {
+    height: 600px;
+    width: 100%;
+    border-radius: 32px;
+    overflow: hidden;
+    margin-top: 24px;
+    border: 2px solid rgba(244, 196, 48, 0.2);
+    box-shadow: var(--shadow-lg);
+    background: #080808; /* Fallback */
+}
+
+/* Custom Marker Styling */
+.custom-map-marker {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.marker-dot {
+    width: 12px;
+    height: 12px;
+    background: var(--color-gold-bright);
+    border-radius: 50%;
+    box-shadow: 0 0 15px var(--color-gold-bright);
+    z-index: 2;
+}
+
+.marker-pulse {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    background: rgba(212, 175, 55, 0.3);
+    border-radius: 50%;
+    animation: marker-pulse 2s infinite ease-out;
+    z-index: 1;
+}
+
+@keyframes marker-pulse {
+    0% { transform: scale(0.5); opacity: 0.8; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* Dark Leaflet Popups */
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+    background: rgba(20, 12, 8, 0.95) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--color-cream) !important;
+    border: 1px solid rgba(244, 196, 48, 0.3);
+    border-radius: 16px !important;
+    font-family: var(--font-body) !important;
+}
+
+.leaflet-popup-content {
+    margin: 12px 18px !important;
+    line-height: 1.4 !important;
+}
+
+.map-popup strong {
+    color: var(--color-gold-bright);
+    font-family: var(--font-heading);
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Darken the Leaflet controls */
+.leaflet-control-zoom-in, .leaflet-control-zoom-out {
+    background: rgba(30, 30, 30, 0.8) !important;
+    color: var(--color-gold-bright) !important;
+    border-color: rgba(244, 196, 48, 0.2) !important;
+}
+
+.leaflet-control-attribution {
+    background: rgba(0,0,0,0.5) !important;
+    color: rgba(255,255,255,0.4) !important;
+}

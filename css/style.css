@@ -1,33 +1,17 @@
 /* === CUSTOM FONT FACES === */
 @font-face {
-    font-family: 'Michroma';
-    src: url('../assets/fonts/Michroma/Michroma-Regular.ttf') format('truetype');
+    font-family: 'Boldonse';
+    src: url('../assets/fonts/abstract/Comfortaa/Comfortaa-VariableFont_wght.ttf') format('truetype');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
 }
 
 @font-face {
-    font-family: 'Cardo';
-    src: url('../assets/fonts/Cardo/Cardo-Regular.ttf') format('truetype');
-    font-weight: 400;
+    font-family: 'Datatype';
+    src: url('../assets/fonts/abstract/Datatype/Datatype-VariableFont_wdth,wght.ttf') format('truetype');
+    font-weight: 100 900;
     font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Cardo';
-    src: url('../assets/fonts/Cardo/Cardo-Bold.ttf') format('truetype');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Cardo';
-    src: url('../assets/fonts/Cardo/Cardo-Italic.ttf') format('truetype');
-    font-weight: 400;
-    font-style: italic;
     font-display: swap;
 }
 
@@ -74,10 +58,10 @@
     --glass-blur-strong: 40px;
 
     /* === TYPOGRAPHY === */
-    --font-heading: 'Michroma', sans-serif;
-    --font-brand: 'Michroma', sans-serif;
-    --font-mono: 'Cardo', serif;
-    --font-body: 'Cardo', serif;
+    --font-heading: 'Boldonse', cursive;
+    --font-brand: 'Boldonse', cursive;
+    --font-mono: 'Datatype', sans-serif;
+    --font-body: 'Datatype', sans-serif;
 
     /* === SHADOWS & GLOWS === */
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -601,7 +585,6 @@ h3 {
     border-radius: 9999px;
     margin-bottom: 24px;
     overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.33, 1, 0.68, 1);
     border: 2px solid rgba(244, 196, 48, 0.2);
     box-shadow: var(--shadow-sm);
 }
@@ -617,15 +600,7 @@ h3 {
     box-shadow: var(--shadow-md), 0 0 30px rgba(244, 196, 48, 0.15);
 }
 
-@media (hover: hover) {
-    .brew-pill:hover {
-        transform: scale(1.02);
-    }
-
-    .brew-pill.expanded:hover {
-        transform: scale(1); /* No bouncing on PC when expanded */
-    }
-}
+/* Hover scale removed */
 
 .brew-header {
     padding: 20px 32px;
@@ -662,14 +637,13 @@ h3 {
     border: none !important;
     outline: none !important;
     flex-shrink: 0;
-    transition: transform var(--duration-fast) var(--ease-overshoot);
+    flex-shrink: 0;
 }
 
 /* Inactive: muted gold outline — blends into the theme */
 .fav-icon-btn .material-symbols-rounded {
     font-size: 22px;
     color: rgba(212, 175, 55, 0.35);
-    transition: color 0.2s ease, filter 0.2s ease;
 }
 
 /* Hover: hint of red before committing */
@@ -683,15 +657,10 @@ h3 {
     filter: drop-shadow(0 0 6px rgba(231, 76, 60, 0.7));
 }
 
-.fav-icon-btn:hover {
-    transform: scale(1.25);
-}
-
 .brew-details {
     max-height: 0;
     overflow: hidden;
     background: rgba(20, 12, 8, 0.5);
-    transition: max-height 0.4s ease, padding 0.4s;
     border-radius: 24px;
     margin: 0 12px 12px;
 }
@@ -2456,7 +2425,7 @@ body {
     line-height: 1.5;
 }
 
-.eexxiitt-btn {
+.exit-btn {
     display: block;
     width: 100%;
     text-align: center;
@@ -2481,20 +2450,20 @@ body {
 }
 
 /* Adjust margin overrides based on specific modal paddings */
-.modal-content .eexxiitt-btn {
+.modal-content .exit-btn {
     width: calc(100% + 64px);
     margin-left: -32px;
     margin-bottom: -32px;
 }
 
-.knowledge-modal-content .eexxiitt-btn,
-.trouble-modal-content .eexxiitt-btn {
+.knowledge-modal-content .exit-btn,
+.trouble-modal-content .exit-btn {
     width: 100%;
     margin-left: 0;
     margin-bottom: 0;
 }
 
-.eexxiitt-btn:hover {
+.exit-btn:hover {
     background: rgba(244, 196, 48, 0.15);
     color: #fff;
     letter-spacing: 8px;
@@ -2673,7 +2642,7 @@ body {
 }
 
 .level-points-label {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-body);
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.5);
     letter-spacing: 1px;
@@ -2732,7 +2701,7 @@ body {
 }
 
 .level-next-info {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-body);
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.6);
 }
@@ -2811,7 +2780,6 @@ body {
     font-family: var(--font-body);
     font-size: 1.1rem;
     cursor: pointer;
-    transition: all var(--duration-fast) var(--ease-overshoot);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -2821,7 +2789,6 @@ body {
     background: rgba(42, 26, 10, 0.6);
     border-color: var(--color-gold-bright);
     box-shadow: 0 0 15px rgba(244, 196, 48, 0.2);
-    transform: translateY(-2px);
 }
 
 .trouble-pill span.material-symbols-rounded {
@@ -2832,19 +2799,22 @@ body {
 .dial-in-wizard-container {
     background: var(--color-surface-elevated);
     border: none;
-    border-radius: 28px; /* M3 Extra Rounded */
+    border-radius: 28px;
+    /* M3 Extra Rounded */
     padding: 40px;
     max-width: 650px;
     margin: 0 auto;
     position: relative;
     overflow: hidden;
-    box-shadow: none; /* Tonal Elevation */
+    box-shadow: none;
+    /* Tonal Elevation */
 }
 
 .wizard-progress-bar {
     width: 100%;
     height: 8px;
-    background: rgba(255, 255, 255, 0.05); /* Tonal contrast */
+    background: rgba(255, 255, 255, 0.05);
+    /* Tonal contrast */
     border-radius: 4px;
     margin-bottom: 40px;
     overflow: hidden;
@@ -2853,15 +2823,17 @@ body {
 .wizard-progress-fill {
     height: 100%;
     width: 14%;
-    background: var(--color-primary); 
-    transition: width 500ms var(--ease-overshoot); /* Emphasized easing */
+    background: var(--color-primary);
+    transition: width 500ms var(--ease-overshoot);
+    /* Emphasized easing */
     border-radius: 4px;
 }
 
 .wizard-step {
     display: none;
     opacity: 0;
-    transform: translateY(30px) scale(0.95); /* Container Transform intro */
+    transform: translateY(30px) scale(0.95);
+    /* Container Transform intro */
 }
 
 .wizard-step.active {
@@ -2873,7 +2845,8 @@ body {
 
 .wizard-step h2 {
     font-family: var(--font-heading);
-    font-size: clamp(2rem, 5vw, 3rem); /* Display Large */
+    font-size: clamp(2rem, 5vw, 3rem);
+    /* Display Large */
     color: var(--color-on-surface);
     margin-bottom: 12px;
     line-height: 1.1;
@@ -2883,14 +2856,16 @@ body {
 .wizard-step .step-desc {
     color: var(--color-cream-dark);
     margin-bottom: 32px;
-    font-size: 1.15rem; /* Title Medium */
+    font-size: 1.15rem;
+    /* Title Medium */
     font-family: var(--font-body);
     opacity: 0.9;
 }
 
 /* Tonal Elevation Level 2 */
 .hypothesis-box {
-    background: rgba(196, 118, 75, 0.15); /* Primary Container Tonal */
+    background: rgba(196, 118, 75, 0.15);
+    /* Primary Container Tonal */
     border-radius: 28px;
     padding: 36px 24px;
     text-align: center;
@@ -2900,7 +2875,8 @@ body {
 
 .hypothesis-box .label {
     display: block;
-    font-size: 1rem; /* Label Large */
+    font-size: 1rem;
+    /* Label Large */
     color: var(--color-primary);
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -2909,7 +2885,8 @@ body {
 }
 
 .hypothesis-box .value {
-    font-size: clamp(3.5rem, 8vw, 5.5rem); /* Expressive Scaling */
+    font-size: clamp(3.5rem, 8vw, 5.5rem);
+    /* Expressive Scaling */
     font-family: var(--font-heading);
     color: var(--color-primary);
     line-height: 1;
@@ -2919,9 +2896,11 @@ body {
 .suggestion-card {
     display: flex;
     align-items: center;
-    background: rgba(181, 119, 57, 0.15); /* Tertiary container approx */
+    background: rgba(181, 119, 57, 0.15);
+    /* Tertiary container approx */
     padding: 24px 32px;
-    border-radius: 4px 28px 28px 28px; /* M3 Asymmetric shapes */
+    border-radius: 4px 28px 28px 28px;
+    /* M3 Asymmetric shapes */
     margin-top: 16px;
     position: relative;
     cursor: default;
@@ -2932,14 +2911,16 @@ body {
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: var(--color-gold-medium); /* Tertiary */
+    background: var(--color-gold-medium);
+    /* Tertiary */
     opacity: 0;
     transition: opacity 250ms var(--ease-smooth);
     pointer-events: none;
 }
 
 .suggestion-card:hover::before {
-    opacity: 0.08; /* M3 Hover State Layer */
+    opacity: 0.08;
+    /* M3 Hover State Layer */
 }
 
 .suggestion-card p {
@@ -2966,7 +2947,8 @@ body {
     border: 2px solid transparent;
     color: var(--color-on-surface);
     padding: 18px 24px;
-    border-radius: 9999px; /* Pill Shape */
+    border-radius: 9999px;
+    /* Pill Shape */
     font-size: 1.15rem;
     margin-bottom: 24px;
     transition: all 250ms var(--ease-smooth);
@@ -2974,8 +2956,10 @@ body {
 }
 
 .wizard-step input:focus {
-    background: rgba(255, 255, 255, 0.08); /* State Layer Focus */
-    border-color: var(--color-primary); /* Primary Accent */
+    background: rgba(255, 255, 255, 0.08);
+    /* State Layer Focus */
+    border-color: var(--color-primary);
+    /* Primary Accent */
     outline: none;
 }
 
@@ -2985,7 +2969,8 @@ body {
     justify-content: space-between;
     margin-top: 40px;
     padding-top: 32px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05); /* Outline Variant */
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    /* Outline Variant */
 }
 
 .m3-button {
@@ -2995,7 +2980,8 @@ body {
     letter-spacing: 1px;
     text-transform: uppercase;
     padding: 16px 32px;
-    border-radius: 9999px; /* Pill shape */
+    border-radius: 9999px;
+    /* Pill shape */
     cursor: pointer;
     border: none;
     transition: all 250ms var(--ease-overshoot);
@@ -3027,12 +3013,15 @@ body {
 
 .m3-button-primary {
     background: var(--color-primary);
-    color: #fff; /* On-Primary */
+    color: #fff;
+    /* On-Primary */
 }
 
 .m3-button-tonal {
-    background: rgba(255, 255, 255, 0.08); /* Secondary Container */
-    color: var(--color-on-surface); /* On-Secondary Container */
+    background: rgba(255, 255, 255, 0.08);
+    /* Secondary Container */
+    color: var(--color-on-surface);
+    /* On-Secondary Container */
 }
 
 .m3-button-tertiary {
@@ -3050,7 +3039,8 @@ body {
 .summary-grid .detail-item {
     background: rgba(255, 255, 255, 0.04);
     padding: 20px;
-    border-radius: 16px; /* Medium shape */
+    border-radius: 16px;
+    /* Medium shape */
 }
 
 .summary-grid .detail-item label {
@@ -3096,7 +3086,8 @@ body {
 
 .wizard-progress-fill {
     height: 100%;
-    width: 14%; /* updated by JS */
+    width: 14%;
+    /* updated by JS */
     background: linear-gradient(90deg, var(--color-gold-medium), var(--color-gold-bright));
     border-radius: 3px;
     transition: width 0.5s var(--transition-bounce);
@@ -3144,7 +3135,8 @@ body {
     border: 1px solid var(--glass-border);
     color: var(--color-cream);
     padding: 16px 20px;
-    border-radius: 9999px; /* Pill shape */
+    border-radius: 9999px;
+    /* Pill shape */
     font-size: 1.1rem;
     font-family: var(--font-mono);
     transition: all 0.3s ease;
@@ -3170,7 +3162,9 @@ body {
 }
 
 /* Styled standard action buttons for wizard */
-.m3-button-tonal, .m3-button-primary, .m3-button-tertiary {
+.m3-button-tonal,
+.m3-button-primary,
+.m3-button-tertiary {
     padding: 14px 28px;
     border-radius: 9999px;
     font-weight: 600;
@@ -3191,6 +3185,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--color-cream-dark);
 }
+
 .m3-button-tonal:hover {
     background: rgba(255, 255, 255, 0.05);
     color: var(--color-cream);
@@ -3199,12 +3194,13 @@ body {
 
 /* Next button - solid gold glass */
 .m3-button-primary {
-    background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.05));
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
     border: 1px solid var(--color-gold-medium);
     color: var(--color-gold-bright);
 }
+
 .m3-button-primary:hover {
-    background: linear-gradient(135deg, rgba(244,196,48,0.25), rgba(244,196,48,0.1));
+    background: linear-gradient(135deg, rgba(244, 196, 48, 0.25), rgba(244, 196, 48, 0.1));
     border-color: var(--color-gold-bright);
     box-shadow: 0 0 15px rgba(244, 196, 48, 0.3);
     transform: translateY(-2px);
@@ -3217,6 +3213,7 @@ body {
     box-shadow: 0 0 20px rgba(244, 196, 48, 0.4);
     font-weight: 700;
 }
+
 .m3-button-tertiary:hover {
     box-shadow: 0 0 30px rgba(244, 196, 48, 0.6);
     transform: translateY(-2px);
@@ -3253,7 +3250,7 @@ body {
 
 /* Suggestion Card (e.g., Target Box) */
 .suggestion-card {
-    background: linear-gradient(145deg, rgba(212,175,55,0.1), rgba(0,0,0,0.2));
+    background: linear-gradient(145deg, rgba(212, 175, 55, 0.1), rgba(0, 0, 0, 0.2));
     border: 1px solid rgba(244, 196, 48, 0.3);
     border-radius: 20px;
     padding: 24px;
@@ -3359,7 +3356,7 @@ body {
 }
 
 .summary-grid .detail-item.final-start {
-    background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(212,175,55,0.02));
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.02));
     border-color: var(--color-gold-medium);
     margin-top: 10px;
     padding: 24px;

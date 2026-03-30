@@ -9,10 +9,7 @@
     <!-- Material Symbols -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <!-- Enhanced Fonts: Inter, Tangerine (calligraphic), JetBrains Mono, Doto, Major Mono Display -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Tangerine:wght@400;700&family=JetBrains+Mono:wght@400;500;700&family=Doto:wght@100..900&family=Major+Mono+Display&display=swap"
-        rel="stylesheet">
+    <!-- Fonts: Shizuru + Datatype loaded locally via @font-face in style.css -->
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -36,11 +33,12 @@
     <link rel="stylesheet" href="css/mobile-optimizations.css">
     <link rel="stylesheet" href="css/warning-style.css?v=3">
     <link rel="stylesheet" href="css/auth-style.css">
+    <link rel="stylesheet" href="css/map-style.css">
 </head>
 
 <body>
     <!-- Brand Logo -->
-    <div class="brand-logo">hhoommee</div>
+    <div class="brand-logo">home</div>
 
     <!-- User Profile / Login -->
     <div id="user-profile" class="user-profile hidden">
@@ -113,7 +111,7 @@
             <div class="content-section">
                 <!-- Move Heading here so it calculates within flex layout -->
                 <header class="page-header epic-header" style="width: 100%;">
-                    <h1>hhoommee</h1>
+                    <h1>home</h1>
                 </header>
                 <!-- Removed inner glass-panel to allow full bleed gradient blend -->
 
@@ -122,7 +120,7 @@
                         onclick="document.getElementById('about-modal').classList.add('visible')">
                         <span class="material-symbols-rounded icon">person</span>
                         <h2>Über mich</h2>
-                        <p>Das Gesicht hinter ccooffee</p>
+                        <p>Das Gesicht hinter coffee</p>
                     </div>
                     <div class="tile" onclick="router.navigate('brew')">
                         <span class="material-symbols-rounded icon">coffee_maker</span>
@@ -131,7 +129,7 @@
                     </div>
                     <div class="tile" onclick="router.navigate('drinks')">
                         <span class="material-symbols-rounded icon">local_cafe</span>
-                        <h2>ddrriinnkk</h2>
+                        <h2>drink</h2>
                         <p>Manage drinks</p>
                     </div>
                     <div class="tile" onclick="router.navigate('dialin')">
@@ -142,12 +140,12 @@
                     <!-- Knowledge Base Entry -->
                     <div class="tile" onclick="router.navigate('knowledge')">
                         <span class="material-symbols-rounded icon">school</span>
-                        <h2>Wissen</h2>
+                        <h2>knowledge</h2>
                         <p>Explore coffee knowledge</p>
                     </div>
                     <div class="tile" onclick="router.navigate('shops')">
                         <span class="material-symbols-rounded icon">map</span>
-                        <h2>ccooffee</h2>
+                        <h2>coffee</h2>
                         <p>Explore spots</p>
                     </div>
                 </div>
@@ -157,7 +155,7 @@
         <!-- BREW PAGE -->
         <section id="brew" class="page">
             <header class="page-header">
-                <h1>bbeeaann recipes</h1>
+                <h1>bean recipes</h1>
                 <button class="fab" onclick="brewManager.openSkillModal()"><span
                         class="material-symbols-rounded">add</span></button>
             </header>
@@ -175,7 +173,7 @@
         <!-- DRINKS PAGE -->
         <section id="drinks" class="page">
             <header class="page-header">
-                <h1>ddrriinnkk recipes</h1>
+                <h1>drink recipes</h1>
                 <button class="fab" onclick="drinkManager.openAddModal()"><span
                         class="material-symbols-rounded">add</span></button>
             </header>
@@ -194,11 +192,11 @@
         <section id="dialin" class="page epic-page">
             <div class="epic-background"></div>
             <header class="page-header epic-header">
-                <h1>ddaaiill-iinn</h1>
+                <h1>dial-in</h1>
             </header>
 
             <div class="dial-in-wizard-container">
-                
+
                 <!-- PROGRESS BAR -->
                 <div class="wizard-progress-bar">
                     <div class="wizard-progress-fill" id="dialin-progress"></div>
@@ -234,7 +232,7 @@
                 <div class="wizard-step hidden" id="dialin-step-3">
                     <h2>Schritt 3: Erster Test Shot</h2>
                     <p class="step-desc">Führe einen Shot durch und trage hier alle Werte ein.</p>
-                    
+
                     <div class="input-row">
                         <div class="input-group">
                             <label>Grind Setting *</label>
@@ -245,7 +243,7 @@
                             <input type="number" id="di-s1-time" placeholder="Pflichtfeld" step="1">
                         </div>
                     </div>
-                    
+
                     <div class="input-row">
                         <div class="input-group">
                             <label>Dose In (g)</label>
@@ -266,7 +264,7 @@
                 <div class="wizard-step hidden" id="dialin-step-4">
                     <h2>Hypothese</h2>
                     <p class="step-desc">Basierend auf deinem ersten Shot ergibt sich folgende Schätzung:</p>
-                    
+
                     <div class="hypothesis-box">
                         <span class="label">Vorraussichtlicher Bereich</span>
                         <span class="value" id="di-target-range">--</span>
@@ -274,7 +272,9 @@
 
                     <div class="suggestion-card">
                         <span class="material-symbols-rounded" style="color:var(--color-gold-bright);">lightbulb</span>
-                        <p>Empfehlung für den 2. Shot: <strong id="di-s2-suggested-grind" style="font-size: 1.2rem; color:var(--color-gold-bright); margin-left: 10px;">--</strong></p>
+                        <p>Empfehlung für den 2. Shot: <strong id="di-s2-suggested-grind"
+                                style="font-size: 1.2rem; color:var(--color-gold-bright); margin-left: 10px;">--</strong>
+                        </p>
                     </div>
                 </div>
 
@@ -282,7 +282,7 @@
                 <div class="wizard-step hidden" id="dialin-step-5">
                     <h2>Schritt 5: Zweiter Test Shot</h2>
                     <p class="step-desc">Versuche den empfohlenen Mahlgrad und trage das Ergebnis ein.</p>
-                    
+
                     <div class="input-row">
                         <div class="input-group">
                             <label>Grind Setting *</label>
@@ -293,7 +293,7 @@
                             <input type="number" id="di-s2-time" placeholder="Pflichtfeld" step="1">
                         </div>
                     </div>
-                    
+
                     <div class="input-row">
                         <div class="input-group">
                             <label>Dose In (g)</label>
@@ -313,14 +313,20 @@
                 <!-- STEP 6: Final Result -->
                 <div class="wizard-step hidden" id="dialin-step-6">
                     <h2>Dein perfekter Mahlgrad</h2>
-                    
+
                     <div class="hypothesis-box" style="margin-top: 2rem;">
                         <span class="label">Finaler Mahlgrad</span>
                         <span class="value" id="di-final-grind">--</span>
-                        
-                        <div class="info-container" style="display: flex; gap: 10px; margin-top: 1rem; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; align-items: flex-start;">
-                            <span class="material-symbols-rounded icon-info" style="color: var(--color-primary); margin-top: 2px;">info</span>
-                            <p class="warning-text" style="margin: 0; font-size: 0.85rem; line-height: 1.4; color: rgba(255,255,255,0.8);"><strong>Hinweis:</strong> Aufgrund der Partikelverteilung der Kaffeemühle kann der reale perfekte Wert um ca. 0.2 - 0.5 Mahlgrade abweichen. Betrachte dies als extrem genauen Startpunkt.</p>
+
+                        <div class="info-container"
+                            style="display: flex; gap: 10px; margin-top: 1rem; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; align-items: flex-start;">
+                            <span class="material-symbols-rounded icon-info"
+                                style="color: var(--color-primary); margin-top: 2px;">info</span>
+                            <p class="warning-text"
+                                style="margin: 0; font-size: 0.85rem; line-height: 1.4; color: rgba(255,255,255,0.8);">
+                                <strong>Hinweis:</strong> Aufgrund der Partikelverteilung der Kaffeemühle kann der reale
+                                perfekte Wert um ca. 0.2 - 0.5 Mahlgrade abweichen. Betrachte dies als extrem genauen
+                                Startpunkt.</p>
                         </div>
                     </div>
                 </div>
@@ -328,20 +334,23 @@
                 <!-- STEP 7: Summary -->
                 <div class="wizard-step hidden" id="dialin-step-7">
                     <h2>Zusammenfassung</h2>
-                    
+
                     <div class="summary-grid" id="di-summary-grid">
                         <!-- Filled via JS -->
                     </div>
-                    
+
                     <div style="text-align: center; margin-top: 2rem;">
-                        <button class="m3-button m3-button-tertiary" onclick="dialInWizard.reset()">NEUER DIAL-IN</button>
+                        <button class="m3-button m3-button-tertiary" onclick="dialInWizard.reset()">NEUER
+                            DIAL-IN</button>
                     </div>
                 </div>
 
                 <!-- NAVIGATION BUTTONS -->
                 <div class="wizard-nav" id="wizard-nav">
-                    <button class="m3-button m3-button-tonal" id="btn-prev" onclick="dialInWizard.prev()" style="visibility: hidden;">Zurück</button>
-                    <button class="m3-button m3-button-primary" id="btn-next" onclick="dialInWizard.next()">Weiter</button>
+                    <button class="m3-button m3-button-tonal" id="btn-prev" onclick="dialInWizard.prev()"
+                        style="visibility: hidden;">Zurück</button>
+                    <button class="m3-button m3-button-primary" id="btn-next"
+                        onclick="dialInWizard.next()">Weiter</button>
                 </div>
 
             </div>
@@ -351,7 +360,7 @@
         <!-- SHOPS PAGE -->
         <section id="shops" class="page">
             <header class="page-header">
-                <h1>CCOOFFEE SHOP</h1>
+                <h1>COFFEE SHOP</h1>
                 <button class="fab" onclick="shopManager.openAddModal()"><span
                         class="material-symbols-rounded">add</span></button>
             </header>
@@ -394,8 +403,7 @@
                     <div class="knowledge-detail-body" id="k-detail-body">
                         <!-- Content -->
                     </div>
-                    <div class="eexxiitt-btn" onclick="this.closest('.modal').querySelector('.close').click()">eexxiitt
-                    </div>
+                    <div class="exit-btn" onclick="this.closest('.modal').querySelector('.close').click()">exit</div>
                 </div>
             </div>
 
@@ -426,8 +434,7 @@
                             style="font-family:var(--font-body); color:var(--color-cream); line-height:1.6; font-size:1.1rem;">
                         </p>
                     </div>
-                    <div class="eexxiitt-btn" onclick="this.closest('.modal').querySelector('.close').click()">eexxiitt
-                    </div>
+                    <div class="exit-btn" onclick="this.closest('.modal').querySelector('.close').click()">exit</div>
                 </div>
             </div>
         </section>
@@ -447,7 +454,7 @@
             <h2>Hey, ich bin noxram!</h2>
             <br>
             <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 30px;">
-                Willkommen bei <strong>ccooffee</strong> – deinem ultimativen Barista-Begleiter. Ich habe dieses Projekt
+                Willkommen bei <strong>coffee</strong> – deinem ultimativen Barista-Begleiter. Ich habe dieses Projekt
                 ins Leben gerufen, um Baristas und Specialty Coffee Fans ein Tool zur Hand zu geben, um ihre Skills zu
                 perfektionieren.
                 <br><br>
@@ -457,8 +464,8 @@
             <a href="https://www.youtube.com/@its_noxram" target="_blank"
                 style="display: inline-block; background: var(--color-gold-bright); color: #000; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; font-family: var(--font-heading); letter-spacing: 1px;">Zum
                 YouTube Kanal</a>
-            <div class="eexxiitt-btn" onclick="this.closest('.modal').querySelector('.close').click()"
-                style="margin-left: -20px; width: calc(100% + 40px); margin-bottom: -40px;">eexxiitt</div>
+            <div class="exit-btn" onclick="this.closest('.modal').querySelector('.close').click()"
+                style="margin-left: -20px; width: calc(100% + 40px); margin-bottom: -40px;">exit</div>
         </div>
     </div>
     <!-- Brew Skill Level Modal -->
@@ -483,7 +490,7 @@
             </div>
             <p style="margin-top: 20px; font-size: 0.9rem; color: var(--color-gold-dark);">Wähle das Level passend zu
                 deiner Erfahrung und deinen Messwerkzeugen.</p>
-            <div class="eexxiitt-btn" onclick="this.closest('.modal').querySelector('.close').click()">eexxiitt</div>
+            <div class="exit-btn" onclick="this.closest('.modal').querySelector('.close').click()">exit</div>
         </div>
     </div>
 
@@ -563,7 +570,7 @@
 
                 <button type="submit" class="save-btn">Save Brew</button>
             </form>
-            <div class="eexxiitt-btn" onclick="this.closest('.modal').querySelector('.close').click()">eexxiitt</div>
+            <div class="exit-btn" onclick="this.closest('.modal').querySelector('.close').click()">exit</div>
         </div>
     </div>
 
@@ -582,7 +589,7 @@
                 <!-- Image input handled technically differently or simplify for now -->
                 <button type="submit" class="save-btn">Save Recipe</button>
             </form>
-            <div class="eexxiitt-btn" onclick="this.closest('.modal').querySelector('.close').click()">eexxiitt</div>
+            <div class="exit-btn" onclick="this.closest('.modal').querySelector('.close').click()">exit</div>
         </div>
     </div>
 
@@ -607,7 +614,7 @@
                 </div>
                 <button type="submit" class="save-btn">Save Spot</button>
             </form>
-            <div class="eexxiitt-btn" onclick="this.closest('.modal').querySelector('.close').click()">eexxiitt</div>
+            <div class="exit-btn" onclick="this.closest('.modal').querySelector('.close').click()">exit</div>
         </div>
     </div>
 
@@ -638,7 +645,7 @@
                     <button type="button" id="auth-switch-btn" class="link-btn">Registrieren</button>
                 </div>
             </form>
-            <div class="eexxiitt-btn" onclick="this.closest('.modal').querySelector('.close').click()">eexxiitt</div>
+            <div class="exit-btn" onclick="this.closest('.modal').querySelector('.close').click()">exit</div>
         </div>
     </div>
 
@@ -653,7 +660,7 @@
             <div id="leaderboard-list" class="leaderboard-list">
                 <p class="lb-loading">Lade Rangliste…</p>
             </div>
-            <div class="eexxiitt-btn" onclick="this.closest('.modal').querySelector('.close').click()">eexxiitt</div>
+            <div class="exit-btn" onclick="this.closest('.modal').querySelector('.close').click()">exit</div>
         </div>
     </div>
 
@@ -682,7 +689,7 @@
                     <span class="stat-label">Shops</span>
                 </div>
             </div>
-            <div class="eexxiitt-btn" onclick="this.closest('.modal').querySelector('.close').click()">eexxiitt</div>
+            <div class="exit-btn" onclick="this.closest('.modal').querySelector('.close').click()">exit</div>
         </div>
     </div>
 
@@ -698,7 +705,7 @@
                     Favoriten</h2>
             </div>
             <div id="favorites-brew-list" class="favorites-brew-list"></div>
-            <div class="eexxiitt-btn" onclick="this.closest('.modal').querySelector('.close').click()">eexxiitt</div>
+            <div class="exit-btn" onclick="this.closest('.modal').querySelector('.close').click()">exit</div>
         </div>
     </div>
 
@@ -711,7 +718,7 @@
                 <h2 id="level-title">Trainee Barista</h2>
             </div>
             <div class="level-points-display">
-                <span class="level-points-label">ccooffee points</span>
+                <span class="level-points-label">coffee points</span>
                 <span class="level-points-value" id="level-points-value">0</span>
             </div>
             <div class="level-progress-section">
@@ -720,7 +727,7 @@
                 </div>
                 <p class="level-next-info" id="level-next-info">Noch 10 Punkte bis zum nächsten Level</p>
             </div>
-            <div class="eexxiitt-btn" onclick="this.closest('.modal').querySelector('.close').click()">eexxiitt</div>
+            <div class="exit-btn" onclick="this.closest('.modal').querySelector('.close').click()">exit</div>
         </div>
     </div>
 

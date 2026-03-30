@@ -135,12 +135,12 @@ const animationEngine = {
 
 /* --- PAGE TITLE MAPPING --- */
 const PAGE_TITLES = {
-    home: 'hhoommee',
-    brew: 'bbrreeww',
-    drinks: 'ddrriinnkkss',
-    dialin: 'ddiiaal-iinn',
-    shops: 'sshhoopp',
-    knowledge: 'wwiisssseenn'
+    home: 'home',
+    brew: 'bean recipes',
+    drinks: 'drink recipes',
+    dialin: 'dial-in',
+    shops: 'coffee shop',
+    knowledge: 'knowledge'
 };
 
 /* --- ROUTER --- */
@@ -705,7 +705,7 @@ const brewManager = {
         });
 
         // Enable sticky logic for the new brew pills
-        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.03, true), 50);
+        // Magnetic animation removed
     },
 
     toggle: (id) => {
@@ -822,7 +822,7 @@ const brewManager = {
                             display: true,
                             text: 'Time (s)',
                             color: 'rgba(255, 255, 255, 0.5)',
-                            font: { family: "'JetBrains Mono', monospace", size: 10 }
+                            font: { family: "'Datatype', sans-serif", size: 10 }
                         },
                         grid: {
                             color: 'rgba(255, 255, 255, 0.05)',
@@ -830,7 +830,7 @@ const brewManager = {
                         },
                         ticks: {
                             color: 'rgba(255, 255, 255, 0.5)',
-                            font: { family: "'JetBrains Mono', monospace", size: 10 }
+                            font: { family: "'Datatype', sans-serif", size: 10 }
                         },
                         // Ensure x-axis always starts at 0
                         min: 0
@@ -840,7 +840,7 @@ const brewManager = {
                             display: true,
                             text: 'Pressure (Bar)',
                             color: 'rgba(255, 255, 255, 0.5)',
-                            font: { family: "'JetBrains Mono', monospace", size: 10 }
+                            font: { family: "'Datatype', sans-serif", size: 10 }
                         },
                         grid: {
                             color: 'rgba(255, 255, 255, 0.05)',
@@ -848,7 +848,7 @@ const brewManager = {
                         },
                         ticks: {
                             color: 'rgba(255, 255, 255, 0.5)',
-                            font: { family: "'JetBrains Mono', monospace", size: 10 },
+                            font: { family: "'Datatype', sans-serif", size: 10 },
                             stepSize: 3
                         },
                         // Cap Y nicely 
@@ -901,7 +901,7 @@ const brewManager = {
             container.appendChild(el);
         });
 
-        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.03, true), 50);
+        // Magnetic animation removed
     }
 };
 
@@ -1064,7 +1064,7 @@ const drinkManager = {
             container.appendChild(el);
         });
 
-        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.03, true), 50);
+        // Magnetic animation removed
     }
 };
 
@@ -1222,10 +1222,21 @@ const shopManager = {
 
             // Lazy Init Map
             if (!shopManager.map) {
-                shopManager.map = L.map('shop-map-container').setView([51.1657, 10.4515], 6);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; OpenStreetMap contributors'
+                shopManager.map = L.map('shop-map-container', {
+                    zoomControl: false,
+                    scrollWheelZoom: true
+                }).setView([51.1657, 10.4515], 6);
+
+                // Add Premium Dark Matter Tiles
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+                    subdomains: 'abcd',
+                    maxZoom: 20
                 }).addTo(shopManager.map);
+
+                // Add zoom control at bottom right
+                L.control.zoom({ position: 'bottomright' }).addTo(shopManager.map);
+
                 shopManager.renderMarkers();
             }
 
@@ -1270,19 +1281,35 @@ const shopManager = {
             container.appendChild(el);
         });
 
-        setTimeout(() => animationEngine.enableMagnetic('.brew-pill', 0.03, true), 50);
+        // Magnetic animation removed
     },
 
     renderMarkers: () => {
         shopManager.markers.forEach(m => shopManager.map.removeLayer(m));
         shopManager.markers = [];
+        
+        // Define Custom Marker Icon
+        const coffeeIcon = L.divIcon({
+            className: 'custom-map-marker',
+            html: '<div class="marker-dot"></div><div class="marker-pulse"></div>',
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+        });
+
         shopManager.shops.forEach(s => {
             if (s.location && s.location.includes(',')) {
-                const [lat, lng] = s.location.split(',').map(Number);
-                if (!isNaN(lat) && !isNaN(lng)) {
+                const parts = s.location.split(',').map(Number);
+                if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+                    const lat = parts[0];
+                    const lng = parts[1];
                     if (shopManager.map) {
-                        const m = L.marker([lat, lng]).addTo(shopManager.map)
-                            .bindPopup(s.shopName);
+                        const m = L.marker([lat, lng], { icon: coffeeIcon }).addTo(shopManager.map)
+                            .bindPopup(`
+                                <div class="map-popup">
+                                    <strong>${s.shopName}</strong><br>
+                                    <span style="font-size:0.8rem; opacity:0.7;">${s.address || 'Keine Adresse'}</span>
+                                </div>
+                            `);
                         shopManager.markers.push(m);
                     }
                 }
