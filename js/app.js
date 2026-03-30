@@ -654,8 +654,8 @@ const brewManager = {
 
             let detailsHtml = `
                     <div class="actions-row">
-                        <button class="action-btn edit" onclick="brewManager.edit('${brew.id}', event)"><span class="material-symbols-rounded">edit</span> Edit</button>
-                        <button class="action-btn delete" onclick="brewManager.delete('${brew.id}', event)"><span class="material-symbols-rounded">delete</span> Delete</button>
+                        <button class="action-btn edit" onclick="brewManager.edit('${brew.id}', event)"><span class="material-symbols-rounded">edit</span></button>
+                        <button class="action-btn delete" onclick="brewManager.delete('${brew.id}', event)"><span class="material-symbols-rounded">delete</span></button>
                     </div>
                     <div class="detail-grid">
                         <div class="detail-item" style="grid-column: 1 / -1;"><label>SKILL LEVEL</label><span style="text-transform: capitalize; color: var(--color-gold-bright); font-weight: bold;">${brew.skillLevel || 'expert'}</span></div>
@@ -1055,8 +1055,8 @@ const drinkManager = {
                 </div>
                 <div class="brew-details" id="details-${d.id}">
                      <div class="actions-row">
-                        <button class="action-btn edit" onclick="drinkManager.edit('${d.id}', event)"><span class="material-symbols-rounded">edit</span> Edit</button>
-                        <button class="action-btn delete" onclick="drinkManager.delete('${d.id}', event)"><span class="material-symbols-rounded">delete</span> Delete</button>
+                        <button class="action-btn edit" onclick="drinkManager.edit('${d.id}', event)"><span class="material-symbols-rounded">edit</span></button>
+                        <button class="action-btn delete" onclick="drinkManager.delete('${d.id}', event)"><span class="material-symbols-rounded">delete</span></button>
                     </div>
                      <p style="white-space: pre-wrap; line-height: 1.6; margin-top:10px;">${formattedRecipe}</p>
                 </div>
@@ -1283,10 +1283,10 @@ const shopManager = {
                 <div class="brew-details" id="details-${s.id}">
                      <div class="actions-row">
                         <a href="${mapsUrl}" target="_blank" class="action-btn route" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center;">
-                            <span class="material-symbols-rounded">near_me</span> Route
+                            <span class="material-symbols-rounded">near_me</span>
                         </a>
-                        <button class="action-btn edit" onclick="shopManager.edit('${s.id}', event)"><span class="material-symbols-rounded">edit</span> Edit</button>
-                        <button class="action-btn delete" onclick="shopManager.delete('${s.id}', event)"><span class="material-symbols-rounded">delete</span> Delete</button>
+                        <button class="action-btn edit" onclick="shopManager.edit('${s.id}', event)"><span class="material-symbols-rounded">edit</span></button>
+                        <button class="action-btn delete" onclick="shopManager.delete('${s.id}', event)"><span class="material-symbols-rounded">delete</span></button>
                     </div>
                     <p style="opacity: 0.8; margin-top:10px;"><strong>Loc:</strong> ${s.address || s.location}</p>
                     <p style="opacity: 0.8"><strong>Notes:</strong> ${s.notes || ''}</p>
