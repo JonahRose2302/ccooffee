@@ -179,8 +179,8 @@
         <!-- BREW PAGE -->
         <section id="brew" class="page">
             <header class="page-header">
-                <h1>bean recipes</h1>
-                <button class="fab" onclick="brewManager.openSkillModal()"><span
+                <h1>beans</h1>
+                <button class="fab" onclick="beanManager.openContextAddModal()"><span
                         class="material-symbols-rounded">add</span></button>
             </header>
 
@@ -189,8 +189,17 @@
                 <span class="material-symbols-rounded">info</span>
                 <p><strong>Gast-Modus:</strong> Deine Einträge werden nur temporär gespeichert.</p>
             </div>
+            
+            <div class="map-toggle-container bean-pill-nav">
+                <button id="view-recipes" class="toggle-btn active" onclick="beanManager.switchView('recipes')">recipes</button>
+                <button id="view-infos" class="toggle-btn" onclick="beanManager.switchView('infos')">infos</button>
+            </div>
+
             <div id="brew-list" class="brew-list-container">
                 <!-- Pills will be injected here -->
+            </div>
+            <div id="bean-infos-list" class="brew-list-container hidden">
+                <!-- Info Pills will be injected here -->
             </div>
         </section>
 
@@ -489,47 +498,39 @@
                 style="display: inline-block; background: var(--color-gold-bright); color: #000; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; font-family: var(--font-heading); letter-spacing: 1px;">Zum
                 YouTube Kanal</a>
             <div class="exit-btn" onclick="this.closest('.modal').querySelector('.close').click()"
-                style="margin-left: -20px; width: calc(100% + 40px); margin-bottom: -40px;">exit</div>
-        </div>
+            style="margin-left: -20px; width: calc(100% + 40px); margin-bottom: -40px;">exit</div>
     </div>
-    <!-- Brew Skill Level Modal -->
-    <div id="brew-skill-modal" class="modal">
-        <div class="modal-content glass-panel" style="text-align: center;">
-            <span class="close"
-                onclick="document.getElementById('brew-skill-modal').classList.remove('visible'); setTimeout(() => document.getElementById('brew-skill-modal').classList.add('hidden'), 300);">&times;</span>
-            <h2 style="margin-bottom: 24px;">Select Skill Level</h2>
-            <div class="skill-level-container">
-                <button class="skill-btn" onclick="brewManager.selectSkillLevel('easy')">
-                    <span class="material-symbols-rounded">sentiment_satisfied</span>
-                    <span class="skill-text">Easy</span>
-                </button>
-                <button class="skill-btn" onclick="brewManager.selectSkillLevel('medium')">
-                    <span class="material-symbols-rounded">psychology</span>
-                    <span class="skill-text">Medium</span>
-                </button>
-                <button class="skill-btn" onclick="brewManager.selectSkillLevel('expert')">
-                    <span class="material-symbols-rounded">science</span>
-                    <span class="skill-text">Expert</span>
-                </button>
-            </div>
-            <p style="margin-top: 20px; font-size: 0.9rem; color: var(--color-gold-dark);">Wähle das Level passend zu
-                deiner Erfahrung und deinen Messwerkzeugen.</p>
-            <div class="exit-btn" onclick="this.closest('.modal').querySelector('.close').click()">exit</div>
-        </div>
-    </div>
+</div>
 
-    <!-- Brew Modal -->
+<!-- Central Bean Entry Modal -->
+<div id="bean-entry-modal" class="modal hidden">
+    <div class="modal-content glass-panel" style="text-align: center;">
+        <span class="close" onclick="beanManager.closeEntryModal()">&times;</span>
+        <div class="map-toggle-container entry-pill-nav" style="margin: 0 auto 30px auto; width: 100%; max-width: 300px;">
+            <!-- Buttons injected dynamically by JS depending on context -->
+        </div>
+        
+        <!-- Dynamic Content Area -->
+        <div id="entry-dynamic-content">
+            <!-- Rendered by JS -->
+        </div>
+
+        <div class="exit-btn" onclick="this.closest('.modal').querySelector('.close').click()">exit</div>
+    </div>
+</div>
+    <!-- Brew Modal (Recipe) -->
     <div id="brew-modal" class="modal">
         <div class="modal-content glass-panel">
             <span class="close" onclick="brewManager.closeModal()">&times;</span>
-            <h2>New Espresso</h2>
+            <h2>New Recipe</h2>
             <!-- form classes: form-easy | form-medium | form-expert -->
             <form id="brew-form">
                 <input type="hidden" name="skillLevel" id="skillLevel" value="easy">
+                <input type="hidden" name="linkedBeanId" id="linkedBeanId" value="">
 
-                <input type="text" name="beanName" placeholder="Bean Name" required>
+                <input type="text" name="beanName" id="brew-beanName" placeholder="Bean Name / Link" required>
                 <!-- All levels -->
-                <input type="text" name="roastDate" placeholder="Roast Date" onfocus="(this.type='date')"
+                <input type="text" name="roastDate" id="brew-roastDate" placeholder="Roast Date" onfocus="(this.type='date')"
                     onblur="if(!this.value)this.type='text'">
 
                 <!-- Expert -->
@@ -592,8 +593,97 @@
                     </div>
                 </div>
 
-                <button type="submit" class="save-btn">Save Brew</button>
+                <button type="submit" class="save-btn">Save Recipe</button>
             </form>
+            <div class="exit-btn" onclick="this.closest('.modal').querySelector('.close').click()">exit</div>
+        </div>
+    </div>
+
+    <!-- Bean Info Modal -->
+    <div id="bean-info-modal" class="modal">
+        <div class="modal-content glass-panel" style="padding-top: 10px;">
+            <span class="close" onclick="beanManager.closeInfoModal()">&times;</span>
+            <div class="map-toggle-container entry-pill-nav" style="margin: 10px auto 20px auto; width: 100%; max-width: 300px;">
+                <button id="info-type-so" class="toggle-btn active" onclick="beanManager.switchInfoType('single')">single origin</button>
+                <button id="info-type-bl" class="toggle-btn" onclick="beanManager.switchInfoType('blend')">blend</button>
+            </div>
+
+            <!-- SINGLE ORIGIN FORM -->
+            <form id="single-origin-form">
+                <input type="hidden" name="linkedRecipeId" id="so-linkedRecipeId" value="">
+                <input type="text" name="name" placeholder="Name" required>
+                <input type="text" name="roastery" placeholder="Roastery name" required>
+                <div class="row">
+                    <input type="text" name="variety" placeholder="Varietät">
+                    <input type="text" name="process" placeholder="Process">
+                </div>
+                <div class="row">
+                    <input type="text" name="origin" placeholder="Herkunft">
+                    <input type="text" name="altitude" placeholder="Altitude">
+                </div>
+                
+                <div class="custom-roast-level" style="margin: 15px 0;">
+                    <label style="display:block; text-align:left; color:var(--color-gold-light); font-size: 0.8rem; margin-bottom: 8px;">Röstgrad</label>
+                    <div class="roast-circles" id="so-roast-circles">
+                        <div class="roast-circle" onclick="beanManager.setRoastLevel('so', 1)"></div>
+                        <div class="roast-circle" onclick="beanManager.setRoastLevel('so', 2)"></div>
+                        <div class="roast-circle" onclick="beanManager.setRoastLevel('so', 3)"></div>
+                    </div>
+                    <input type="hidden" name="roastLevel" id="so-roast-value" value="0">
+                </div>
+
+                <div class="row">
+                    <input type="number" name="scaScore" placeholder="SCA - Score" step="0.1">
+                    <input type="text" name="harvest" placeholder="Harvest">
+                </div>
+                <input type="text" name="farmer" placeholder="Farmer Name">
+                <input type="text" name="roastDate" placeholder="Roast date" onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'">
+                <textarea name="tasteProfile" placeholder="Taste profile"></textarea>
+                
+                <button type="submit" class="save-btn">Save Info</button>
+            </form>
+
+            <!-- BLEND FORM -->
+            <form id="blend-form" class="hidden">
+                 <input type="hidden" name="linkedRecipeId" id="bl-linkedRecipeId" value="">
+                 
+                 <!-- BLEND PAGE 1 -->
+                 <div id="blend-page-1">
+                    <h3>Allgemeine Infos</h3>
+                    <input type="text" name="name" placeholder="Name" required>
+                    <input type="text" name="roastery" placeholder="Roastery">
+                    
+                    <div class="map-toggle-container entry-pill-nav" style="margin: 15px auto;">
+                        <button type="button" id="blend-timing-pre" class="toggle-btn active" onclick="beanManager.setBlendTiming('pre')">pre-roast</button>
+                        <button type="button" id="blend-timing-post" class="toggle-btn" onclick="beanManager.setBlendTiming('post')">post-roast</button>
+                    </div>
+                    <input type="hidden" name="blendTiming" id="bl-timing-value" value="pre">
+
+                    <input type="text" name="composition" placeholder="Zusammensetzung (z.B. 30/70)">
+                    <input type="text" name="targetProfile" placeholder="Zielprofil">
+                    <input type="text" name="blendDate" placeholder="Blend date" onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'">
+                    
+                    <button type="button" class="save-btn" onclick="beanManager.nextBlendPage()">Weiter zu Bohnen</button>
+                 </div>
+
+                 <!-- BLEND PAGE 2 -->
+                 <div id="blend-page-2" class="hidden">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <button type="button" class="icon-btn" onclick="beanManager.prevBlendPage()"><span class="material-symbols-rounded">arrow_back</span></button>
+                        <h3 style="margin:0;">Enthaltene Bohnen</h3>
+                        <div style="width:40px;"></div>
+                    </div>
+
+                    <div id="blend-components-container">
+                        <!-- Component inputs injected here via JS -->
+                    </div>
+
+                    <button type="button" class="m3-button m3-button-tertiary" onclick="beanManager.addBlendComponent()" style="margin-bottom: 20px;">+ Bohne hinzufügen</button>
+
+                    <button type="submit" class="save-btn">Save Blend</button>
+                 </div>
+            </form>
+
             <div class="exit-btn" onclick="this.closest('.modal').querySelector('.close').click()">exit</div>
         </div>
     </div>

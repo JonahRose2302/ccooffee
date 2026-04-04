@@ -1342,36 +1342,6 @@ input[type="file"]+*:hover {
     background: var(--glass-bg-strong) !important;
 }
 
-/* Modal Close Button Enhancement */
-.modal button[onclick*="close"] {
-    position: absolute !important;
-    top: 20px !important;
-    right: 20px !important;
-    background: var(--glass-bg) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-    border: 2px solid rgba(255, 255, 255, 0.2) !important;
-    color: var(--color-cream) !important;
-    width: 44px !important;
-    height: 44px !important;
-    border-radius: 50% !important;
-    font-size: 1.8rem !important;
-    font-weight: 300 !important;
-    cursor: pointer !important;
-    transition: all var(--duration-normal) var(--ease-overshoot) !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    box-shadow: var(--shadow-sm) !important;
-    padding: 0 !important;
-}
-
-.modal button[onclick*="close"]:hover {
-    transform: scale(1.1) rotate(90deg) !important;
-    border-color: var(--color-gold-medium) !important;
-    background: rgba(255, 50, 50, 0.2) !important;
-    box-shadow: var(--shadow-md) !important;
-}
 
 /* === MODAL REDESIGN === */
 .hidden {
@@ -3453,4 +3423,92 @@ body {
 
 #dialin.epic-page::after {
     display: none !important;
+}
+
+/* === NEW BEAN INFOS CSS === */
+.entry-pill-nav {
+    display: flex;
+    justify-content: center;
+    background: rgba(20, 12, 8, 0.4);
+    border-radius: 999px;
+    padding: 4px;
+    border: 1px solid rgba(244, 196, 48, 0.1);
+}
+
+.entry-pill-nav .toggle-btn {
+    flex: 1;
+    margin: 0;
+    border-radius: 999px;
+    background: transparent !important;
+    border: none !important;
+    color: var(--color-cream-dark) !important;
+    font-size: 0.9rem;
+    padding: 8px 12px;
+}
+
+.entry-pill-nav .toggle-btn.active {
+    background: var(--color-gold-medium) !important;
+    color: var(--color-espresso-dark) !important;
+    box-shadow: 0 0 10px rgba(244, 196, 48, 0.3) !important;
+    transform: none !important;
+}
+
+/* Roast Circles UI */
+.roast-circles {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.roast-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--color-gold-medium);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.roast-circle.active {
+    background: var(--color-gold-bright);
+    box-shadow: 0 0 10px rgba(244, 196, 48, 0.6);
+}
+
+/* Linked Items Selection List */
+.link-list-container {
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+.simple-pill {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(244, 196, 48, 0.2);
+    border-radius: 12px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+.simple-pill:hover {
+    background: rgba(244, 196, 48, 0.1);
+    border-color: var(--color-gold-medium);
+}
+.simple-pill.selected {
+    border-color: var(--color-gold-bright);
+    background: rgba(244, 196, 48, 0.2);
+    box-shadow: inset 0 0 10px rgba(244, 196, 48, 0.2);
+}
+.simple-pill strong {
+    color: var(--color-gold-bright);
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+}
+.simple-pill small {
+    color: rgba(255,255,255,0.6);
 }

@@ -136,7 +136,7 @@ const animationEngine = {
 /* --- PAGE TITLE MAPPING --- */
 const PAGE_TITLES = {
     home: 'home',
-    brew: 'bean recipes',
+    brew: 'beans',
     drinks: 'drink recipes',
     dialin: 'dial-in',
     shops: 'coffee shop',
@@ -724,6 +724,16 @@ const brewManager = {
             parent.classList.add('expanded');
             icon.innerText = 'expand_less';
 
+            // Ensure we are viewing 'recipes' 
+            if(window.beanManager && beanManager.currentView !== 'recipes') {
+                beanManager.switchView('recipes');
+            }
+
+            // Scroll the expanded pill into view so it's not half hidden
+            setTimeout(() => {
+                parent.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 50);
+
             // Render chart if it's an expert brew and has a canvas
             const canvas = document.getElementById(`chart-${id.replace('fav-', '')}`); // handle both normal and fav lists
             if (canvas) {
@@ -877,25 +887,14 @@ const brewManager = {
         favs.forEach(brew => {
             const el = document.createElement('div');
             el.className = 'brew-pill glass-panel';
+            // Click to navigate to brew list and expand the specific brew
             el.innerHTML = `
-                <div class="brew-header" onclick="brewManager.toggle('fav-${brew.id}')">
+                <div class="brew-header" onclick="router.navigate('brew'); setTimeout(() => brewManager.toggle('${brew.id}'), 350); if (window.authManager) window.authManager.closeFavoritesModal();">
                     <div style="flex:1">
                         <h3>${brew.beanName}</h3>
                         <small style="opacity:0.7">${brew.roastDate || 'No Date'}</small>
                     </div>
-                    <span class="material-symbols-rounded fav-active-icon">favorite</span>
-                    <span class="material-symbols-rounded" id="icon-fav-${brew.id}">expand_more</span>
-                </div>
-                <div class="brew-details" id="details-fav-${brew.id}">
-                    <div class="detail-grid">
-                        <div class="detail-item"><label>GRINDER</label><span>${brew.grinder || '-'}</span></div>
-                        <div class="detail-item"><label>GRIND SIZE</label><span>${brew.grindSize || '-'}</span></div>
-                        <div class="detail-item"><label>DOSE</label><span>${brew.doseIn}g</span></div>
-                        <div class="detail-item"><label>YIELD</label><span>${(brew.doseIn * brew.ratio).toFixed(1)}g (1:${brew.ratio})</span></div>
-                        <div class="detail-item"><label>TIME</label><span>${brew.targetTime || '-'}s</span></div>
-                        <div class="detail-item"><label>TEMP</label><span>${brew.temp || '-'}°C</span></div>
-                        <div class="detail-item"><label>RPM</label><span>${brew.rpm || '-'}</span></div>
-                    </div>
+                    <span class="material-symbols-rounded fav-active-icon" style="color: #e74c3c; -webkit-text-fill-color: #e74c3c; filter: drop-shadow(0 0 7px rgba(231,76,60,0.8));">favorite</span>
                 </div>
             `;
             container.appendChild(el);
@@ -1649,3 +1648,517 @@ const dialInWizard = {
 
 window.dialInWizard = dialInWizard;
 document.addEventListener('DOMContentLoaded', () => dialInWizard.init());
+
+/* --- BEAN MANAGER (NEW) --- */
+const beanManager = {
+    beans: [], // Will store bean infos from Firebase
+    currentView: 'recipes', // 'recipes' or 'infos'
+    entryContext: 'new', // 'new', 'add', 'cam'
+    infoMode: 'single', // 'single', 'blend'
+    blendComponents: 1,
+
+    init: () => {
+        // Any init logic
+    },
+
+    switchView: (view) => {
+        beanManager.currentView = view;
+        const btnRecipes = document.getElementById('view-recipes');
+        const btnInfos = document.getElementById('view-infos');
+        const listRecipes = document.getElementById('brew-list');
+        const listInfos = document.getElementById('bean-infos-list');
+
+        if (view === 'recipes') {
+            btnRecipes.classList.add('active');
+            btnInfos.classList.remove('active');
+            listRecipes.classList.remove('hidden');
+            listInfos.classList.add('hidden');
+        } else {
+            btnInfos.classList.add('active');
+            btnRecipes.classList.remove('active');
+            listInfos.classList.remove('hidden');
+            listRecipes.classList.add('hidden');
+        }
+        utils.vibrate(10);
+    },
+
+    openContextAddModal: () => {
+        const modal = document.getElementById('bean-entry-modal');
+        const pillNav = modal.querySelector('.entry-pill-nav');
+        const content = document.getElementById('entry-dynamic-content');
+        
+        let pillsHtml = '';
+        if (beanManager.currentView === 'recipes') {
+            pillsHtml = `
+                <button class="toggle-btn active" onclick="beanManager.setEntryContext('new', event)">new</button>
+                <button class="toggle-btn" onclick="beanManager.setEntryContext('add', event)">add</button>
+            `;
+        } else {
+            pillsHtml = `
+                <button class="toggle-btn active" onclick="beanManager.setEntryContext('new', event)">new</button>
+                <button class="toggle-btn" onclick="beanManager.setEntryContext('add', event)">add</button>
+                <button class="toggle-btn" onclick="beanManager.setEntryContext('cam', event)">cam</button>
+            `;
+        }
+        pillNav.innerHTML = pillsHtml;
+        modal.classList.remove('hidden');
+        
+        // Timeout to allow display block to apply before transition
+        setTimeout(() => modal.classList.add('visible'), 10);
+        
+        // Initial render for 'new'
+        beanManager.setEntryContext('new', null, true);
+    },
+
+    setEntryContext: (context, event, force = false) => {
+        if (!force && event) {
+            const nav = event.target.parentElement;
+            nav.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            utils.vibrate(10);
+        }
+        
+        beanManager.entryContext = context;
+        const content = document.getElementById('entry-dynamic-content');
+        
+        if (context === 'new') {
+            if (beanManager.currentView === 'recipes') {
+                content.innerHTML = `
+                    <h2 style="margin-bottom: 24px;">Select Skill Level</h2>
+                    <div class="skill-level-container">
+                        <button class="skill-btn" onclick="beanManager.closeEntryModal(); brewManager.selectSkillLevel('easy')">
+                            <span class="material-symbols-rounded">sentiment_satisfied</span>
+                            <span class="skill-text">Easy</span>
+                        </button>
+                        <button class="skill-btn" onclick="beanManager.closeEntryModal(); brewManager.selectSkillLevel('medium')">
+                            <span class="material-symbols-rounded">psychology</span>
+                            <span class="skill-text">Medium</span>
+                        </button>
+                        <button class="skill-btn" onclick="beanManager.closeEntryModal(); brewManager.selectSkillLevel('expert')">
+                            <span class="material-symbols-rounded">science</span>
+                            <span class="skill-text">Expert</span>
+                        </button>
+                    </div>
+                `;
+            } else {
+                content.innerHTML = `
+                    <h2 style="margin-bottom: 24px;">New Info</h2>
+                    <p style="margin-bottom: 20px; color:var(--color-gold-dark); font-size:0.9rem;">Erfasse Details einer neuen Bohne.</p>
+                    <button class="m3-button m3-button-primary" onclick="beanManager.closeEntryModal(); beanManager.openInfoForm()">LOS</button>
+                `;
+            }
+        } 
+        else if (context === 'add') {
+            // "Zuweisen" flow
+            if (beanManager.currentView === 'recipes') {
+                // Showing existing BEAN INFOS to link to a NEW RECIPE
+                content.innerHTML = `
+                    <h2 style="margin-bottom: 24px;">Add to Info</h2>
+                    <div class="link-list-container" id="link-list-infos">Loading...</div>
+                    <button class="m3-button m3-button-primary" onclick="beanManager.proceedLinked('recipe')">Weiter zum Rezept</button>
+                `;
+                beanManager.renderLinkList('infos');
+            } else {
+                // Showing existing RECIPES to link to a NEW BEAN INFO
+                content.innerHTML = `
+                    <h2 style="margin-bottom: 24px;">Add to Recipe</h2>
+                    <div class="link-list-container" id="link-list-recipes">Loading...</div>
+                    <button class="m3-button m3-button-primary" onclick="beanManager.proceedLinked('info')">Weiter zu Infos</button>
+                `;
+                beanManager.renderLinkList('recipes');
+            }
+        }
+        else if (context === 'cam') {
+            content.innerHTML = `
+                <div style="padding: 40px 0;">
+                    <span class="material-symbols-rounded" style="font-size:4rem; color:var(--color-gold-dark);">camera_alt</span>
+                    <h2 style="margin-top:20px;">Coming Soon</h2>
+                </div>
+            `;
+        }
+    },
+
+    closeEntryModal: () => {
+        const modal = document.getElementById('bean-entry-modal');
+        modal.classList.remove('visible');
+        setTimeout(() => modal.classList.add('hidden'), 300);
+    },
+
+    // ---------- INFOS FORM ---------- //
+    openInfoForm: () => {
+        const modal = document.getElementById('bean-info-modal');
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.add('visible'), 10);
+        beanManager.switchInfoType('single');
+    },
+
+    closeInfoModal: () => {
+        const modal = document.getElementById('bean-info-modal');
+        modal.classList.remove('visible');
+        setTimeout(() => modal.classList.add('hidden'), 300);
+    },
+
+    switchInfoType: (type) => {
+        beanManager.infoMode = type;
+        document.getElementById('info-type-so').classList.toggle('active', type === 'single');
+        document.getElementById('info-type-bl').classList.toggle('active', type === 'blend');
+        
+        document.getElementById('single-origin-form').classList.toggle('hidden', type !== 'single');
+        document.getElementById('blend-form').classList.toggle('hidden', type !== 'blend');
+
+        // Reset blend view to page 1
+        if (type === 'blend') {
+            document.getElementById('blend-page-1').classList.remove('hidden');
+            document.getElementById('blend-page-2').classList.add('hidden');
+            if (beanManager.blendComponents === 0) beanManager.addBlendComponent();
+        }
+        utils.vibrate(10);
+    },
+
+    setBlendTiming: (timing) => {
+        document.getElementById('bl-timing-value').value = timing;
+        document.getElementById('blend-timing-pre').classList.toggle('active', timing === 'pre');
+        document.getElementById('blend-timing-post').classList.toggle('active', timing === 'post');
+        utils.vibrate(10);
+    },
+
+    setRoastLevel: (prefix, level) => {
+        document.getElementById(`${prefix}-roast-value`).value = level;
+        const circles = document.getElementById(`${prefix}-roast-circles`).children;
+        for (let i = 0; i < circles.length; i++) {
+            if (i < level) {
+                circles[i].classList.add('active');
+            } else {
+                circles[i].classList.remove('active');
+            }
+        }
+        utils.vibrate(15);
+    },
+
+    // --- Blend Pagination ---
+    nextBlendPage: () => {
+        document.getElementById('blend-page-1').classList.add('hidden');
+        document.getElementById('blend-page-2').classList.remove('hidden');
+    },
+
+    prevBlendPage: () => {
+        document.getElementById('blend-page-2').classList.add('hidden');
+        document.getElementById('blend-page-1').classList.remove('hidden');
+    },
+
+    addBlendComponent: () => {
+        beanManager.blendComponents++;
+        const index = beanManager.blendComponents;
+        const container = document.getElementById('blend-components-container');
+        
+        const html = `
+            <div class="glass-panel" style="margin-bottom: 20px; padding: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                <h4 style="color:var(--color-gold-bright); margin-bottom:10px;">Bohne ${index}</h4>
+                <input type="text" name="compName_${index}" placeholder="Name">
+                <input type="text" name="compVariety_${index}" placeholder="Varietät">
+                <input type="text" name="compOrigin_${index}" placeholder="Herkunft">
+                <div class="row">
+                    <input type="text" name="compAltitude_${index}" placeholder="Altitude">
+                    <input type="text" name="compProcess_${index}" placeholder="Process">
+                </div>
+                <!-- Custom Roast for component -->
+                <div class="custom-roast-level" style="margin: 15px 0;">
+                    <label style="display:block; text-align:left; color:var(--color-gold-light); font-size: 0.8rem; margin-bottom: 8px;">Röstgrad</label>
+                    <div class="roast-circles" id="comp${index}-roast-circles">
+                        <div class="roast-circle" onclick="beanManager.setRoastLevel('comp${index}', 1)"></div>
+                        <div class="roast-circle" onclick="beanManager.setRoastLevel('comp${index}', 2)"></div>
+                        <div class="roast-circle" onclick="beanManager.setRoastLevel('comp${index}', 3)"></div>
+                    </div>
+                    <input type="hidden" name="compRoastLevel_${index}" id="comp${index}-roast-value" value="0">
+                </div>
+                <input type="number" name="compSca_${index}" placeholder="SCA - Score" step="0.1">
+                <input type="text" name="compHarvest_${index}" placeholder="Harvest">
+                <input type="text" name="compFarmer_${index}" placeholder="Farmer Name">
+                <input type="text" name="compRoastDate_${index}" placeholder="Roast date" onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'">
+                <textarea name="compTasteProfile_${index}" placeholder="Taste profile"></textarea>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+    },
+
+    // ---------- LINKING ---------- //
+    selectedLinkTarget: null,
+    
+    renderLinkList: (type) => {
+        beanManager.selectedLinkTarget = null;
+        if (type === 'infos') {
+            const container = document.getElementById('link-list-infos');
+            if(beanManager.beans.length === 0) {
+                container.innerHTML = '<p>Keine gespeicherten Bean Infos gefunden.</p>';
+            } else {
+                container.innerHTML = beanManager.beans.map(b => `
+                    <div class="simple-pill" onclick="beanManager.selectLinkItem(this, '${b.id}')">
+                        <strong>${b.name}</strong>
+                        <small>${b.roastery}</small>
+                    </div>
+                `).join('');
+            }
+        } else {
+            const container = document.getElementById('link-list-recipes');
+            if(brewManager.brews.length === 0) {
+                container.innerHTML = '<p>Keine gespeicherten Rezepte gefunden.</p>';
+            } else {
+                container.innerHTML = brewManager.brews.map(b => `
+                    <div class="simple-pill" onclick="beanManager.selectLinkItem(this, '${b.id}')">
+                        <strong>${b.beanName}</strong>
+                        <small>${b.skillLevel} Level • ${b.doseIn}g in / ${b.doseOut || '?'}g out</small>
+                    </div>
+                `).join('');
+            }
+        }
+    },
+
+    selectLinkItem: (element, id) => {
+        const parent = element.parentElement;
+        parent.querySelectorAll('.simple-pill').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+        beanManager.selectedLinkTarget = id;
+        utils.vibrate(10);
+    },
+
+    proceedLinked: (destination) => {
+        if (!beanManager.selectedLinkTarget) {
+            alert('Bitte wähle zuerst einen Eintrag aus.');
+            return;
+        }
+        
+        beanManager.closeEntryModal();
+        
+        if (destination === 'recipe') {
+            // User linked an Info to a NEW Recipe
+            document.getElementById('linkedBeanId').value = beanManager.selectedLinkTarget;
+            // Pre-fill recipe name if possible
+            const info = beanManager.beans.find(b => b.id === beanManager.selectedLinkTarget);
+            if(info) document.getElementById('brew-beanName').value = info.name;
+            brewManager.selectSkillLevel('medium'); // Default to medium, they can't choose unless we add an extra step
+        } else {
+            // User linked a Recipe to a NEW Info
+            document.getElementById('so-linkedRecipeId').value = beanManager.selectedLinkTarget;
+            document.getElementById('bl-linkedRecipeId').value = beanManager.selectedLinkTarget;
+            beanManager.openInfoForm();
+        }
+    },
+
+    init: () => {
+        // Load local beans if available (Firebase sync logic will overlay this if logged in)
+        beanManager.beans = JSON.parse(localStorage.getItem('coffee_bean_infos') || '[]');
+        beanManager.renderInfos();
+
+        const soForm = document.getElementById('single-origin-form');
+        if(soForm) {
+            soForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                beanManager.saveInfo('single');
+            });
+        }
+        
+        const blForm = document.getElementById('blend-form');
+        if(blForm) {
+            blForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                beanManager.saveInfo('blend');
+            });
+        }
+    },
+
+    saveInfo: (type) => {
+        const isBlend = type === 'blend';
+        const formId = isBlend ? 'blend-form' : 'single-origin-form';
+        const form = document.getElementById(formId);
+        
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        
+        const newInfo = {
+            id: utils.uuid(),
+            type: type,
+            dateAdded: new Date().toISOString(),
+            name: data.name,
+            roastery: data.roastery,
+            roastLevel: parseInt(data.roastLevel || '0', 10)
+        };
+
+        if (isBlend) {
+            newInfo.blendTiming = data.blendTiming;
+            newInfo.composition = data.composition;
+            newInfo.targetProfile = data.targetProfile;
+            newInfo.blendDate = data.blendDate;
+            
+            // Extract components
+            const components = [];
+            for (let i = 1; i <= beanManager.blendComponents; i++) {
+                if (data[`compName_${i}`]) {
+                    components.push({
+                        name: data[`compName_${i}`],
+                        variety: data[`compVariety_${i}`],
+                        origin: data[`compOrigin_${i}`],
+                        altitude: data[`compAltitude_${i}`],
+                        process: data[`compProcess_${i}`],
+                        roastLevel: parseInt(data[`compRoastLevel_${i}`] || '0', 10),
+                        scaScore: data[`compSca_${i}`],
+                        harvest: data[`compHarvest_${i}`],
+                        farmer: data[`compFarmer_${i}`],
+                        roastDate: data[`compRoastDate_${i}`],
+                        tasteProfile: data[`compTasteProfile_${i}`],
+                    });
+                }
+            }
+            newInfo.components = components;
+        } else {
+            newInfo.variety = data.variety;
+            newInfo.process = data.process;
+            newInfo.origin = data.origin;
+            newInfo.altitude = data.altitude;
+            newInfo.scaScore = data.scaScore;
+            newInfo.harvest = data.harvest;
+            newInfo.farmer = data.farmer;
+            newInfo.roastDate = data.roastDate;
+            newInfo.tasteProfile = data.tasteProfile;
+        }
+
+        beanManager.beans.unshift(newInfo);
+        
+        // Save logic
+        if (window.authManager && window.authManager.currentUser) {
+            // Placeholder: Firebase hook for saving beans
+            // window.authManager.saveBeans(beanManager.beans);
+            localStorage.setItem('coffee_bean_infos', JSON.stringify(beanManager.beans)); // Fallback
+        } else {
+            localStorage.setItem('coffee_bean_infos', JSON.stringify(beanManager.beans));
+        }
+
+        // Handle Linking if a recipe was chosen
+        const linkedRecipeId = data.linkedRecipeId;
+        if (linkedRecipeId && brewManager) {
+            const recipe = brewManager.brews.find(b => b.id === linkedRecipeId);
+            if (recipe) {
+                recipe.linkedBeanId = newInfo.id;
+                // Save recipes again to keep the link
+                if (window.authManager && window.authManager.currentUser) {
+                    window.authManager.saveBrews(brewManager.brews);
+                } else {
+                    localStorage.setItem('coffee_brews', JSON.stringify(brewManager.brews));
+                }
+            }
+        }
+
+        form.reset();
+        beanManager.closeInfoModal();
+        beanManager.renderInfos();
+        utils.vibrate([50, 50, 50]);
+    },
+
+    renderInfos: () => {
+        const container = document.getElementById('bean-infos-list');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        if (beanManager.beans.length === 0) {
+            container.innerHTML = `<p style="text-align:center; color:rgba(255,255,255,0.5); margin-top:20px;">Keine Bohneninfos gespeichert.</p>`;
+            return;
+        }
+
+        beanManager.beans.forEach(info => {
+            const el = document.createElement('div');
+            el.className = 'brew-pill glass-panel';
+            
+            const typeLabel = info.type === 'blend' ? 'Blend' : 'Single Origin';
+            let detailsHtml = `
+                <div class="actions-row">
+                    <button class="action-btn delete" onclick="beanManager.deleteInfo('${info.id}', event)"><span class="material-symbols-rounded">delete</span></button>
+                </div>
+                <div class="detail-grid">
+                    <div class="detail-item"><label>TYPE</label><span>${typeLabel}</span></div>
+            `;
+            
+            if (info.type === 'single') {
+                detailsHtml += `
+                    <div class="detail-item"><label>ROAST LEVEL</label><span>${info.roastLevel || '-'} / 3</span></div>
+                    <div class="detail-item"><label>ORIGIN</label><span>${info.origin || '-'}</span></div>
+                    <div class="detail-item"><label>FARMER</label><span>${info.farmer || '-'}</span></div>
+                    <div class="detail-item"><label>PROCESS</label><span>${info.process || '-'}</span></div>
+                    <div class="detail-item"><label>VARIETY</label><span>${info.variety || '-'}</span></div>
+                `;
+            } else {
+                detailsHtml += `
+                    <div class="detail-item"><label>TIMING</label><span>${info.blendTiming || '-'}</span></div>
+                    <div class="detail-item"><label>COMPONENTS</label><span>${info.components ? info.components.length : 0}</span></div>
+                    <div class="detail-item" style="grid-column: 1 / -1;"><label>COMPOSITION</label><span>${info.composition || '-'}</span></div>
+                `;
+            }
+            
+            detailsHtml += `</div>`;
+            
+            if (info.tasteProfile) {
+                detailsHtml += `
+                    <div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+                        <label style="color:var(--color-gold-light); font-size: 0.8rem; display:block; margin-bottom: 5px;">TASTE PROFILE</label>
+                        <p style="font-size: 0.9rem; opacity: 0.8; margin: 0;">${info.tasteProfile}</p>
+                    </div>
+                `;
+            }
+
+            el.innerHTML = `
+                <div class="brew-header" onclick="beanManager.toggleInfo('${info.id}')">
+                    <div style="flex:1">
+                        <h3>${info.name}</h3>
+                        <small style="opacity:0.7">${info.roastery || 'Unknown Roastery'}</small>
+                    </div>
+                    <div class="brew-actions">
+                        <span class="material-symbols-rounded" id="info-icon-${info.id}">expand_more</span>
+                    </div>
+                </div>
+                <div class="brew-details" id="info-details-${info.id}">
+                    ${detailsHtml}
+                </div>
+            `;
+            container.appendChild(el);
+        });
+    },
+
+    toggleInfo: (id) => {
+        const details = document.getElementById(`info-details-${id}`);
+        const parent = details.parentElement;
+        const icon = document.getElementById(`info-icon-${id}`);
+
+        if (parent.classList.contains('expanded')) {
+            parent.classList.remove('expanded');
+            icon.innerText = 'expand_more';
+        } else {
+            document.querySelectorAll('#bean-infos-list .brew-pill.expanded').forEach(p => {
+                p.classList.remove('expanded');
+                try { p.querySelector('.material-symbols-rounded').innerText = 'expand_more'; } catch (e) { }
+            });
+            parent.classList.add('expanded');
+            icon.innerText = 'expand_less';
+        }
+        utils.vibrate(10);
+    },
+
+    deleteInfo: (id, e) => {
+        e.stopPropagation();
+        if (confirm('Delete this bean info?')) {
+            beanManager.beans = beanManager.beans.filter(b => b.id !== id);
+
+            if (window.authManager && window.authManager.currentUser) {
+                // window.authManager.saveBeans(beanManager.beans);
+                localStorage.setItem('coffee_bean_infos', JSON.stringify(beanManager.beans));
+            } else {
+                localStorage.setItem('coffee_bean_infos', JSON.stringify(beanManager.beans));
+            }
+            beanManager.renderInfos();
+            utils.vibrate([50, 50]);
+        }
+    }
+};
+
+window.beanManager = beanManager;
+// Initialize automatically
+document.addEventListener('DOMContentLoaded', () => {
+    if(window.beanManager) beanManager.init();
+});
