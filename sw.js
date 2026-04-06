@@ -1,5 +1,5 @@
 // Service Worker for ccooffee PWA
-const CACHE_NAME = 'ccooffee-v11';
+const CACHE_NAME = 'ccooffee-v12';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -24,7 +24,7 @@ self.addEventListener('install', event => {
             Promise.all(keys.map(key => caches.delete(key)))
         ).then(() =>
             caches.open(CACHE_NAME).then(cache => {
-                console.log('✅ Caching fresh assets v11...');
+                console.log('✅ Caching fresh assets v12...');
                 return cache.addAll(ASSETS_TO_CACHE.map(url => new Request(url, { cache: 'reload' })))
                     .catch(err => console.warn("Some assets could not be cached:", err));
             })
