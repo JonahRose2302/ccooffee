@@ -688,32 +688,42 @@ class AuthManager {
             // Only migrate if user doc exists and no data has been migrated
             if (userDoc.exists()) {
                 const userData = userDoc.data();
-                const hasData = userData.brews?.length > 0 || userData.drinks?.length > 0 || userData.shops?.length > 0 || userData.beans?.length > 0;
+                let updated = false;
 
-                if (!hasData) {
-                    // Get data from localStorage
-                    const brews = JSON.parse(localStorage.getItem('coffee_brews') || '[]');
-                    const drinks = JSON.parse(localStorage.getItem('coffee_drinks') || '[]');
-                    const shops = JSON.parse(localStorage.getItem('coffee_shops') || '[]');
-                    const beans = JSON.parse(localStorage.getItem('coffee_bean_infos') || '[]');
+                const localBrews = JSON.parse(localStorage.getItem('coffee_brews') || '[]');
+                const localDrinks = JSON.parse(localStorage.getItem('coffee_drinks') || '[]');
+                const localShops = JSON.parse(localStorage.getItem('coffee_shops') || '[]');
+                const localBeans = JSON.parse(localStorage.getItem('coffee_bean_infos') || '[]');
 
-                    if (brews.length > 0 || drinks.length > 0 || shops.length > 0 || beans.length > 0) {
-                        // Migrate to Firestore
-                        await updateDoc(userDocRef, {
-                            brews,
-                            drinks,
-                            shops,
-                            beans,
-                            points: 0 // Initialize points
-                        });
-                        console.log('📦 Migrated localStorage data to Firestore');
+                const updates = {};
+                if ((!userData.brews || userData.brews.length === 0) && localBrews.length > 0) {
+                    updates.brews = localBrews;
+                    updated = true;
+                    localStorage.removeItem('coffee_brews');
+                }
+                if ((!userData.drinks || userData.drinks.length === 0) && localDrinks.length > 0) {
+                    updates.drinks = localDrinks;
+                    updated = true;
+                    localStorage.removeItem('coffee_drinks');
+                }
+                if ((!userData.shops || userData.shops.length === 0) && localShops.length > 0) {
+                    updates.shops = localShops;
+                    updated = true;
+                    localStorage.removeItem('coffee_shops');
+                }
+                if ((!userData.beans || userData.beans.length === 0) && localBeans.length > 0) {
+                    updates.beans = localBeans;
+                    updated = true;
+                    localStorage.removeItem('coffee_bean_infos');
+                }
 
-                        // Clear Local Data for Strict Separation
-                        localStorage.removeItem('coffee_brews');
-                        localStorage.removeItem('coffee_drinks');
-                        localStorage.removeItem('coffee_shops');
-                        localStorage.removeItem('coffee_bean_infos');
+                if (updated) {
+                    // Initialize points if not exists
+                    if (userData.points === undefined) {
+                        updates.points = 0;
                     }
+                    await updateDoc(userDocRef, updates);
+                    console.log('📦 Migrated missing localStorage collections to Firestore');
                 }
             }
         } catch (error) {
