@@ -2079,20 +2079,45 @@ const beanManager = {
             if (info.type === 'single') {
                 detailsHtml += `
                     <div class="detail-item"><label>ROAST LEVEL</label><span>${info.roastLevel || '-'} / 3</span></div>
+                    <div class="detail-item"><label>ROAST DATE</label><span>${info.roastDate || '-'}</span></div>
                     <div class="detail-item"><label>ORIGIN</label><span>${info.origin || '-'}</span></div>
+                    <div class="detail-item"><label>ALTITUDE</label><span>${info.altitude || '-'}</span></div>
                     <div class="detail-item"><label>FARMER</label><span>${info.farmer || '-'}</span></div>
                     <div class="detail-item"><label>PROCESS</label><span>${info.process || '-'}</span></div>
                     <div class="detail-item"><label>VARIETY</label><span>${info.variety || '-'}</span></div>
+                    <div class="detail-item"><label>SCA SCORE</label><span>${info.scaScore || '-'}</span></div>
+                    <div class="detail-item"><label>HARVEST</label><span>${info.harvest || '-'}</span></div>
                 `;
             } else {
                 detailsHtml += `
                     <div class="detail-item"><label>TIMING</label><span>${info.blendTiming || '-'}</span></div>
+                    <div class="detail-item"><label>BLEND DATE</label><span>${info.blendDate || '-'}</span></div>
+                    <div class="detail-item" style="grid-column: 1 / -1;"><label>TARGET</label><span>${info.targetProfile || '-'}</span></div>
                     <div class="detail-item"><label>COMPONENTS</label><span>${info.components ? info.components.length : 0}</span></div>
                     <div class="detail-item" style="grid-column: 1 / -1;"><label>COMPOSITION</label><span>${info.composition || '-'}</span></div>
                 `;
             }
             
             detailsHtml += `</div>`;
+            
+            if (info.type === 'blend' && info.components && info.components.length > 0) {
+                detailsHtml += `
+                    <div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+                        <label style="color:var(--color-gold-light); font-size: 0.8rem; display:block; margin-bottom: 10px;">COMPONENTS</label>
+                        ${info.components.map((comp, idx) => `
+                            <div style="margin-bottom: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                                <strong style="display:block; color:var(--color-cream); margin-bottom: 5px;">${idx + 1}. ${comp.name || 'Unknown'} ${comp.roastLevel ? `(${comp.roastLevel}/3)` : ''}</strong>
+                                <div class="detail-grid" style="font-size: 0.85em; opacity: 0.9;">
+                                    ${comp.origin ? `<div class="detail-item"><label>ORIGIN</label><span>${comp.origin}</span></div>` : ''}
+                                    ${comp.variety ? `<div class="detail-item"><label>VARIETY</label><span>${comp.variety}</span></div>` : ''}
+                                    ${comp.process ? `<div class="detail-item"><label>PROCESS</label><span>${comp.process}</span></div>` : ''}
+                                    ${comp.altitude ? `<div class="detail-item"><label>ALT</label><span>${comp.altitude}</span></div>` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
             
             if (info.tasteProfile) {
                 detailsHtml += `
