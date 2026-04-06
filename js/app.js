@@ -606,6 +606,30 @@ const brewManager = {
         }
     },
 
+    jumpToLinkedInfo: (infoId, e) => {
+        e.stopPropagation();
+        if(window.beanManager) {
+            if(window.beanManager.currentView !== 'infos') {
+                window.beanManager.switchView('infos');
+            }
+            setTimeout(() => {
+                const icon = document.getElementById(`info-icon-${infoId}`);
+                if(icon) {
+                    const parent = icon.closest('.brew-pill');
+                    if(parent && !parent.classList.contains('expanded')) {
+                        window.beanManager.toggleInfo(infoId);
+                    }
+                    if(parent) {
+                        parent.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        const originalBg = parent.style.boxShadow;
+                        parent.style.boxShadow = '0 0 15px var(--md-sys-color-primary)';
+                        setTimeout(() => parent.style.boxShadow = originalBg, 1500);
+                    }
+                }
+            }, 100);
+        }
+    },
+
     closeModal: () => {
         const m = document.getElementById('brew-modal');
         m.classList.remove('visible');
@@ -684,6 +708,9 @@ const brewManager = {
                     </div>`;
             }
 
+            const isLinked = !!brew.linkedBeanId;
+            let iconHtml = isLinked ? `<span class="material-symbols-rounded" style="color:var(--color-gold-bright); font-size: 1.1rem; margin-right: 8px; cursor:pointer;" onclick="brewManager.jumpToLinkedInfo('${brew.linkedBeanId}', event)">link</span>` : '';
+
             el.innerHTML = `
                 <div class="brew-header" onclick="brewManager.toggle('${brew.id}')">
                     <div style="flex:1">
@@ -691,6 +718,7 @@ const brewManager = {
                         <small style="opacity:0.7">${brew.roastDate || 'No Date'}</small>
                     </div>
                     <div class="brew-actions">
+                        ${iconHtml}
                         <span class="fav-icon-btn${brew.favorite ? ' active' : ''}" onclick="brewManager.toggleFavorite('${brew.id}', event)">
                             <span class="material-symbols-rounded">${brew.favorite ? 'favorite' : 'favorite_border'}</span>
                         </span>
@@ -1948,6 +1976,98 @@ const beanManager = {
         }
     },
 
+    jumpToLinkedRecipe: (recipeId, e) => {
+        e.stopPropagation();
+        if(window.beanManager) {
+            if(window.beanManager.currentView !== 'recipes') {
+                window.beanManager.switchView('recipes');
+            }
+            setTimeout(() => {
+                const icon = document.getElementById(`icon-${recipeId}`);
+                if(icon) {
+                    const parent = icon.closest('.brew-pill');
+                    if(parent && !parent.classList.contains('expanded')) {
+                        window.brewManager.toggle(recipeId);
+                    }
+                    if(parent) {
+                        parent.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        const originalBg = parent.style.boxShadow;
+                        parent.style.boxShadow = '0 0 15px var(--md-sys-color-primary)';
+                        setTimeout(() => parent.style.boxShadow = originalBg, 1500);
+                    }
+                }
+            }, 100);
+        }
+    },
+
+    editInfo: (id, e) => {
+        e.stopPropagation();
+        const info = beanManager.beans.find(b => b.id === id);
+        if(!info) return;
+
+        beanManager.openInfoForm();
+        beanManager.switchInfoType(info.type);
+
+        // Remove old details not needed (it will just replace if found later, maybe id stays?) 
+        // We will filter out this item and add it back fresh when saved. 
+        beanManager.beans = beanManager.beans.filter(b => b.id !== id);
+
+        setTimeout(() => {
+            const formId = info.type === 'blend' ? 'blend-form' : 'single-origin-form';
+            const form = document.getElementById(formId);
+            if(!form) return;
+
+            // Fill basic
+            if(form.elements['name']) form.elements['name'].value = info.name || '';
+            if(form.elements['roastery']) form.elements['roastery'].value = info.roastery || '';
+            if(form.elements['roastLevel']) form.elements['roastLevel'].value = info.roastLevel || '0';
+            
+            // Set roast circles
+            const prefix = info.type === 'blend' ? 'bl' : 'so';
+            beanManager.setRoastLevel(prefix, info.roastLevel || 0);
+
+            if(info.type === 'single') {
+                if(form.elements['variety']) form.elements['variety'].value = info.variety || '';
+                if(form.elements['process']) form.elements['process'].value = info.process || '';
+                if(form.elements['origin']) form.elements['origin'].value = info.origin || '';
+                if(form.elements['altitude']) form.elements['altitude'].value = info.altitude || '';
+                if(form.elements['scaScore']) form.elements['scaScore'].value = info.scaScore || '';
+                if(form.elements['harvest']) form.elements['harvest'].value = info.harvest || '';
+                if(form.elements['farmer']) form.elements['farmer'].value = info.farmer || '';
+                if(form.elements['roastDate']) form.elements['roastDate'].value = info.roastDate || '';
+                if(form.elements['tasteProfile']) form.elements['tasteProfile'].value = info.tasteProfile || '';
+            } else {
+                if(form.elements['targetProfile']) form.elements['targetProfile'].value = info.targetProfile || '';
+                if(form.elements['composition']) form.elements['composition'].value = info.composition || '';
+                if(form.elements['blendDate']) form.elements['blendDate'].value = info.blendDate || '';
+                if(info.blendTiming) beanManager.setBlendTiming(info.blendTiming);
+
+                // Map components
+                if(info.components) {
+                    beanManager.blendComponents = 0;
+                    document.getElementById('blend-components-container').innerHTML = '';
+                    info.components.forEach((comp, idx) => {
+                        beanManager.addBlendComponent();
+                        const i = idx + 1;
+                        if(form.elements[`compName_${i}`]) form.elements[`compName_${i}`].value = comp.name || '';
+                        if(form.elements[`compVariety_${i}`]) form.elements[`compVariety_${i}`].value = comp.variety || '';
+                        if(form.elements[`compOrigin_${i}`]) form.elements[`compOrigin_${i}`].value = comp.origin || '';
+                        if(form.elements[`compAltitude_${i}`]) form.elements[`compAltitude_${i}`].value = comp.altitude || '';
+                        if(form.elements[`compProcess_${i}`]) form.elements[`compProcess_${i}`].value = comp.process || '';
+                        if(form.elements[`compSca_${i}`]) form.elements[`compSca_${i}`].value = comp.scaScore || '';
+                        if(form.elements[`compHarvest_${i}`]) form.elements[`compHarvest_${i}`].value = comp.harvest || '';
+                        if(form.elements[`compFarmer_${i}`]) form.elements[`compFarmer_${i}`].value = comp.farmer || '';
+                        if(form.elements[`compRoastDate_${i}`]) form.elements[`compRoastDate_${i}`].value = comp.roastDate || '';
+                        if(form.elements[`compTasteProfile_${i}`]) form.elements[`compTasteProfile_${i}`].value = comp.tasteProfile || '';
+                        if(form.elements[`compRoastLevel_${i}`]) {
+                            beanManager.setRoastLevel(`comp${i}`, comp.roastLevel || 0);
+                        }
+                    });
+                }
+            }
+        }, 100);
+    },
+
     init: () => {
         // Load local beans if available (Firebase sync logic will overlay this if logged in)
         beanManager.beans = JSON.parse(localStorage.getItem('coffee_bean_infos') || '[]');
@@ -2070,8 +2190,12 @@ const beanManager = {
             el.className = 'brew-pill glass-panel';
             
             const typeLabel = info.type === 'blend' ? 'Blend' : 'Single Origin';
+            const linkedRecipe = window.brewManager ? window.brewManager.brews.find(b => b.linkedBeanId === info.id) : null;
+            let iconHtml = linkedRecipe ? `<span class="material-symbols-rounded" style="color:var(--color-gold-bright); font-size: 1.1rem; margin-right: 8px; cursor:pointer;" onclick="beanManager.jumpToLinkedRecipe('${linkedRecipe.id}', event)">link</span>` : '';
+
             let detailsHtml = `
                 <div class="actions-row">
+                    <button class="action-btn" onclick="beanManager.editInfo('${info.id}', event)"><span class="material-symbols-rounded">edit</span></button>
                     <button class="action-btn delete" onclick="beanManager.deleteInfo('${info.id}', event)"><span class="material-symbols-rounded">delete</span></button>
                 </div>
                 <div class="detail-grid">
@@ -2137,6 +2261,7 @@ const beanManager = {
                         <small style="opacity:0.7">${info.roastery || 'Unknown Roastery'}</small>
                     </div>
                     <div class="brew-actions">
+                        ${iconHtml}
                         <span class="material-symbols-rounded" id="info-icon-${info.id}">expand_more</span>
                     </div>
                 </div>
