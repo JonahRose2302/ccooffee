@@ -1361,18 +1361,20 @@ function toggleSection(id, show) {
 // Auth Data Sync Listeners
 window.addEventListener('auth-data-loaded', (e) => {
     console.log('🔄 Syncing data from cloud...', e.detail);
-    const { brews, drinks, shops } = e.detail;
+    const { brews, drinks, shops, beans } = e.detail;
 
     // Update Local State but DO NOT overwrite LocalStorage (keep it for guest fallback)
     if (brews) brewManager.brews = brews;
     if (drinks) drinkManager.drinks = drinks;
     if (shops) shopManager.shops = shops;
+    if (beans && window.beanManager) beanManager.beans = beans;
 
     // Re-render UI
     brewManager.renderList();
     drinkManager.renderList();
     shopManager.renderList();
     shopManager.renderMarkers();
+    if (window.beanManager) beanManager.renderInfos();
 });
 
 window.addEventListener('auth-logout', () => {
@@ -1382,11 +1384,13 @@ window.addEventListener('auth-logout', () => {
     brewManager.brews = JSON.parse(localStorage.getItem('coffee_brews') || '[]');
     drinkManager.drinks = JSON.parse(localStorage.getItem('coffee_drinks') || '[]');
     shopManager.shops = JSON.parse(localStorage.getItem('coffee_shops') || '[]');
+    if (window.beanManager) beanManager.beans = JSON.parse(localStorage.getItem('coffee_bean_infos') || '[]');
 
     brewManager.renderList();
     drinkManager.renderList();
     shopManager.renderList();
     shopManager.renderMarkers();
+    if (window.beanManager) beanManager.renderInfos();
 });
 
 window.addEventListener('load', () => {
@@ -2025,9 +2029,7 @@ const beanManager = {
         
         // Save logic
         if (window.authManager && window.authManager.currentUser) {
-            // Placeholder: Firebase hook for saving beans
-            // window.authManager.saveBeans(beanManager.beans);
-            localStorage.setItem('coffee_bean_infos', JSON.stringify(beanManager.beans)); // Fallback
+            window.authManager.saveBeans(beanManager.beans);
         } else {
             localStorage.setItem('coffee_bean_infos', JSON.stringify(beanManager.beans));
         }
@@ -2171,8 +2173,7 @@ const beanManager = {
             beanManager.beans = beanManager.beans.filter(b => b.id !== id);
 
             if (window.authManager && window.authManager.currentUser) {
-                // window.authManager.saveBeans(beanManager.beans);
-                localStorage.setItem('coffee_bean_infos', JSON.stringify(beanManager.beans));
+                window.authManager.saveBeans(beanManager.beans);
             } else {
                 localStorage.setItem('coffee_bean_infos', JSON.stringify(beanManager.beans));
             }

@@ -78,10 +78,11 @@ class AuthManager {
                 const brews = await this.getBrews();
                 const drinks = await this.getDrinks();
                 const shops = await this.getShops();
+                const beans = await this.getBeans();
 
                 // 3. Sync App
                 window.dispatchEvent(new CustomEvent('auth-data-loaded', {
-                    detail: { brews, drinks, shops }
+                    detail: { brews, drinks, shops, beans }
                 }));
 
                 this.updateUI(true);
@@ -267,7 +268,8 @@ class AuthManager {
                         createdAt: serverTimestamp(),
                         brews: [],
                         drinks: [],
-                        shops: []
+                        shops: [],
+                        beans: []
                     });
                     console.log('✅ New Google user profile created');
                 }
@@ -385,7 +387,8 @@ class AuthManager {
                         createdAt: serverTimestamp(),
                         brews: [],
                         drinks: [],
-                        shops: []
+                        shops: [],
+                        beans: []
                     });
                     console.log('✅ User profile created in Firestore');
                 } catch (fsError) {
@@ -685,20 +688,22 @@ class AuthManager {
             // Only migrate if user doc exists and no data has been migrated
             if (userDoc.exists()) {
                 const userData = userDoc.data();
-                const hasData = userData.brews?.length > 0 || userData.drinks?.length > 0 || userData.shops?.length > 0;
+                const hasData = userData.brews?.length > 0 || userData.drinks?.length > 0 || userData.shops?.length > 0 || userData.beans?.length > 0;
 
                 if (!hasData) {
                     // Get data from localStorage
                     const brews = JSON.parse(localStorage.getItem('coffee_brews') || '[]');
                     const drinks = JSON.parse(localStorage.getItem('coffee_drinks') || '[]');
                     const shops = JSON.parse(localStorage.getItem('coffee_shops') || '[]');
+                    const beans = JSON.parse(localStorage.getItem('coffee_bean_infos') || '[]');
 
-                    if (brews.length > 0 || drinks.length > 0 || shops.length > 0) {
+                    if (brews.length > 0 || drinks.length > 0 || shops.length > 0 || beans.length > 0) {
                         // Migrate to Firestore
                         await updateDoc(userDocRef, {
                             brews,
                             drinks,
                             shops,
+                            beans,
                             points: 0 // Initialize points
                         });
                         console.log('📦 Migrated localStorage data to Firestore');
@@ -707,6 +712,7 @@ class AuthManager {
                         localStorage.removeItem('coffee_brews');
                         localStorage.removeItem('coffee_drinks');
                         localStorage.removeItem('coffee_shops');
+                        localStorage.removeItem('coffee_bean_infos');
                     }
                 }
             }
@@ -778,6 +784,28 @@ class AuthManager {
             await updateDoc(doc(db, 'users', this.currentUser.uid), { shops });
         } catch (error) {
             console.error('Error saving shops:', error);
+        }
+    }
+
+    // Get user's beans from Firestore
+    async getBeans() {
+        if (!this.currentUser) return [];
+        try {
+            const userDoc = await getDoc(doc(db, 'users', this.currentUser.uid));
+            return userDoc.exists() ? (userDoc.data().beans || []) : [];
+        } catch (error) {
+            console.error('Error getting beans:', error);
+            return [];
+        }
+    }
+
+    // Save user's beans to Firestore
+    async saveBeans(beans) {
+        if (!this.currentUser) return;
+        try {
+            await updateDoc(doc(db, 'users', this.currentUser.uid), { beans });
+        } catch (error) {
+            console.error('Error saving beans:', error);
         }
     }
 }
