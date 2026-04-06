@@ -2007,6 +2007,7 @@ const beanManager = {
 
         beanManager.openInfoForm();
         beanManager.switchInfoType(info.type);
+        beanManager.editingId = id; // Store ID for reuse
 
         // Remove old details not needed (it will just replace if found later, maybe id stays?) 
         // We will filter out this item and add it back fresh when saved. 
@@ -2099,13 +2100,16 @@ const beanManager = {
         const data = Object.fromEntries(formData.entries());
         
         const newInfo = {
-            id: utils.uuid(),
+            id: beanManager.editingId || utils.uuid(),
             type: type,
             dateAdded: new Date().toISOString(),
             name: data.name,
             roastery: data.roastery,
             roastLevel: parseInt(data.roastLevel || '0', 10)
         };
+        
+        // Reset editing state after pulling the ID
+        beanManager.editingId = null;
 
         if (isBlend) {
             newInfo.blendTiming = data.blendTiming;
