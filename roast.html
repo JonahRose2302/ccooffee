@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Roast Mode | coffee</title>
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <meta name="theme-color" content="#1c1815">
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/roast.css">
+</head>
+<body class="roast-body">
+
+    <div class="roast-container">
+        
+        <header class="roast-header">
+            <a href="index.html" class="back-btn">
+                <span class="material-symbols-rounded">arrow_back</span>
+            </a>
+            <h1>röstmodus</h1>
+        </header>
+
+        <div style="display:flex; justify-content:center; flex-direction:column; align-items:center; gap: 15px; margin-bottom: 30px;">
+            <div class="map-toggle-container entry-pill-nav" style="width: 100%; max-width: 450px;">
+                <button class="toggle-btn roast-tab active" data-target="tab-setup">1. Setup</button>
+                <button class="toggle-btn roast-tab" data-target="tab-live" id="tab-btn-live">2. Live</button>
+                <button class="toggle-btn roast-tab" data-target="tab-analysis">3. Analyse</button>
+            </div>
+            <button class="roast-tab" data-target="tab-archive" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; max-width: 250px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 9999px; padding: 12px 24px; color: var(--color-cream); font-family: var(--font-heading); font-size: 1rem; cursor: pointer; transition: all 0.3s ease;">
+                <span class="material-symbols-rounded">history</span>
+                <strong>Archiv</strong>
+            </button>
+        </div>
+
+        <!-- 1. SETUP SECTION -->
+        <section id="tab-setup" class="roast-section active">
+            <div class="stats-card">
+                <h3>Rohkaffee Profil</h3>
+                <input type="text" id="setup-origin" placeholder="Herkunft (z.B. Äthiopien Yirgacheffe)">
+                <input type="text" id="setup-variety" placeholder="Varietät (z.B. Heirloom)">
+                <input type="text" id="setup-process" placeholder="Aufbereitung (z.B. Natural)">
+                <div style="display:flex; gap:10px;">
+                    <input type="number" id="setup-harvest" placeholder="Erntejahr" step="1">
+                    <input type="number" id="setup-moisture" placeholder="Feuchtigkeit %" step="0.1">
+                </div>
+            </div>
+
+            <div class="stats-card">
+                <h3>Physikalische Parameter</h3>
+                <div style="display:flex; gap:10px;">
+                    <input type="number" id="setup-weight-in" placeholder="Einwaage IN (g)*" required>
+                    <input type="number" id="setup-density" placeholder="Dichte g/ml">
+                </div>
+                <h3>Umgebung & Equipment</h3>
+                <div style="display:flex; gap:10px;">
+                    <input type="number" id="setup-room-temp" placeholder="Raumtemp °C">
+                    <input type="text" id="setup-pan" placeholder="Pfannentyp (z.B. Gusseisen)">
+                </div>
+            </div>
+            
+            <button class="save-btn" onclick="roastApp.goToLive()">Weiter zum Rösten</button>
+        </section>
+
+        <!-- 2. LIVE VIEW SECTION -->
+        <section id="tab-live" class="roast-section">
+            <div class="dashboard-display">
+                <div class="roast-timer" id="main-timer">00:00</div>
+                <button class="charge-btn" id="btn-charge" onclick="roastApp.toggleTimer()">CHARGE (START)</button>
+            </div>
+
+            <!-- Heat & Agitation Log -->
+            <div class="quick-log-row">
+                <input type="number" id="input-heat" placeholder="Hitze Stufe / Watt">
+                <button class="quick-btn" onclick="roastApp.logEvent('Hitze', document.getElementById('input-heat').value)">Log</button>
+            </div>
+            <div class="quick-log-row">
+                <input type="number" id="input-agitation" placeholder="Rühr-Speed (RPM)">
+                <button class="quick-btn" onclick="roastApp.logEvent('Agitation', document.getElementById('input-agitation').value)">Log</button>
+            </div>
+            
+            <div class="quick-log-row">
+                <input type="number" id="input-temp" placeholder="Oberflächentemp °C">
+                <button class="quick-btn" onclick="roastApp.logEvent('Temperatur', document.getElementById('input-temp').value + '°C')">Log</button>
+            </div>
+
+            <!-- Sensorische Meilensteine -->
+            <div class="action-grid">
+                <div class="roast-action-btn" id="evt-yellow" onclick="roastApp.logMilestone('Yellow Phase', this)">
+                    <span class="material-symbols-rounded">brightness_5</span>
+                    <span>Yellow Phase</span>
+                </div>
+                <div class="roast-action-btn" id="evt-cinnamon" onclick="roastApp.logMilestone('Cinnamon', this)">
+                    <span class="material-symbols-rounded">cookie</span>
+                    <span>Cinnamon</span>
+                </div>
+                <div class="roast-action-btn" id="evt-fc-start" onclick="roastApp.logMilestone('First Crack Start', this)">
+                    <span class="material-symbols-rounded">sound_detection_loud_sound</span>
+                    <span>FC Start</span>
+                </div>
+                <div class="roast-action-btn" id="evt-fc-end" onclick="roastApp.logMilestone('First Crack End', this)">
+                    <span class="material-symbols-rounded">music_off</span>
+                    <span>FC End</span>
+                </div>
+            </div>
+
+            <!-- Aroma Tags -->
+            <div style="margin-bottom: 10px; color:var(--color-gold-medium); font-family:var(--font-heading);">Aroma Entwicklung</div>
+            <div class="aroma-tags">
+                <div class="aroma-tag" onclick="roastApp.logEvent('Aroma', 'Heu/Gras')">Heu/Gras</div>
+                <div class="aroma-tag" onclick="roastApp.logEvent('Aroma', 'Brot/Getreide')">Brot/Getreide</div>
+                <div class="aroma-tag" onclick="roastApp.logEvent('Aroma', 'Nuss/Karamell')">Nuss/Karamell</div>
+                <div class="aroma-tag" onclick="roastApp.logEvent('Aroma', 'Schokolade')">Schokolade</div>
+                <div class="aroma-tag" onclick="roastApp.logEvent('Aroma', 'Rauchig')">Rauchig</div>
+            </div>
+
+            <button class="charge-btn" style="background:var(--color-gold-medium); color:white; margin-bottom: 20px;" onclick="roastApp.dropBeans()">DROP (STOP)</button>
+
+            <!-- Live Log -->
+            <div class="live-log" id="live-log-container">
+                <!-- events populated here -->
+            </div>
+        </section>
+
+        <!-- 3. ANALYSIS & ARCHIVE SECTION -->
+        <section id="tab-analysis" class="roast-section">
+            
+            <div id="current-roast-analysis" style="display: none;">
+                <div class="stats-card">
+                    <h3>Post-Roast Daten</h3>
+                    <div class="quick-log-row">
+                        <input type="number" id="post-weight-out" placeholder="Auswaage OUT (g)">
+                        <button class="quick-btn" onclick="roastApp.calculateMetrics()">Berechnen</button>
+                    </div>
+                    <div class="quick-log-row">
+                        <input type="number" id="post-cooling" placeholder="Kühlzeit (Minuten)">
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <h3>Statistik</h3>
+                    <div class="info-row">
+                        <span class="info-label">Gesamtzeit</span>
+                        <span class="info-val" id="stat-total-time">--:--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Gewichtsverlust (Weight Loss)</span>
+                        <span class="info-val" id="stat-weight-loss">-- %</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">DTR (Development Time Ratio)</span>
+                        <span class="info-val" id="stat-dtr">-- %</span>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <h3>Cupping Protokoll (SCA)</h3>
+                    
+                    <div class="cupping-slider">
+                        <label><span>Säure (Acidity)</span> <span id="val-acid">7.5</span></label>
+                        <input type="range" id="cup-acid" min="6" max="10" step="0.25" value="7.5" oninput="document.getElementById('val-acid').innerText=this.value">
+                    </div>
+                    <div class="cupping-slider">
+                        <label><span>Körper (Body)</span> <span id="val-body">7.5</span></label>
+                        <input type="range" id="cup-body" min="6" max="10" step="0.25" value="7.5" oninput="document.getElementById('val-body').innerText=this.value">
+                    </div>
+                    <div class="cupping-slider">
+                        <label><span>Süße (Sweetness)</span> <span id="val-sweet">7.5</span></label>
+                        <input type="range" id="cup-sweet" min="6" max="10" step="0.25" value="7.5" oninput="document.getElementById('val-sweet').innerText=this.value">
+                    </div>
+                    <div class="cupping-slider">
+                        <label><span>Balance</span> <span id="val-bal">7.5</span></label>
+                        <input type="range" id="cup-bal" min="6" max="10" step="0.25" value="7.5" oninput="document.getElementById('val-bal').innerText=this.value">
+                    </div>
+
+                    <textarea id="cup-notes" placeholder="Weitere Notizen... (Tasting Notes)" style="border-radius:16px; margin-top:10px;"></textarea>
+                    
+                </div>
+                
+                <div class="stats-card">
+                    <h3>Röst-Graph</h3>
+                    <div class="roast-graph-container">
+                        <canvas id="roastChart"></canvas>
+                    </div>
+                </div>
+
+                <button class="save-btn" onclick="roastApp.saveRoast()">Speichern</button>
+
+                <div class="stats-card" style="margin-top: 20px;">
+                    <h3>Debug Aktionen</h3>
+                    <button class="save-btn" style="background:rgba(255,255,255,0.1); margin-bottom:10px;" onclick="roastApp.exportJSON()">Export als JSON</button>
+                    <button class="save-btn" style="background:rgba(255,255,255,0.1);" onclick="roastApp.exportCSV()">Export als CSV</button>
+                </div>
+            </div>
+
+            </div>
+        </section>
+
+        <!-- 4. ARCHIVE SECTION -->
+        <section id="tab-archive" class="roast-section">
+            <h2 style="margin-bottom: 20px; color: var(--color-gold-medium); font-family: var(--font-heading); text-align: center;">Röst-Archiv</h2>
+            <div id="archive-list" class="brew-list-container" style="padding: 0 16px; padding-bottom: 30px; box-sizing: border-box; width: 100%;">
+                <!-- Pills injected here -->
+            </div>
+        </section>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script src="js/roast.js"></script>
+</body>
+</html>

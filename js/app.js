@@ -514,6 +514,7 @@ const brewManager = {
             }
 
             brewManager.renderList();
+            if (window.beanManager) window.beanManager.renderInfos();
             brewManager.closeModal();
             utils.vibrate([50, 50, 50]);
         });
@@ -2176,6 +2177,7 @@ const beanManager = {
         form.reset();
         beanManager.closeInfoModal();
         beanManager.renderInfos();
+        if (window.brewManager) window.brewManager.renderList();
         utils.vibrate([50, 50, 50]);
     },
 

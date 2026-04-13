@@ -79,10 +79,11 @@ class AuthManager {
                 const drinks = await this.getDrinks();
                 const shops = await this.getShops();
                 const beans = await this.getBeans();
+                const roasts = await this.getRoasts();
 
                 // 3. Sync App
                 window.dispatchEvent(new CustomEvent('auth-data-loaded', {
-                    detail: { brews, drinks, shops, beans }
+                    detail: { brews, drinks, shops, beans, roasts }
                 }));
 
                 this.updateUI(true);
@@ -269,7 +270,8 @@ class AuthManager {
                         brews: [],
                         drinks: [],
                         shops: [],
-                        beans: []
+                        beans: [],
+                        roasts: []
                     });
                     console.log('✅ New Google user profile created');
                 }
@@ -388,7 +390,8 @@ class AuthManager {
                         brews: [],
                         drinks: [],
                         shops: [],
-                        beans: []
+                        beans: [],
+                        roasts: []
                     });
                     console.log('✅ User profile created in Firestore');
                 } catch (fsError) {
@@ -694,6 +697,7 @@ class AuthManager {
                 const localDrinks = JSON.parse(localStorage.getItem('coffee_drinks') || '[]');
                 const localShops = JSON.parse(localStorage.getItem('coffee_shops') || '[]');
                 const localBeans = JSON.parse(localStorage.getItem('coffee_bean_infos') || '[]');
+                const localRoasts = JSON.parse(localStorage.getItem('coffee_roasts') || '[]');
 
                 const updates = {};
                 if ((!userData.brews || userData.brews.length === 0) && localBrews.length > 0) {
@@ -715,6 +719,11 @@ class AuthManager {
                     updates.beans = localBeans;
                     updated = true;
                     localStorage.removeItem('coffee_bean_infos');
+                }
+                if ((!userData.roasts || userData.roasts.length === 0) && localRoasts.length > 0) {
+                    updates.roasts = localRoasts;
+                    updated = true;
+                    localStorage.removeItem('coffee_roasts');
                 }
 
                 if (updated) {
@@ -816,6 +825,28 @@ class AuthManager {
             await updateDoc(doc(db, 'users', this.currentUser.uid), { beans });
         } catch (error) {
             console.error('Error saving beans:', error);
+        }
+    }
+
+    // Get user's roasts from Firestore
+    async getRoasts() {
+        if (!this.currentUser) return [];
+        try {
+            const userDoc = await getDoc(doc(db, 'users', this.currentUser.uid));
+            return userDoc.exists() ? (userDoc.data().roasts || []) : [];
+        } catch (error) {
+            console.error('Error getting roasts:', error);
+            return [];
+        }
+    }
+
+    // Save user's roasts to Firestore
+    async saveRoasts(roasts) {
+        if (!this.currentUser) return;
+        try {
+            await updateDoc(doc(db, 'users', this.currentUser.uid), { roasts });
+        } catch (error) {
+            console.error('Error saving roasts:', error);
         }
     }
 }
