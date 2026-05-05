@@ -522,6 +522,7 @@ const brewManager = {
 
     openSkillModal: () => {
         const m = document.getElementById('brew-skill-modal');
+        if (!m) return;
         m.classList.remove('hidden');
         void m.offsetWidth;
         m.classList.add('visible');
@@ -529,8 +530,10 @@ const brewManager = {
 
     selectSkillLevel: (level) => {
         const sm = document.getElementById('brew-skill-modal');
-        sm.classList.remove('visible');
-        setTimeout(() => sm.classList.add('hidden'), 300);
+        if (sm) {
+            sm.classList.remove('visible');
+            setTimeout(() => sm.classList.add('hidden'), 300);
+        }
 
         document.getElementById('skillLevel').value = level;
         const form = document.getElementById('brew-form');

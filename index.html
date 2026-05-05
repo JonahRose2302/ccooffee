@@ -482,7 +482,7 @@
 
     <!-- MODALS -->
     <!-- About Modal -->
-    <div id="about-modal" class="modal">
+    <div id="about-modal" class="modal hidden">
         <div class="modal-content glass-panel" style="text-align: center; padding: 40px 20px;">
             <span class="close"
                 onclick="document.getElementById('about-modal').classList.remove('visible')">&times;</span>
@@ -525,7 +525,7 @@
     </div>
 </div>
     <!-- Brew Modal (Recipe) -->
-    <div id="brew-modal" class="modal">
+    <div id="brew-modal" class="modal hidden">
         <div class="modal-content glass-panel">
             <span class="close" onclick="brewManager.closeModal()">&times;</span>
             <h2>New Recipe</h2>
@@ -606,7 +606,7 @@
     </div>
 
     <!-- Bean Info Modal -->
-    <div id="bean-info-modal" class="modal">
+    <div id="bean-info-modal" class="modal hidden">
         <div class="modal-content glass-panel" style="padding-top: 10px;">
             <span class="close" onclick="beanManager.closeInfoModal()">&times;</span>
             <div class="map-toggle-container entry-pill-nav" style="margin: 10px auto 20px auto; width: 100%; max-width: 300px;">
@@ -695,7 +695,7 @@
     </div>
 
     <!-- Drink Modal -->
-    <div id="drink-modal" class="modal">
+    <div id="drink-modal" class="modal hidden">
         <div class="modal-content glass-panel">
             <span class="close" onclick="drinkManager.closeModal()">&times;</span>
             <h2>New Recipe</h2>
@@ -714,7 +714,7 @@
     </div>
 
     <!-- Shop Modal -->
-    <div id="shop-modal" class="modal">
+    <div id="shop-modal" class="modal hidden">
         <div class="modal-content glass-panel">
             <span class="close" onclick="shopManager.closeModal()">&times;</span>
             <h2>New Spot</h2>
